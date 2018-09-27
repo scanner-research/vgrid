@@ -354,7 +354,7 @@ export default class GroupsContainer extends React.Component {
   }
 
   componentWillMount() {
-    let settings = {
+    let defaults = {
       results_per_page: 50,
       annotation_opacity: 1.0,
       show_pose: true,
@@ -375,20 +375,14 @@ export default class GroupsContainer extends React.Component {
       subtitle_sidebar: true
     };
 
-    if (_.size(this.props.settings) > 0) {
-      console.log(this.props.settings);
-      Object.assign(settings, this.props.settings);
-    } else {
+    if (this.props.settings.size == 0) {
       let cached = localStorage.getItem('settingsContext');
-      if (cached !== null) {
-        Object.assign(settings, JSON.parse(cached));
-      }
+      this.props.settings.merge(cached !== null ? JSON.parse(cached) : defaults);
     }
 
-    this._settings = observable.map(settings);
-
+    console.log(this.props.settings);
     autorun(() => {
-      localStorage.settingsContext = JSON.stringify(toJS(this._settings));
+      localStorage.settingsContext = JSON.stringify(toJS(this.props.settings));
     });
   }
 
@@ -408,7 +402,7 @@ export default class GroupsContainer extends React.Component {
         this.state.keyboardDisabled ? 'Enable Jupyter keyboard' : 'Disable Jupyter keyboard'
     }</button>;
     return (
-      <SettingsContext.Provider value={this._settings}>
+      <SettingsContext.Provider value={this.props.settings}>
         <div className='groups'>
           {hasJupyter ? <JupyterButton /> : null}
           <Groups {...this.props} />
