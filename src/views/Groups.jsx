@@ -2,46 +2,24 @@ import React from 'react';
 import * as Rb from 'react-bootstrap';
 import _ from 'lodash';
 import {observer} from 'mobx-react';
-import {observable, autorun, toJS} from 'mobx';
 import Clip from './Clip.jsx';
 import Timeline from './Timeline.jsx';
 import axios from 'axios';
 import {DataContext, SettingsContext, PythonContext} from './contexts.jsx';
 import keyboardManager from 'utils/KeyboardManager.jsx';
 import Consumer from 'utils/Consumer.jsx';
+import Provider from 'utils/Provider.jsx';
 
-let LABEL_MODES = Object.freeze({
+export let LABEL_MODES = Object.freeze({
   DEFAULT: 0,
   SINGLE_IDENTITY: 1,
   TOPIC_SEGMENTS: 2
 });
 
-let SELECT_MODES = Object.freeze({
+export let SELECT_MODES = Object.freeze({
   RANGE: 0,
   INDIVIDUAL: 1
 });
-
-let labelModeToString = (i) => {
-  if (i == LABEL_MODES.DEFAULT) {
-    return "default";
-  } else if (i == LABEL_MODES.SINGLE_IDENTITY) {
-    return "single identity";
-  } else if (i == LABEL_MODES.TOPIC_SEGMENTS) {
-    return "topic segments";
-  } else {
-    throw "Invalid label mode " + i;
-  }
-};
-
-let selectModeToString = (i) => {
-  if (i == SELECT_MODES.RANGE) {
-    return "range";
-  } else if (i == SELECT_MODES.INDIVIDUAL) {
-    return "individual";
-  } else {
-    throw "Invalid select mode " + i;
-  }
-};
 
 // Displays results with basic pagination
 @observer
@@ -232,6 +210,7 @@ class Groups extends React.Component {
           this._dataContext = dataContext;
           this._python = python;
           this._settingsContext = settingsContext;
+          console.log(settingsContext);
           return <div className='groups'>
             <div>
               {_.range(settingsContext.get('results_per_page') * this.state.page,
@@ -329,7 +308,7 @@ class Group extends React.Component {
 }
 
 @observer
-export default class GroupsContainer extends React.Component {
+export class GroupsContainer extends React.Component {
   state = {
     keyboardDisabled: false
   }
@@ -353,39 +332,6 @@ export default class GroupsContainer extends React.Component {
     this.setState({keyboardDisabled: disabled});
   }
 
-  componentWillMount() {
-    let defaults = {
-      results_per_page: 50,
-      annotation_opacity: 1.0,
-      show_pose: true,
-      show_face: true,
-      show_hands: true,
-      show_lr: false,
-      crop_bboxes: false,
-      playback_speed: 1.0,
-      show_middle_frame: true,
-      show_gender_as_border: true,
-      show_inline_metadata: false,
-      thumbnail_size: 1,
-      timeline_view: true,
-      timeline_range: 20,
-      track_color_identity: false,
-      label_mode: LABEL_MODES.DEFAULT,
-      select_mode: SELECT_MODES.RANGE,
-      subtitle_sidebar: true
-    };
-
-    if (this.props.settings.size == 0) {
-      let cached = localStorage.getItem('settingsContext');
-      this.props.settings.merge(cached !== null ? JSON.parse(cached) : defaults);
-    }
-
-    console.log(this.props.settings);
-    autorun(() => {
-      localStorage.settingsContext = JSON.stringify(toJS(this.props.settings));
-    });
-  }
-
   componentWillUnmount() {
     if (this._timer != null) {
       clearInterval(this._timer);
@@ -402,13 +348,11 @@ export default class GroupsContainer extends React.Component {
         this.state.keyboardDisabled ? 'Enable Jupyter keyboard' : 'Disable Jupyter keyboard'
     }</button>;
     return (
-      <SettingsContext.Provider value={this.props.settings}>
-        <div className='groups'>
-          {hasJupyter ? <JupyterButton /> : null}
-          <Groups {...this.props} />
-          {hasJupyter ? <JupyterButton /> : null}
-        </div>
-      </SettingsContext.Provider>
+      <div className='groups-container'>
+        {hasJupyter ? <JupyterButton /> : null}
+        <Groups {...this.props} />
+        {hasJupyter ? <JupyterButton /> : null}
+      </div>
     )
   }
 }
