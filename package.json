@@ -14,6 +14,7 @@
   "homepage": "https://github.com/scanner-research/vgrid#readme",
   "scripts": {
     "build": "webpack",
+    "prepublish": "webpack -p",
     "watch": "webpack -w"
   },
   "main": "dist/vgrid.js",
