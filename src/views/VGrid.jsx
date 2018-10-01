@@ -32,7 +32,7 @@ export default class VGrid extends React.Component {
 
     _.keys(default_settings).forEach((k) => {
       if (!this.props.settings.has(k)) {
-        this.props.settings.set(k, cached.hasOwnProperty(k) ? cached[k] : defaults[k]);
+        this.props.settings.set(k, cached.hasOwnProperty(k) ? cached[k] : default_settings[k]);
       }
     });
 
