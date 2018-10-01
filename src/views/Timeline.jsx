@@ -8,7 +8,6 @@ import Consumer from 'utils/Consumer.jsx';
 import {SettingsContext, DataContext} from './contexts.jsx';
 import Select from './Select.jsx';
 import {PALETTE} from 'utils/Color.jsx';
-import axios from 'axios';
 
 let gender_colors = {'M': '#50c9f8', 'F': '#ff6d86', 'U': '#c0ff00'};
 

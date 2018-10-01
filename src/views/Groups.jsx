@@ -4,8 +4,7 @@ import _ from 'lodash';
 import {observer} from 'mobx-react';
 import Clip from './Clip.jsx';
 import Timeline from './Timeline.jsx';
-import axios from 'axios';
-import {DataContext, SettingsContext, PythonContext} from './contexts.jsx';
+import {DataContext, SettingsContext} from './contexts.jsx';
 import keyboardManager from 'utils/KeyboardManager.jsx';
 import Consumer from 'utils/Consumer.jsx';
 import Provider from 'utils/Provider.jsx';
@@ -23,7 +22,7 @@ export let SELECT_MODES = Object.freeze({
 
 // Displays results with basic pagination
 @observer
-class Groups extends React.Component {
+export class Groups extends React.Component {
   state = {
     page: 0,
     selected_start: -1,
@@ -94,28 +93,28 @@ class Groups extends React.Component {
 
       // TODO(wcrichto): make saving state + errors more apparent to user (without alert boxes)
       document.body.style.cursor = 'wait';
-      axios
-        .post('/api/labeled', {groups: labeled, label_mode: this._settingsContext.get('label_mode')})
-        .then(((response) => {
-          if (!response.data.success) {
-            console.error(response.data.error);
-            alert(response.data.error);
-          } else {
-            console.log('Done!');
-            this.setState({
-              positive_ex: green,
-              selected_start: -1,
-              selected_end: -1,
-              selected: new Set()
-            });
-          }
-        }).bind(this), (error) => {
-          console.error(error);
-          alert(error);
-        })
-        .finally(() => {
-          document.body.style.cursor = 'auto';
-        });
+      this.props
+          .onSave({groups: labeled, label_mode: this._settingsContext.get('label_mode')})
+          .then(((response) => {
+            if (!response.data.success) {
+              console.error(response.data.error);
+              alert(response.data.error);
+            } else {
+              console.log('Done!');
+              this.setState({
+                positive_ex: green,
+                selected_start: -1,
+                selected_end: -1,
+                selected: new Set()
+              });
+            }
+          }).bind(this), (error) => {
+            console.error(error);
+            alert(error);
+          })
+          .finally(() => {
+            document.body.style.cursor = 'auto';
+          });
     }
   }
 
@@ -158,8 +157,8 @@ class Groups extends React.Component {
       this.forceUpdate();
     }
 
-    if (this._python) {
-      this._python.update({selected: Array.from(this.state.selected)});
+    if (this.props.onSelect) {
+      this.props.onSelect(Array.from(this.state.selected));
     }
   }
 
@@ -206,11 +205,9 @@ class Groups extends React.Component {
 
   render () {
     return (
-      <Consumer contexts={[SettingsContext, DataContext, PythonContext]}>{(settingsContext, dataContext, python) => {
+      <Consumer contexts={[SettingsContext, DataContext]}>{(settingsContext, dataContext) => {
           this._dataContext = dataContext;
-          this._python = python;
           this._settingsContext = settingsContext;
-          console.log(settingsContext);
           return <div className='groups'>
             <div>
               {_.range(settingsContext.get('results_per_page') * this.state.page,
@@ -304,55 +301,5 @@ class Group extends React.Component {
         </div>
       }</SettingsContext.Consumer>
     );
-  }
-}
-
-@observer
-export class GroupsContainer extends React.Component {
-  state = {
-    keyboardDisabled: false
-  }
-
-  _timer = null
-
-  _onClick = () => {
-    let disabled = !this.state.keyboardDisabled;
-
-    // wcrichto 5-25-18: in order to disable the Jupyter keyboard manager, we have to call disable in an infinite
-    // loop. This is because the ipywidgets framework uses KeyboardManager.register_events on the widget container
-    // which can cause unpredictable behavior in unexpectedly reactivating the keyboard manager (hard to consistently
-    // maintain focus on the widget area), so the simplest hacky solution is just to forcibly disable the manager
-    // by overriding all other changes to its settings.
-    if (disabled) {
-      this._timer = setInterval(() => {this.props.jupyter.keyboard_manager.disable();}, 100);
-    } else {
-      clearInterval(this._timer);
-      this.props.jupyter.keyboard_manager.enable();
-    }
-    this.setState({keyboardDisabled: disabled});
-  }
-
-  componentWillUnmount() {
-    if (this._timer != null) {
-      clearInterval(this._timer);
-    }
-
-    if (this.props.jupyter !== null) {
-      this.props.jupyter.keyboard_manager.enable();
-    }
-  }
-
-  render() {
-    let hasJupyter = this.props.jupyter !== null;
-    let JupyterButton = () => <button onClick={this._onClick}>{
-        this.state.keyboardDisabled ? 'Enable Jupyter keyboard' : 'Disable Jupyter keyboard'
-    }</button>;
-    return (
-      <div className='groups-container'>
-        {hasJupyter ? <JupyterButton /> : null}
-        <Groups {...this.props} />
-        {hasJupyter ? <JupyterButton /> : null}
-      </div>
-    )
   }
 }
