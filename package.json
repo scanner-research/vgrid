@@ -53,5 +53,8 @@
     "video.js": "^7.0.3",
     "videojs-markers": "^1.0.1"
   },
-  "files": ["dist"]
+  "files": ["dist"],
+  "config": {
+    "unsafe-perm": true
+  }
 }
