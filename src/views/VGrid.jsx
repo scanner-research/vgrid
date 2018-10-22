@@ -22,7 +22,12 @@ let default_settings = {
   track_color_identity: false,
   label_mode: LABEL_MODES.DEFAULT,
   select_mode: SELECT_MODES.RANGE,
-  subtitle_sidebar: true
+  subtitle_sidebar: true,
+  endpoints: {
+    videos: '/system_media',
+    subtitles: '/api/subtitles',
+    frames: '/frameserver/fetch'
+  }
 };
 
 export default class VGrid extends React.Component {

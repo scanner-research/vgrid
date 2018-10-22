@@ -185,7 +185,7 @@ export default class Clip extends React.Component {
           };
 
           let thumbnail_path = asset_url(
-            `frameserver/fetch?path=${encodeURIComponent(video.path)}&frame=${display_frame}`);
+            `${settingsContext.get('endpoints').frames}?path=${encodeURIComponent(video.path)}&frame=${display_frame}`);
 
           // Collect inline metadata to display
           let meta = [];
@@ -279,8 +279,9 @@ export default class Clip extends React.Component {
                 {this.state.videoState == VideoState.Loading || this.state.videoState == VideoState.Showing
                  ? <div style={{display: this.state.videoState == VideoState.Showing ? 'block' : 'none'}}>
                    <VideoPlayer
-                     video={asset_url(`/system_media/${video.path}`)}
-                     captions={video.srt_extension != '' ? asset_url(`/api/subtitles?video=${video.id}`) : null}
+                     video={asset_url(`${settingsContext.get('endpoints').videos}/${video.path}`)}
+                     captions={video.srt_extension != '' ?
+                               asset_url(`${settingsContext.get('endpoints').subtitles}?video=${video.id}`) : null}
                      onLoadedData={this._onLoadedData}
                      onTextTrackChange={this._onTextTrackChange}
                      onTimeUpdate={this._onTimeUpdate}
