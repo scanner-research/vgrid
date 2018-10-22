@@ -186,6 +186,11 @@
 
                 .sub-scroll {
                     height: 100%;
+
+                    strong {
+                        font-weight: bold;
+                        font-size: 16px;
+                    }
                 }
 
                 .sub-autoscroll {

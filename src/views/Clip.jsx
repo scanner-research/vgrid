@@ -236,7 +236,16 @@ export default class Clip extends React.Component {
             let startTime = 0;
             _.forEach(subs, (sub) => {
               let parts = sub.text.split('>>');
-              curSub += parts[0] + ' ';
+
+              let fmtSub = (sub, text) => {
+                if (sub.startTime <= this._currentTime && this._currentTime <= sub.endTime) {
+                return '<strong>' + text + '</strong>';
+                } else {
+                  return text;
+                }
+              }
+
+              curSub += fmtSub(sub, parts[0]) + ' ';
 
               if (parts.length > 1) {
                 this._formattedSubs.push({
@@ -248,25 +257,31 @@ export default class Clip extends React.Component {
                 startTime = sub.startTime;
                 parts.slice(1, -1).forEach((text) => {
                   this._formattedSubs.push({
-                    text: _.trim(text),
+                    text: _.trim(fmtSub(sub, text)),
                     start: startTime,
                     end: sub.endTime
                   })
                 });
 
-                curSub = parts[parts.length - 1];
+                curSub = fmtSub(sub, parts[parts.length - 1]);
               }
             });
 
             let i = 0;
-            while (i < this._formattedSubs.length && this._formattedSubs[i].start <= this._currentTime) { i++; }
+            while (i < this._formattedSubs.length && this._formattedSubs[i].start <= this._currentTime) {
+              i++;
+            }
 
             this._curSub = Math.max(i - 1, 0);
             this._subDivs = {};
-            return <div>{this._formattedSubs.map((sub, j) =>
-              <div key={j} className='subtitle' ref={(n) => { this._subDivs[j] = n; }}>
-                {this._curSub == j ? <strong>>> {sub.text}</strong> : <span>>> {sub.text}</span>}
-              </div>)}
+            return <div>{this._formattedSubs.map((sub, j) => {
+                let mkup = {__html: `>>> ${sub.text}`};
+                return <div key={j} className='subtitle' ref={(n) => { this._subDivs[j] = n; }}>
+                  {this._curSub == j
+                   ? <span className="emph" dangerouslySetInnerHTML={mkup} />
+                   : <span dangerouslySetInnerHTML={mkup} />}
+                </div>;
+            })}
             </div>;
           };
 
