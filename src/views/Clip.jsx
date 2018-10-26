@@ -172,9 +172,11 @@ export default class Clip extends React.Component {
 
           // Determine which video frame to display
           let display_frame =
-            settingsContext.get('show_middle_frame') && clip.max_frame
-            ? Math.round((clip.max_frame + clip.min_frame) / 2)
-            : clip.min_frame;
+            clip.hasOwnProperty('display_frame')
+            ? clip.display_frame
+            : (settingsContext.get('show_middle_frame') && clip.max_frame
+                ? Math.round((clip.max_frame + clip.min_frame) / 2)
+                : clip.min_frame);
 
           let asset_url = (path) => {
             if (window.IPython) {
