@@ -170,14 +170,6 @@ export default class Clip extends React.Component {
           let small_height = this.props.expand ? video.height : 100 * settingsContext.get('thumbnail_size');
           let small_width = video.width * small_height / video.height;
 
-          let asset_url = (path) => {
-            if (window.IPython) {
-              return `/django/${path}`;
-            } else {
-              return path;
-            }
-          };
-
           // Determine which video frame to display
           let display_frame =
             clip.hasOwnProperty('display_frame')
@@ -185,6 +177,14 @@ export default class Clip extends React.Component {
             : (settingsContext.get('show_middle_frame') && clip.max_frame
                 ? Math.round((clip.max_frame + clip.min_frame) / 2)
                 : clip.min_frame);
+
+          let asset_url = (path) => {
+            if (window.IPython) {
+              return `/django/${path}`;
+            } else {
+              return path;
+            }
+          };
 
           let thumbnail_path = asset_url(
             `${settingsContext.get('endpoints').frames}?path=${encodeURIComponent(video.path)}&frame=${display_frame}`);
