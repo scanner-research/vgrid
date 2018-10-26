@@ -461,8 +461,13 @@ export default class Timeline extends React.Component {
 
         console.assert(group.elements.length > 0);
         let clip = {
-          video: group.elements[0].video,          min_frame: group.elements[0].min_frame,
-          max_frame: group.elements[group.elements.length-1].max_frame
+          video: group.elements[0].video,
+          min_frame: group.elements[0].min_frame,
+          max_frame: group.elements[group.elements.length-1].max_frame,
+          display_frame: this._settingsContext.get('show_middle_frame')
+            ? Math.round((group.elements[0].max_frame +
+                group.elements[0].min_frame) / 2)
+            : group.elements[0].min_frame
         };
 
         let video = this._video();
