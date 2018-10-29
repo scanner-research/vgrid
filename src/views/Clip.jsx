@@ -305,9 +305,6 @@ export default class Clip extends React.Component {
                      onLoadedData={this._onLoadedData}
                      onTextTrackChange={this._onTextTrackChange}
                      onTimeUpdate={this._onTimeUpdate}
-                     onPlay={this.props.onVideoPlay}
-                     onPause={this.props.onVideoPause}
-                     onStop={this.props.onVideoStop}
                      width={small_width}
                      height={small_height}
                      track={this.props.clip}

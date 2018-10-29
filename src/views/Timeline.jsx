@@ -143,6 +143,7 @@ export default class Timeline extends React.Component {
     currentTime: 0,
     clickedTime: -1,
     displayTime: -1,
+    displayFrame: -1,
     startX: -1,
     startY: -1,
     trackStart: -1,
@@ -196,7 +197,8 @@ export default class Timeline extends React.Component {
     let newTime = (x / width) * (video.num_frames / video.fps);
     this.setState({
       currentTime: newTime,
-      displayTime: newTime
+      displayTime: newTime,
+      displayFrame: Math.round(newTime * video.fps)
     });
   }
 
@@ -208,14 +210,6 @@ export default class Timeline extends React.Component {
 
   _video = () => {
     return this._dataContext.tables.videos[this.props.group.elements[0].video];
-  }
-
-  _onVideoPlay = () => {
-    this._videoPlaying = true;
-  }
-
-  _onVideoStop = () => {
-    this._videoPlaying = false;
   }
 
   _pushState = () => {
@@ -482,11 +476,15 @@ export default class Timeline extends React.Component {
             ? group.elements[0].segments[group.elements[0].segments.length - 1].max_frame
             : group.num_frames
         };
-        clip.display_frame = this._settingsContext.get('show_middle_frame')
-            ? (group.elements[0].segments.length > 0
-                ? Math.round((group.elements[0].segments[0].max_frame + clip.min_frame) / 2)
-                : Math.round((clip.max_frame + clip.min_frame) / 2))
-            : clip.min_frame;
+        if (this.state.displayFrame == -1) {
+          clip.display_frame = this._settingsContext.get('show_middle_frame')
+              ? (group.elements[0].segments.length > 0
+                  ? Math.round((group.elements[0].segments[0].max_frame + clip.min_frame) / 2)
+                  : Math.round((clip.max_frame + clip.min_frame) / 2))
+              : clip.min_frame;
+        } else {
+          clip.display_frame = this.state.displayFrame;
+        }
 
         let video = this._video();
         let vid_height = expand ? video.height : 100 * this._settingsContext.get('thumbnail_size');
@@ -536,7 +534,6 @@ export default class Timeline extends React.Component {
           <div className='column'>
             <Clip clip={clip} onTimeUpdate={this._onTimeUpdate} showMeta={false}
                       expand={this.props.expand} displayTime={this.state.displayTime}
-                      onVideoPlay={this._onVideoPlay} onVideoStop={this._onVideoStop}
                       ref={(n) => {this._clip = n;}} />
             <svg className='time-container' style={timeboxStyle}
                  onClick={this._onClick}
