@@ -141,8 +141,11 @@ export default class Clip extends React.Component {
     }
   }
 
-  _onTimeUpdate = (_e, player) => {
+  _onTimeUpdate = (e, player) => {
     this._currentTime = player.currentTime();
+    if (this.state.videoState == VideoState.Showing) {
+      this.props.onTimeUpdate(player.currentTime());
+    }
   }
 
   componentWillUnmount() {

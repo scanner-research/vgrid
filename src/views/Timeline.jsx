@@ -15,9 +15,9 @@ let gender_colors = {'M': '#50c9f8', 'F': '#ff6d86', 'U': '#c0ff00'};
 class Marker extends React.Component {
   render() {
     return <Consumer contexts={[SettingsContext]}>{ settingsContext => {
-        let {t, w, h, mw, mh, mf, label, type, color, ..._} = this.props;
+        let {t, w, h, mw, mh, mf, label, type, color, video, nframes, ..._} = this.props;
         let range = settingsContext.get('timeline_range');
-        let time_to_x = (t) => w/2 + (t - this.props.currentTime) / (range/2) * w/2;
+        let time_to_x = (t) => t * video.fps / nframes;
         let x = time_to_x(t);
         let margin = mw;
         if (0 <= x && x <= w) {
@@ -90,14 +90,14 @@ class Track extends React.Component {
   render() {
     // TODO: show topics on current track if out of sight
     return <Consumer contexts={[SettingsContext, DataContext]} >{(settingsContext, dataContext) => {
-        let {track, w, h, mw, mh, mf, video, ..._} = this.props;
-        let start = track.min_frame / video.fps;
-        let end = track.max_frame / video.fps;
+        let {track, w, h, mw, mh, mf, video, nframes, ..._} = this.props;
+        //let start = track.min_frame / video.fps;
+        //let end = track.max_frame / video.fps;
 
-        let range = settingsContext.get('timeline_range');
-        let time_to_x = (t) => w/2 + (t - this.props.currentTime) / (range/2) * w/2;
-        let x1 = time_to_x(start);
-        let x2 = time_to_x(end);
+        //let range = settingsContext.get('timeline_range');
+        //let time_to_x = (t) => w/2 + (t - this.props.currentTime) / (range/2) * w/2;
+        let x1 = track.min_frame / nframes * w;
+        let x2 = track.max_frame / nframes * w;
 
         let color;
         if (track.gender_id !== undefined) {
@@ -106,7 +106,7 @@ class Track extends React.Component {
           let ident_colors = PALETTE;
           color = ident_colors[track.identity % ident_colors.length];
         } else {
-          color = '#eee';
+          color = 'red';
         }
 
         let texts = [];
@@ -118,11 +118,8 @@ class Track extends React.Component {
 
         return (
           <g ref={(n) => {this._g = n;}}>
-            <rect x={x1} width={x2-x1} y={0} height={h} fill={color} />
-            {range < 600
-             ? <g>
-               <line x1={x1} y1={0} x2={x1} y2={h} stroke="black" />
-               <line x1={x2} y1={0} x2={x2} y2={h} stroke="black" />
+            <rect x={x1} width={x2-x1} y={0} height={h} ry = {h/2} opacity = {0.5} fill={color} />
+             <g>
                <foreignObject x={x1+2} y={0} width={1000} height={h}>
                  <div className='track-label-container' xmlns="http://www.w3.org/1999/xhtml">
                    {texts.map((text, i) =>
@@ -134,7 +131,6 @@ class Track extends React.Component {
                  </div>
                </foreignObject>
              </g>
-             : <g />}
           </g>
         );
     }}</Consumer>;
@@ -171,25 +167,38 @@ export default class Timeline extends React.Component {
     return [e.clientX - rect.left, e.clientY - rect.top];
   }
 
-  _onMouseDown = (e) => {
+  //  _onMouseDown = (e) => {
+  //    let [x, y] = this._localCoords(e);
+  //    this.setState({startX: x, startY: y, clickedTime: this.state.currentTime});
+  //  }
+  //
+  //  _onMouseMove = (e) => {
+  //    if (this.state.startX != -1) {
+  //      let [x, y] = this._localCoords(e);
+  //      let dx = x - this.state.startX;
+  //      let dt = this._settingsContext.get('timeline_range') * dx / boundingRect(this._svg).width * -1;
+  //      this.setState({
+  //        displayTime: this.state.clickedTime + dt,
+  //        currentTime: this.state.clickedTime + dt
+  //      });
+  //    }
+  //  }
+  //
+  //  _onMouseUp = (e) => {
+  //    this.setState({startX: -1, startY: -1});
+  //  }
+
+  _onClick = (e) => {
     let [x, y] = this._localCoords(e);
-    this.setState({startX: x, startY: y, clickedTime: this.state.currentTime});
-  }
-
-  _onMouseMove = (e) => {
-    if (this.state.startX != -1) {
-      let [x, y] = this._localCoords(e);
-      let dx = x - this.state.startX;
-      let dt = this._settingsContext.get('timeline_range') * dx / boundingRect(this._svg).width * -1;
-      this.setState({
-        displayTime: this.state.clickedTime + dt,
-        currentTime: this.state.clickedTime + dt
-      });
-    }
-  }
-
-  _onMouseUp = (e) => {
-    this.setState({startX: -1, startY: -1});
+    let video = this._video();
+    let vid_height = this.props.expand ? video.height : 100 * this._settingsContext.get('thumbnail_size');
+    let vid_width = video.width * vid_height / video.height;
+    let width = this.state.clipWidth !== null && this.props.expand ? this.state.clipWidth : vid_width;
+    let newTime = (x / width) * (video.num_frames / video.fps);
+    this.setState({
+      currentTime: newTime,
+      displayTime: newTime
+    });
   }
 
   _timelineOnMouseOut = (e) => {
@@ -430,7 +439,7 @@ export default class Timeline extends React.Component {
   componentDidMount() {
     document.addEventListener('keypress', this._onKeyPress);
     this.setState({
-      currentTime: this.props.group.elements[0].min_frame / this._video().fps
+      currentTime: this.props.group.elements[0].segments[0].min_frame / this._video().fps
     })
   }
 
@@ -461,22 +470,24 @@ export default class Timeline extends React.Component {
 
         console.assert(group.elements.length > 0);
         let clip = {
-          video: group.elements[0].video,
-          min_frame: group.elements[0].min_frame,
-          max_frame: group.elements[group.elements.length-1].max_frame,
+          video: group.label,
+          min_frame: group.elements[0].segments[0].min_frame,
+          max_frame: group.elements[0].segments[group.elements[0].segments.length-1].max_frame,
           display_frame: this._settingsContext.get('show_middle_frame')
-            ? Math.round((group.elements[0].max_frame +
-                group.elements[0].min_frame) / 2)
-            : group.elements[0].min_frame
+            ? Math.round((group.elements[0].segments[0].max_frame +
+                group.elements[0].segments[0].min_frame) / 2)
+            : group.elements[0].segments[0].min_frame
         };
 
         let video = this._video();
         let vid_height = expand ? video.height : 100 * this._settingsContext.get('thumbnail_size');
         let vid_width = video.width * vid_height / video.height;
 
+        let num_timelines = group.elements.length;
+        let track_height = expand ? 12 : 4;
         let timeboxStyle = {
           width: this.state.clipWidth !== null && expand ? this.state.clipWidth : vid_width,
-          height: expand ? 60 : 20
+          height: Math.max(num_timelines * track_height, expand ? 60 : 20)
         };
 
         let containerStyle = {
@@ -486,12 +497,13 @@ export default class Timeline extends React.Component {
 
         let tprops = {
           w: timeboxStyle.width,
-          h: timeboxStyle.height,
-          mw: expand ? 4 : 2,
+          h: track_height,
+          mw: expand ? 2 : 1,
           mh: timeboxStyle.height,
           mf: expand ? 16 : 12,
           currentTime: this.state.currentTime,
           video: video,
+          nframes: group.num_frames,
         };
 
         let selectWidth = 300;
@@ -509,21 +521,20 @@ export default class Timeline extends React.Component {
                       expand={this.props.expand} displayTime={this.state.displayTime}
                       onVideoPlay={this._onVideoPlay} onVideoStop={this._onVideoStop}
                       ref={(n) => {this._clip = n;}} />
-            <svg className='time-container' style={timeboxStyle} onMouseDown={this._onMouseDown}
-                 onMouseMove={this._onMouseMove}
-                 onMouseUp={this._onMouseUp}
-                 onMouseOut={this._timelineOnMouseOut}
+            <svg className='time-container' style={timeboxStyle}
+                 onClick={this._onClick}
                  ref={(n) => {this._svg = n;}}>
-              <g>{group.elements.map((track, i) =>
+              <g>{group.elements[0].segments.map((track, i) =>
                 // We destructure the track b/c mobx doesn't seem to be observing updates to it?
                 <Track key={i} i={i} track={track} onKeyPress={this._onTrackKeyPress} {...tprops} />)}
               </g>
               {this.state.trackStart != -1
                ? <Marker t={this.state.trackStart} type="open" color="rgb(230, 230, 20)" {...tprops} />
                : <g />}
-              <line x1={tprops.w/2} x2={tprops.w/2} y1={0} y2={tprops.h} stroke="rgb(20, 230, 20)" strokeWidth={tprops.mw*1.5} />
-              <Marker t={clip.min_frame/video.fps} type="open" color="black" {...tprops} />
-              <Marker t={clip.max_frame/video.fps} type="close" color="black"  {...tprops} />
+               <line
+                   x1={tprops.currentTime * tprops.video.fps * tprops.w / tprops.nframes}
+                   x2={tprops.currentTime * tprops.video.fps * tprops.w / tprops.nframes}
+                   y1={0} y2={timeboxStyle.height} stroke="rgb(20, 230, 20)" strokeWidth={tprops.mw} />
             </svg>
             {this.state.showSelect
              ? <div style={selectStyle}>
