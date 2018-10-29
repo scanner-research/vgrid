@@ -90,7 +90,7 @@ class Track extends React.Component {
   render() {
     // TODO: show topics on current track if out of sight
     return <Consumer contexts={[SettingsContext, DataContext]} >{(settingsContext, dataContext) => {
-        let {track, w, h, mw, mh, mf, video, nframes, ..._} = this.props;
+        let {track, segment_index, color, w, h, mw, mh, mf, video, nframes, ..._} = this.props;
         //let start = track.min_frame / video.fps;
         //let end = track.max_frame / video.fps;
 
@@ -99,14 +99,11 @@ class Track extends React.Component {
         let x1 = track.min_frame / nframes * w;
         let x2 = track.max_frame / nframes * w;
 
-        let color;
         if (track.gender_id !== undefined) {
           color = gender_colors[dataContext.categories.genders[track.gender_id].name];
         } else if (track.identity !== undefined) {
           let ident_colors = PALETTE;
           color = ident_colors[track.identity % ident_colors.length];
-        } else {
-          color = 'red';
         }
 
         let texts = [];
@@ -116,11 +113,13 @@ class Track extends React.Component {
           texts = track.topics.map((id) => this._dataContext.categories.topics[id]);
         }
 
+        let y_start = segment_index * h;
+
         return (
           <g ref={(n) => {this._g = n;}}>
-            <rect x={x1} width={x2-x1} y={0} height={h} ry = {h/2} opacity = {0.5} fill={color} />
+            <rect x={x1} width={x2-x1} y={y_start} height={h} ry = {h/2} opacity = {0.5} fill={color} />
              <g>
-               <foreignObject x={x1+2} y={0} width={1000} height={h}>
+               <foreignObject x={x1+2} y={y_start} width={1000} height={h}>
                  <div className='track-label-container' xmlns="http://www.w3.org/1999/xhtml">
                    {texts.map((text, i) =>
                      <div key={i} className='track-label'>
@@ -438,8 +437,11 @@ export default class Timeline extends React.Component {
 
   componentDidMount() {
     document.addEventListener('keypress', this._onKeyPress);
+    let min_frame = this.props.group.elements[0].segments.length > 0
+      ? this.props.group.elements[0].segments[0].min_frame
+      : 0;
     this.setState({
-      currentTime: this.props.group.elements[0].segments[0].min_frame / this._video().fps
+      currentTime: min_frame / this._video().fps
     })
   }
 
@@ -469,15 +471,22 @@ export default class Timeline extends React.Component {
         let expand = this.props.expand;
 
         console.assert(group.elements.length > 0);
+        // try to show the min frame and max frame of the first segment in the
+        // first list of segments
         let clip = {
           video: group.label,
-          min_frame: group.elements[0].segments[0].min_frame,
-          max_frame: group.elements[0].segments[group.elements[0].segments.length-1].max_frame,
-          display_frame: this._settingsContext.get('show_middle_frame')
-            ? Math.round((group.elements[0].segments[0].max_frame +
-                group.elements[0].segments[0].min_frame) / 2)
-            : group.elements[0].segments[0].min_frame
+          min_frame: group.elements[0].segments.length > 0
+            ? group.elements[0].segments[0].min_frame
+            : 0,
+          max_frame: group.elements[0].segments.length > 0
+            ? group.elements[0].segments[group.elements[0].segments.length - 1].max_frame
+            : group.num_frames
         };
+        clip.display_frame = this._settingsContext.get('show_middle_frame')
+            ? (group.elements[0].segments.length > 0
+                ? Math.round((group.elements[0].segments[0].max_frame + clip.min_frame) / 2)
+                : Math.round((clip.max_frame + clip.min_frame) / 2))
+            : clip.min_frame;
 
         let video = this._video();
         let vid_height = expand ? video.height : 100 * this._settingsContext.get('thumbnail_size');
@@ -514,6 +523,14 @@ export default class Timeline extends React.Component {
           zIndex: 1000
         };
 
+        let all_segments = []
+        group.elements.forEach((segmentlist, segment_index) =>
+          segmentlist.segments.forEach((segment, i, arr) => {
+            arr[i].segment_index = segment_index;
+            arr[i].color = segmentlist.color;
+            all_segments.push(arr[i]);
+          })); 
+
         return <div className={'timeline ' + (this.props.expand ? 'expanded' : '')}
                     onMouseOver={this._containerOnMouseOver} onMouseOut={this._containerOnMouseOut}>
           <div className='column'>
@@ -524,9 +541,12 @@ export default class Timeline extends React.Component {
             <svg className='time-container' style={timeboxStyle}
                  onClick={this._onClick}
                  ref={(n) => {this._svg = n;}}>
-              <g>{group.elements[0].segments.map((track, i) =>
-                // We destructure the track b/c mobx doesn't seem to be observing updates to it?
-                <Track key={i} i={i} track={track} onKeyPress={this._onTrackKeyPress} {...tprops} />)}
+              <g>{all_segments.map((segment, i) =>
+                  // We destructure the track b/c mobx doesn't seem to be observing updates to it?
+                  <Track key={i} i={i} track={segment}
+                    segment_index = {segment.segment_index}
+                    color = {segment.color}
+                    onKeyPress={this._onTrackKeyPress} {...tprops} />)}
               </g>
               {this.state.trackStart != -1
                ? <Marker t={this.state.trackStart} type="open" color="rgb(230, 230, 20)" {...tprops} />
