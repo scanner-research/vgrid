@@ -470,10 +470,10 @@ export default class Timeline extends React.Component {
         let clip = {
           video: group.label,
           min_frame: group.elements[0].segments.length > 0
-            ? group.elements[0].segments[0].min_frame
+            ? Math.round(group.elements[0].segments[0].min_frame)
             : 0,
           max_frame: group.elements[0].segments.length > 0
-            ? group.elements[0].segments[group.elements[0].segments.length - 1].max_frame
+            ? Math.round(group.elements[0].segments[group.elements[0].segments.length - 1].max_frame)
             : group.num_frames
         };
         if (this.state.displayFrame == -1) {
