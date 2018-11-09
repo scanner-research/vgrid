@@ -169,9 +169,17 @@ export default class Clip extends React.Component {
           let video = this._videoMeta();
           let show_subs = settingsContext.get('subtitle_sidebar');
 
+          let max_width = 1140;
+          let max_height = video.height * max_width / video.width;
+
           // Figure out how big the thumbnail should be
           let small_height = this.props.expand ? video.height : 100 * settingsContext.get('thumbnail_size');
           let small_width = video.width * small_height / video.height;
+
+          if (small_width > max_width) {
+            small_width = max_width;
+            small_height = max_height;
+          }
 
           // Determine which video frame to display
           let display_frame =
@@ -320,8 +328,8 @@ export default class Clip extends React.Component {
                   bboxes={clip.objects || []}
                   small_width={small_width}
                   small_height={small_height}
-                  full_width={video.width}
-                  full_height={video.height}
+                  full_width={Math.min(video.width, max_width)}
+                  full_height={Math.min(video.height, max_height)}
                   onClick={this.props.onBoxClick}
                   expand={this.props.expand}
                   onChangeGender={() => {}}
