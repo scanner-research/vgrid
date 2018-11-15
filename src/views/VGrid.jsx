@@ -27,7 +27,8 @@ let default_settings = {
     videos: '/system_media',
     subtitles: '/api/subtitles',
     frames: '/frameserver/fetch'
-  }
+  },
+  spinner_dev_mode: false
 };
 
 export default class VGrid extends React.Component {
