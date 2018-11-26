@@ -306,6 +306,56 @@ class Pose extends React.Component {
   }
 }
 
+let LANDMARKS_COLOR='rgb(255, 255, 255)';
+let LANDMARK_LABELS = [
+  'face_outline', 'right_eyebrow', 'left_eyebrow', 'nose_bridge', 'nose_bottom',
+  'right_eye', 'left_eye', 'outer_lips', 'inner_lips'];
+
+@observer
+class FaceLandmarks extends React.Component {
+  render() {
+    return <SettingsContext.Consumer>{settingsContext => {
+        let w = this.props.width;
+        let h = this.props.height;
+        let opacity = settingsContext.get('annotation_opacity');
+        let all_landmarks = this.props.landmarks.landmarks;
+        let landmark_sets = []
+
+        let i = 0;
+        for (i = 0; i < LANDMARK_LABELS.length; i++) { 
+          landmark_sets.push(all_landmarks[LANDMARK_LABELS[i]])
+        }
+
+        let expand = this.props.expand;
+        let strokeWidth = this.props.expand ? 3 : 1;
+        let color = LANDMARKS_COLOR;
+
+        return <svg className='landmarks'>
+          {landmark_sets.map((landmark_set, j) =>
+            <g key={j}>
+              {landmark_set.map((landmark, i) =>
+                 <circle key={i} r={strokeWidth} cx={landmark[0] * w} cy={landmark[1] * h}
+                         stroke={color}
+                         strokeOpacity={opacity}
+                         strokeWidth={0}
+                         fill={color} />
+              )}
+              <polyline key={i} 
+                  points = {landmark_set.reduce(((points, landmark) => 
+                      points + (landmark[0] * w + "," + landmark[1] * h + " ")
+                  ), "")}
+                  stroke={color}
+                  strokeOpacity={opacity}
+                  strokeWidth={1}
+                  fill="transparent" />
+            </g>
+          )}
+        </svg>
+
+    }}</SettingsContext.Consumer>;
+  }
+}
+
 // ProgressiveImage displays a loading gif (the spinner) while an image is loading.
 class ProgressiveImage extends React.Component {
   state = {
@@ -599,6 +649,9 @@ export class Frame extends React.Component {
                                        expand={this.props.expand} />;
                      } else if (box.type == 'pose') {
                        return <Pose pose={box} key={i} width={this.props.small_width}
+                                        height={this.props.small_height} expand={this.props.expand} />;
+                     } else if (box.type == 'face_landmarks') {
+                       return <FaceLandmarks landmarks={box} key={i} width={this.props.small_width}
                                         height={this.props.small_height} expand={this.props.expand} />;
                      }})}
                 </div>
