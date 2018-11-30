@@ -169,6 +169,10 @@ export class Groups extends React.Component {
       this.state.ignored.add(e);
     }
     this.forceUpdate();
+ 
+    if (this.props.onIgnore) {
+      this.props.onIgnore(Array.from(this.state.ignored));
+    }
   }
 
   _numPages = () => {
@@ -252,9 +256,9 @@ class Group extends React.Component {
     let chr = String.fromCharCode(e.which);
     if (chr == 'f') {
       this.setState({expand: !this.state.expand});
-    } else if (chr == 's') {
+    } else if (chr == 's' || chr == '[') {  // [ and ] do not conflict with jupyter keys
       this.props.onSelect(this.props.group_id);
-    } else if (chr == 'x') {
+    } else if (chr == 'x' || chr == ']') {
       this.props.onIgnore(this.props.group_id);
     }
   }
