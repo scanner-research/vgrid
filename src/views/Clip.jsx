@@ -144,7 +144,9 @@ export default class Clip extends React.Component {
   _onTimeUpdate = (e, player) => {
     this._currentTime = player.currentTime();
     if (this.state.videoState == VideoState.Showing) {
-      this.props.onTimeUpdate(player.currentTime());
+      if (this.props.onTimeUpdate) {
+        this.props.onTimeUpdate(player.currentTime());
+      }
     }
   }
 
@@ -258,25 +260,38 @@ export default class Clip extends React.Component {
                 }
               }
 
-              curSub += fmtSub(sub, parts[0]) + ' ';
+              if (curSub != '' || parts.length > 1) {
+                // We are constructing the current subtitle track from a
+                // previous '>>'
 
-              if (parts.length > 1) {
-                this._formattedSubs.push({
-                  text: _.trim(curSub),
-                  start: startTime,
-                  end: sub.endTime
-                })
-
-                startTime = sub.startTime;
-                parts.slice(1, -1).forEach((text) => {
+                curSub += fmtSub(sub, parts[0]) + ' ';
+                if (parts.length > 1) {
                   this._formattedSubs.push({
-                    text: _.trim(fmtSub(sub, text)),
+                    text: _.trim(curSub),
                     start: startTime,
                     end: sub.endTime
                   })
-                });
 
-                curSub = fmtSub(sub, parts[parts.length - 1]);
+                  startTime = sub.startTime;
+                  parts.slice(1, -1).forEach((text) => {
+                    this._formattedSubs.push({
+                      text: _.trim(fmtSub(sub, text)),
+                      start: startTime,
+                      end: sub.endTime
+                    })
+                  });
+
+                  curSub = fmtSub(sub, parts[parts.length - 1]);
+                }
+              } else {
+                // We have not detected a '>>' in this subtitle track
+                curSub = fmtSub(sub, parts[0]);
+                this._formattedSubs.push({
+                  text: _.trim(curSub),
+                  start: sub.startTime,
+                  end: sub.endTime
+                })
+                curSub = '';
               }
             });
 
