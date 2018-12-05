@@ -28,7 +28,8 @@ let default_settings = {
     subtitles: '/api/subtitles',
     frames: '/frameserver/fetch'
   },
-  spinner_dev_mode: false
+  spinner_dev_mode: false,
+  jupyter_keybindings: false,
 };
 
 export default class VGrid extends React.Component {

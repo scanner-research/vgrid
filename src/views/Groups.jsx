@@ -65,7 +65,7 @@ export class Groups extends React.Component {
     }
 
     let chr = String.fromCharCode(e.which);
-    if (chr == 'a') {
+    if (chr == 'a') { // TODO: Jupyter Keybinding
       if (this.state.selected_start == -1) {
         return;
       }
@@ -151,12 +151,46 @@ export class Groups extends React.Component {
         this.state.selected.delete(e);
       } else {
         this.state.selected.add(e);
+	this.state.ignored.delete(e);
       }
 
       // Nested collection update, have to force re-render
       this.forceUpdate();
     }
 
+    if (this.props.onSelect) {
+      this.props.onSelect(Array.from(this.state.selected));
+    }
+    if (this.props.onIgnore) {
+      this.props.onIgnore(Array.from(this.state.ignored));
+    }
+  }
+
+  _onSelectPage = () => {
+    let resultsPerPage = this._settingsContext.get('results_per_page');
+    let minGroup = this.state.page * resultsPerPage;
+    let maxGroup = Math.min(minGroup + resultsPerPage, this._dataContext.groups.length) - 1;
+
+    var allSelected = true;
+    for (let i = minGroup; i <= maxGroup; i++) {
+      allSelected &= this.state.selected.has(i);
+    }
+
+    for (let i = minGroup; i <= maxGroup; i++) {
+      if (allSelected) {
+        this.state.selected.delete(i);
+        this.state.ignored.delete(i);
+      } else {
+        this.state.selected.add(i);
+        this.state.ignored.delete(i);
+      }
+    }
+
+    this.forceUpdate();
+
+    if (this.props.onIgnore) {
+      this.props.onIgnore(Array.from(this.state.ignored));
+    }
     if (this.props.onSelect) {
       this.props.onSelect(Array.from(this.state.selected));
     }
@@ -167,16 +201,50 @@ export class Groups extends React.Component {
       this.state.ignored.delete(e);
     } else {
       this.state.ignored.add(e);
+      this.state.selected.delete(e);
     }
     this.forceUpdate();
- 
+
     if (this.props.onIgnore) {
       this.props.onIgnore(Array.from(this.state.ignored));
+    }
+    if (this.props.onSelect) {
+      this.props.onSelect(Array.from(this.state.selected));
+    }
+  }
+
+  _onIgnorePage = () => {
+    let resultsPerPage = this._settingsContext.get('results_per_page');
+    let minGroup = this.state.page * resultsPerPage;
+    let maxGroup = Math.min(minGroup + resultsPerPage, this._dataContext.groups.length) - 1;
+
+    var allIgnored = true;
+    for (let i = minGroup; i <= maxGroup; i++) {
+       allIgnored &= this.state.ignored.has(i);
+    }
+
+    for (let i = minGroup; i <= maxGroup; i++) {
+       if (allIgnored) {
+         this.state.ignored.delete(i);
+         this.state.selected.delete(i);
+       } else {
+         this.state.ignored.add(i);
+         this.state.selected.delete(i);
+       }
+    }
+
+    this.forceUpdate();
+
+    if (this.props.onIgnore) {
+       this.props.onIgnore(Array.from(this.state.ignored));
+    }
+    if (this.props.onSelect) {
+       this.props.onSelect(Array.from(this.state.selected));
     }
   }
 
   _numPages = () => {
-    return Math.floor((this._dataContext.groups.length - 1)/ this._settingsContext.get('results_per_page'));
+    return Math.floor((this._dataContext.groups.length - 1) / this._settingsContext.get('results_per_page'));
   }
 
   _nextPage = (e) => {
@@ -219,6 +287,7 @@ export class Groups extends React.Component {
                                 this._dataContext.groups.length))
                 .map((i) => <Group key={i} group={this._dataContext.groups[i]} group_id={i}
                                        onSelect={this._onSelect} onIgnore={this._onIgnore}
+                                       onSelectPage={this._onSelectPage} onIgnorePage={this._onIgnorePage}
                                        colorClass={this._getColorClass(i)} />)}
               <div className='clearfix' />
             </div>
@@ -253,13 +322,33 @@ class Group extends React.Component {
       return;
     }
 
+    let useJupyterKeys = this._settingsContext.get('jupyter_keybindings');
+    var expandKey, selectKey, selectPageKey, ignoreKey, ignorePageKey;
+    if (useJupyterKeys) {
+      expandKey = '=';
+      selectKey = '[';
+      selectPageKey = '{';
+      ignoreKey = ']';
+      ignorePageKey = '}';
+    } else {
+      expandKey = 'f';
+      selectKey = 's';
+      selectPageKey = 'S';
+      ignoreKey = 'x';
+      ignorePageKey = 'X';
+    }
+
     let chr = String.fromCharCode(e.which);
-    if (chr == 'f') {
+    if (chr == expandKey) {
       this.setState({expand: !this.state.expand});
-    } else if (chr == 's' || chr == '[') {  // [ and ] do not conflict with jupyter keys
+    } else if (chr == selectKey) {
       this.props.onSelect(this.props.group_id);
-    } else if (chr == 'x' || chr == ']') {
+    } else if (chr == selectPageKey) {
+      this.props.onSelectPage();
+    } else if (chr == ignoreKey) {
       this.props.onIgnore(this.props.group_id);
+    } else if (chr == ignorePageKey) {
+      this.props.onIgnorePage();
     }
   }
 
@@ -284,8 +373,9 @@ class Group extends React.Component {
   render () {
     let group = this.props.group;
     return (
-      <SettingsContext.Consumer>{settingsContext =>
-        <div className={'group ' + this.props.colorClass} onMouseOver={this._onMouseOver}
+      <SettingsContext.Consumer>{settingsContext => {
+        this._settingsContext = settingsContext;
+        return <div className={'group ' + this.props.colorClass} onMouseOver={this._onMouseOver}
              onMouseOut={this._onMouseOut}>
           {this.props.colorClass != '' ? <div className={'select-overlay ' + this.props.colorClass} /> : null}
           {settingsContext.get('timeline_view') && group.type == 'contiguous'
@@ -302,8 +392,8 @@ class Group extends React.Component {
                <div className='clearfix' />
              </div>
            </div>}
-        </div>
-      }</SettingsContext.Consumer>
+        </div>;
+      }}</SettingsContext.Consumer>
     );
   }
 }

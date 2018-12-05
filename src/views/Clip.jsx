@@ -37,18 +37,23 @@ export default class Clip extends React.Component {
       return;
     }
 
+    let useJupyterKeys = this._settingsContext.get('jupyter_keybindings');
+    let play_key = useJupyterKeys ? 'P' : 'p';
+    let load_key = useJupyterKeys ? 'L' : 'l';
+    let toggle_key = useJupyterKeys ? 'O' : ' ';
+
     let chr = String.fromCharCode(e.which);
-    if (chr == 'p') {
+    if (chr == play_key) {
       this.setState({
         videoState: VideoState.Loading,
         loopVideo: false
       });
-    } else if (chr == 'l') {
+    } else if (chr == load_key) {
       this.setState({
         videoState: VideoState.Loading,
         loopVideo: true
       });
-    } else if (chr == ' ') {
+    } else if (chr == toggle_key) {
       if (this._video) {
         let isPlaying = this._video.currentTime > 0 && !this._video.paused && !this._video.ended;
         if (isPlaying) {
@@ -165,6 +170,8 @@ export default class Clip extends React.Component {
     return (
       <Consumer contexts={[SettingsContext, DataContext]}>{(settingsContext, dataContext) => {
           this._dataContext = dataContext;
+          this._settingsContext = settingsContext;
+
           let clip = this.props.clip;
           let video = this._videoMeta();
           let show_subs = settingsContext.get('subtitle_sidebar');
