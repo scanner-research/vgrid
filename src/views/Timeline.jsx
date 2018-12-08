@@ -117,7 +117,7 @@ class Track extends React.Component {
 
         return (
           <g ref={(n) => {this._g = n;}}>
-            <rect x={x1} width={x2-x1} y={y_start} height={h} ry = {h/2} opacity = {0.5} fill={color} />
+            <rect x={x1} width={x2-x1} y={y_start} height={h} opacity = {0.5} fill={color} />
              <g>
                <foreignObject x={x1+2} y={y_start} width={1000} height={h}>
                  <div className='track-label-container' xmlns="http://www.w3.org/1999/xhtml">
