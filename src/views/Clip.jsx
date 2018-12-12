@@ -37,6 +37,10 @@ export default class Clip extends React.Component {
       return;
     }
 
+    if (this._settingsContext.get('disable_playback')) {
+      return;
+    }
+
     let useJupyterKeys = this._settingsContext.get('jupyter_keybindings');
     let play_key = useJupyterKeys ? 'P' : 'p';
     let load_key = useJupyterKeys ? 'L' : 'l';
@@ -326,7 +330,7 @@ export default class Clip extends React.Component {
                       ref={(n) => {this._n = n;}}>
             <div className='video-row' style={{height: small_height}}>
               <div className='media-container' data-vjs-player>
-                {this.state.videoState == VideoState.Loading || this.state.videoState == VideoState.Showing
+                {!settingsContext.get('disable_playback') && (this.state.videoState == VideoState.Loading || this.state.videoState == VideoState.Showing)
                  ? <div style={{display: this.state.videoState == VideoState.Showing ? 'block' : 'none'}}>
                    <VideoPlayer
                      video={asset_url(`${settingsContext.get('endpoints').videos}/${video.path}`)}
