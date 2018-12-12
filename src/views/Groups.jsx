@@ -280,18 +280,8 @@ export class Groups extends React.Component {
       <Consumer contexts={[SettingsContext, DataContext]}>{(settingsContext, dataContext) => {
           this._dataContext = dataContext;
           this._settingsContext = settingsContext;
-          return <div className='groups'>
-            <div>
-              {_.range(settingsContext.get('results_per_page') * this.state.page,
-                       Math.min(settingsContext.get('results_per_page') * (this.state.page + 1),
-                                this._dataContext.groups.length))
-                .map((i) => <Group key={i} group={this._dataContext.groups[i]} group_id={i}
-                                       onSelect={this._onSelect} onIgnore={this._onIgnore}
-                                       onSelectPage={this._onSelectPage} onIgnorePage={this._onIgnorePage}
-                                       colorClass={this._getColorClass(i)} />)}
-              <div className='clearfix' />
-            </div>
-            <div className='page-buttons'>
+
+          let PageButtons = () => <div className='page-buttons'>
               <Rb.ButtonGroup>
                 <Rb.Button onClick={this._prevPage}>&larr;</Rb.Button>
                 <Rb.Button onClick={this._nextPage}>&rarr;</Rb.Button>
@@ -304,7 +294,21 @@ export class Groups extends React.Component {
                 </span>
                 <span className='page-count'>/ {this._numPages() + 1}</span>
               </Rb.ButtonGroup>
+            </div>;
+
+          return <div className='groups'>
+            <PageButtons />
+            <div>
+              {_.range(settingsContext.get('results_per_page') * this.state.page,
+                       Math.min(settingsContext.get('results_per_page') * (this.state.page + 1),
+                                this._dataContext.groups.length))
+                .map((i) => <Group key={i} group={this._dataContext.groups[i]} group_id={i}
+                                       onSelect={this._onSelect} onIgnore={this._onIgnore}
+                                       onSelectPage={this._onSelectPage} onIgnorePage={this._onIgnorePage}
+                                       colorClass={this._getColorClass(i)} />)}
+              <div className='clearfix' />
             </div>
+            <PageButtons />
           </div>;
       }}</Consumer>
     );
