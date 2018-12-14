@@ -527,7 +527,7 @@ export default class Timeline extends React.Component {
             arr[i].segment_index = segment_index;
             arr[i].color = segmentlist.color;
             all_segments.push(arr[i]);
-          })); 
+          }));
 
         return <div className={'timeline ' + (this.props.expand ? 'expanded' : '')}
                     onMouseOver={this._containerOnMouseOver} onMouseOut={this._containerOnMouseOut}>
