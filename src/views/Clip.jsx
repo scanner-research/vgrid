@@ -296,7 +296,7 @@ export default class Clip extends React.Component {
                 }
               } else {
                 // We have not detected a '>>' in this subtitle track
-                curSub = fmtSub(sub, parts[0]);
+                curSub = fmtSub(sub, parts[0]) + ' ';
                 this._formattedSubs.push({
                   text: _.trim(curSub),
                   start: sub.startTime,
@@ -364,7 +364,8 @@ export default class Clip extends React.Component {
                   onSetTrack={() => {}}
                   onDeleteTrack={() => {}}
                   onSelect={() => {}}
-                  path={thumbnail_path} />
+                  path={thumbnail_path}
+                  enableLabel={this.props.enableLabel} />
                  : null}
               </div>
               {show_subs && this.props.expand && this.state.videoState == VideoState.Showing

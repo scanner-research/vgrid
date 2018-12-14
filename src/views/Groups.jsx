@@ -390,8 +390,10 @@ class Group extends React.Component {
               : <span />}
              <div className='group-elements'>
                {group.elements.map((clip, i) =>
+                 /* TODO(wcrichto): toggle labeler */
                  <div key={i} className='element'>
-                   <Clip clip={clip} showMeta={true} expand={this.state.expand} />
+                   <Clip clip={clip} showMeta={true} expand={this.state.expand}
+                         enableLabel={false} />
                  </div>)}
                <div className='clearfix' />
              </div>

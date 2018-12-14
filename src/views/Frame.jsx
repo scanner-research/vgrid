@@ -322,7 +322,7 @@ class FaceLandmarks extends React.Component {
         let landmark_sets = []
 
         let i = 0;
-        for (i = 0; i < LANDMARK_LABELS.length; i++) { 
+        for (i = 0; i < LANDMARK_LABELS.length; i++) {
           landmark_sets.push(all_landmarks[LANDMARK_LABELS[i]])
         }
 
@@ -340,8 +340,8 @@ class FaceLandmarks extends React.Component {
                          strokeWidth={0}
                          fill={color} />
               )}
-              <polyline key={i} 
-                  points = {landmark_set.reduce(((points, landmark) => 
+              <polyline key={i}
+                  points = {landmark_set.reduce(((points, landmark) =>
                       points + (landmark[0] * w + "," + landmark[1] * h + " ")
                   ), "")}
                   stroke={color}
@@ -478,6 +478,8 @@ export class Frame extends React.Component {
 
 
   _onMouseDownLocal = (e) => {
+    if (!this.props.enableLabel) { return; }
+
     // If the user clicks directly on a frame, we treat it the same as a global click, except we also register the direct
     // click so that moving outside of the frame doesn't cause the box to disappear. We don't need to set showDraw since
     // the user has to be moused in for the mouse down to register, so it would be redundant.
@@ -599,15 +601,19 @@ export class Frame extends React.Component {
   }
 
   componentWillMount() {
-    document.addEventListener('mousedown', this._onMouseDownGlobal);
-    document.addEventListener('mouseup', this._onMouseUpGlobal);
-    document.addEventListener('mousemove', this._onMouseMove);
+    if (this.props.enableLabel) {
+      document.addEventListener('mousedown', this._onMouseDownGlobal);
+      document.addEventListener('mouseup', this._onMouseUpGlobal);
+      document.addEventListener('mousemove', this._onMouseMove);
+    }
   }
 
   componentWillUnmount() {
-    document.removeEventListener('mousedown', this._onMouseDownGlobal);
-    document.removeEventListener('mouseup', this._onMouseUpGlobal);
-    document.removeEventListener('mousemove', this._onMouseMove);
+    if (this.props.enableLabel) {
+      document.removeEventListener('mousedown', this._onMouseDownGlobal);
+      document.removeEventListener('mouseup', this._onMouseUpGlobal);
+      document.removeEventListener('mousemove', this._onMouseMove);
+    }
     document.removeEventListener('keypress', this._onKeyPress);
   }
 
