@@ -258,7 +258,12 @@ export default class Clip extends React.Component {
             // TODO: is there a proper way to cache this? We can't just compute it on the first
             // go since the text tracks are streamed in, not loaded all in at once.
             this._formattedSubs = [];
-            let curSub = "";
+
+            // Some subtitles, e.g. CNNW_20150227_110000_New_Day.cc1.srt, don't start with a >>
+            // so our algorithm causes the first lines leading up to the first >> to be displayed
+            // separately. A fix is to make the initial string non-empty if none exists.
+            let curSub = subs[0].text.substring(0, 2) == '>>' ? '' : '\0';
+
             let startTime = 0;
             _.forEach(subs, (sub) => {
               let parts = sub.text.split('>>');
@@ -292,7 +297,7 @@ export default class Clip extends React.Component {
                     })
                   });
 
-                  curSub = fmtSub(sub, parts[parts.length - 1]);
+                  curSub = fmtSub(sub, parts[parts.length - 1]) + ' ';
                 }
               } else {
                 // We have not detected a '>>' in this subtitle track
