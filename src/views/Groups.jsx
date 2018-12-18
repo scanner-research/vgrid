@@ -117,6 +117,15 @@ export class Groups extends React.Component {
           });
     }
   }
+  
+  _syncSelectionsAndIgnored = () => {
+    if (this.props.onSelect) {
+      this.props.onSelect(Array.from(this.state.selected));
+    }
+    if (this.props.onIgnore) {
+      this.props.onIgnore(Array.from(this.state.ignored));
+    }
+  }
 
   _onSelect = (e) => {
     let select_mode = this._settingsContext.get('select_mode');
@@ -151,19 +160,25 @@ export class Groups extends React.Component {
         this.state.selected.delete(e);
       } else {
         this.state.selected.add(e);
-	this.state.ignored.delete(e);
+        this.state.ignored.delete(e);
       }
 
       // Nested collection update, have to force re-render
       this.forceUpdate();
     }
 
-    if (this.props.onSelect) {
-      this.props.onSelect(Array.from(this.state.selected));
+    this._syncSelectionsAndIgnored();
+  }
+  
+  _onSelectUpTo = (e) => {
+    // Select all unselected and unignored groups up to e
+    for (let i = 0; i <= e; i++) {
+        if (!this.state.selected.has(i) && !this.state.ignored.has(i)) {
+            this.state.selected.add(i);
+        }
     }
-    if (this.props.onIgnore) {
-      this.props.onIgnore(Array.from(this.state.ignored));
-    }
+    this.forceUpdate();
+    this._syncSelectionsAndIgnored();
   }
 
   _onSelectPage = () => {
@@ -187,13 +202,7 @@ export class Groups extends React.Component {
     }
 
     this.forceUpdate();
-
-    if (this.props.onIgnore) {
-      this.props.onIgnore(Array.from(this.state.ignored));
-    }
-    if (this.props.onSelect) {
-      this.props.onSelect(Array.from(this.state.selected));
-    }
+    this._syncSelectionsAndIgnored();
   }
 
   _onIgnore = (e) => {
@@ -204,13 +213,7 @@ export class Groups extends React.Component {
       this.state.selected.delete(e);
     }
     this.forceUpdate();
-
-    if (this.props.onIgnore) {
-      this.props.onIgnore(Array.from(this.state.ignored));
-    }
-    if (this.props.onSelect) {
-      this.props.onSelect(Array.from(this.state.selected));
-    }
+    this._syncSelectionsAndIgnored();
   }
 
   _onIgnorePage = () => {
@@ -234,13 +237,7 @@ export class Groups extends React.Component {
     }
 
     this.forceUpdate();
-
-    if (this.props.onIgnore) {
-       this.props.onIgnore(Array.from(this.state.ignored));
-    }
-    if (this.props.onSelect) {
-       this.props.onSelect(Array.from(this.state.selected));
-    }
+    this._syncSelectionsAndIgnored();
   }
 
   _numPages = () => {
@@ -305,6 +302,7 @@ export class Groups extends React.Component {
                 .map((i) => <Group key={i} group={this._dataContext.groups[i]} group_id={i}
                                        onSelect={this._onSelect} onIgnore={this._onIgnore}
                                        onSelectPage={this._onSelectPage} onIgnorePage={this._onIgnorePage}
+                                       onSelectUpTo={this._onSelectUpTo}
                                        colorClass={this._getColorClass(i)} />)}
               <div className='clearfix' />
             </div>
@@ -327,17 +325,19 @@ class Group extends React.Component {
     }
 
     let useJupyterKeys = this._settingsContext.get('jupyter_keybindings');
-    var expandKey, selectKey, selectPageKey, ignoreKey, ignorePageKey;
+    var expandKey, selectKey, selectPageKey, ignoreKey, ignorePageKey, selectUpToKey;
     if (useJupyterKeys) {
       expandKey = '=';
       selectKey = '[';
       selectPageKey = '{';
+      selectUpToKey = '?';
       ignoreKey = ']';
       ignorePageKey = '}';
     } else {
       expandKey = 'f';
       selectKey = 's';
       selectPageKey = 'S';
+      selectUpToKey = '?';
       ignoreKey = 'x';
       ignorePageKey = 'X';
     }
@@ -353,6 +353,8 @@ class Group extends React.Component {
       this.props.onIgnore(this.props.group_id);
     } else if (chr == ignorePageKey) {
       this.props.onIgnorePage();
+    } else if (chr == selectUpToKey) {
+      this.props.onSelectUpTo(this.props.group_id);
     }
   }
 
