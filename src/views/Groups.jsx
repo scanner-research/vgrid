@@ -117,7 +117,7 @@ export class Groups extends React.Component {
           });
     }
   }
-  
+
   _syncSelectionsAndIgnored = () => {
     if (this.props.onSelect) {
       this.props.onSelect(Array.from(this.state.selected));
@@ -169,7 +169,7 @@ export class Groups extends React.Component {
 
     this._syncSelectionsAndIgnored();
   }
-  
+
   _onSelectUpTo = (e) => {
     // Select all unselected and unignored groups up to e
     for (let i = 0; i <= e; i++) {
@@ -255,12 +255,12 @@ export class Groups extends React.Component {
   }
 
   componentDidMount() {
-    this._lastResult = this._dataContext;
+    this._lastResult = this.props.resultNumber;
   }
 
   componentDidUpdate() {
-    if (this._dataContext != this._lastResult) {
-      this._lastResult = this._dataContext;
+    if (this.props.resultNumber && this.props.resultNumber != this._lastResult) {
+      this._lastResult = this.props.resultNumber;
       this.setState({
         page: 0,
         positive_ex: new Set(),
@@ -382,7 +382,7 @@ class Group extends React.Component {
       <SettingsContext.Consumer>{settingsContext => {
         this._settingsContext = settingsContext;
         return <div className={'group ' + this.props.colorClass} onMouseOver={this._onMouseOver}
-             onMouseOut={this._onMouseOut}>
+             onMouseLeave={this._onMouseOut}>
           {this.props.colorClass != '' ? <div className={'select-overlay ' + this.props.colorClass} /> : null}
           {settingsContext.get('timeline_view') && group.type == 'contiguous'
            ? <Timeline group={group} expand={this.state.expand}  />
