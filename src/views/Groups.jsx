@@ -344,6 +344,11 @@ class Group extends React.Component {
 
     let chr = String.fromCharCode(e.which);
     if (chr == expandKey) {
+      // wcrichto 12-28-18: seems like when the thumbnail is resized via expansion,
+      // if the mouse leaves during the resize, the onMouseLeave event isn't fired,
+      // causing a bug where the keypress event is still active. This is fixed by removing
+      // the keypress handler just in case.
+      document.removeEventListener('keypress', this._onKeyPress);
       this.setState({expand: !this.state.expand});
     } else if (chr == selectKey) {
       this.props.onSelect(this.props.group_id);
