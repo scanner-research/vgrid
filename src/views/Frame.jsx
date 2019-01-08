@@ -198,10 +198,21 @@ class Box extends React.Component {
             }
           }).bind(this);
 
+          let label_text = null;
+          if (box.identity_id || box.actor_id || box.character_id) {
+            if (box.identity_id) {
+              label_text = this._dataContext.categories.identities[box.identity_id].name
+            } else if (box.actor_id) {
+              label_text = this._dataContext.categories.actors[box.actor_id].name
+            } else if (box.character_id) {
+              label_text = this._dataContext.categories.characters[box.character_id].name
+            }
+          }
+
           return (<div>
-            {box.identity_id
+            {label_text
              ? <div className='bbox-label' style={labelStyle}>
-               {modifyLabel(this._dataContext.categories.identities[box.identity_id].name)}
+               {modifyLabel(label_text)}
              </div>
              : null}
             <div onMouseOver={this._onMouseOver}
