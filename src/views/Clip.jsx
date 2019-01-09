@@ -382,7 +382,7 @@ export default class Clip extends React.Component {
                   enableLabel={this.props.enableLabel} />
                  : null}
               </div>
-              {show_subs && this.props.expand && this.state.videoState == VideoState.Showing
+              {!settingsContext.get('disable_captions') && show_subs && this.props.expand && this.state.videoState == VideoState.Showing
                ? <div className='sub-container' style={subStyle}>
                  <button className='sub-autoscroll' onClick={() => {
                      this.setState({subAutoScroll: !this.state.subAutoScroll});

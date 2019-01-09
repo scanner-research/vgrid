@@ -31,6 +31,7 @@ let default_settings = {
   spinner_dev_mode: false,
   jupyter_keybindings: false,
   disable_playback: false,
+  disable_captions: false
 };
 
 export default class VGrid extends React.Component {
