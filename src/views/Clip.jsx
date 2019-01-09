@@ -262,7 +262,16 @@ export default class Clip extends React.Component {
             // Some subtitles, e.g. CNNW_20150227_110000_New_Day.cc1.srt, don't start with a >>
             // so our algorithm causes the first lines leading up to the first >> to be displayed
             // separately. A fix is to make the initial string non-empty if none exists.
+            let hasDoubleArrow = false;
+            _.forEach(subs, (sub) => {
+              if (sub.text.includes('>>')) {
+                hasDoubleArrow = true;
+              }
+            });
             let curSub = subs[0].text.substring(0, 2) == '>>' ? '' : '\0';
+            if (!hasDoubleArrow) {
+              curSub = '';
+            }
 
             let startTime = 0;
             _.forEach(subs, (sub) => {
