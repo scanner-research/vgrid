@@ -199,13 +199,15 @@ class Box extends React.Component {
           }).bind(this);
 
           let label_text = null;
-          if (box.identity_id || box.actor_id || box.character_id) {
+          if (box.identity_id || box.actor_id || box.character_id || box.object_id) {
             if (box.identity_id) {
               label_text = this._dataContext.categories.identities[box.identity_id].name
             } else if (box.actor_id) {
               label_text = this._dataContext.categories.actors[box.actor_id].name
             } else if (box.character_id) {
               label_text = this._dataContext.categories.characters[box.character_id].name
+            } else if (box.object_id) {
+              label_text = this._dataContext.categories.objects[box.object_id].name
             }
           }
 
