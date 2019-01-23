@@ -31,7 +31,11 @@ let default_settings = {
   spinner_dev_mode: false,
   jupyter_keybindings: false,
   disable_playback: false,
-  disable_captions: false
+  disable_captions: false,
+  show_paging_buttons: true,
+  selected_cached: [],
+  ignored_cached: [],
+  max_width: 1130
 };
 
 export default class VGrid extends React.Component {

@@ -182,7 +182,7 @@ export default class Clip extends React.Component {
           let video = this._videoMeta();
           let show_subs = settingsContext.get('subtitle_sidebar');
 
-          let max_width = 1140;
+          let max_width = settingsContext.get('max_width');
           let max_height = video.height * max_width / video.width;
 
           // Figure out how big the thumbnail should be

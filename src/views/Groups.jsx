@@ -256,6 +256,16 @@ export class Groups extends React.Component {
 
   componentDidMount() {
     this._lastResult = this.props.resultNumber;
+    let selected_cached = this._settingsContext.get('selected_cached');
+    let ignored_cached = this._settingsContext.get('ignored_cached');
+    selected_cached.forEach((i) => {
+      this.state.selected.add(i);
+    });
+    ignored_cached.forEach((i) => {
+      this.state.ignored.add(i);
+    });
+    this.forceUpdate();
+    this._syncSelectionsAndIgnored();
   }
 
   componentDidUpdate() {
@@ -294,7 +304,8 @@ export class Groups extends React.Component {
             </div>;
 
           return <div className='groups'>
-            <PageButtons />
+            { settingsContext.get('show_paging_buttons')
+              ? <PageButtons /> : null }
             <div>
               {_.range(settingsContext.get('results_per_page') * this.state.page,
                        Math.min(settingsContext.get('results_per_page') * (this.state.page + 1),
@@ -306,7 +317,8 @@ export class Groups extends React.Component {
                                        colorClass={this._getColorClass(i)} />)}
               <div className='clearfix' />
             </div>
-            <PageButtons />
+            { settingsContext.get('show_paging_buttons')
+              ? <PageButtons /> : null }
           </div>;
       }}</Consumer>
     );
