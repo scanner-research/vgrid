@@ -65,6 +65,18 @@
             background: white;
         }
 
+        .btn {
+            border: 1px solid black;
+            border-radius: 0px;
+            position: relative;
+            padding: 0px 0px;
+            margin: 0px;
+        }
+
+        .timeline-controls {
+            position: absolute;
+        }
+
         .time-marker {
             position: absolute;
         }

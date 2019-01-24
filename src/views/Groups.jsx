@@ -127,6 +127,13 @@ export class Groups extends React.Component {
     }
   }
 
+  _onUpdateGroups = () => {
+    if (this.props.onUpdateGroups) {
+      this.props.onUpdateGroups(this._dataContext.groups);
+    }
+  }
+
+
   _onSelect = (e) => {
     let select_mode = this._settingsContext.get('select_mode');
     if (select_mode == SELECT_MODES.RANGE) {
@@ -314,7 +321,8 @@ export class Groups extends React.Component {
                                        onSelect={this._onSelect} onIgnore={this._onIgnore}
                                        onSelectPage={this._onSelectPage} onIgnorePage={this._onIgnorePage}
                                        onSelectUpTo={this._onSelectUpTo}
-                                       colorClass={this._getColorClass(i)} />)}
+                                       colorClass={this._getColorClass(i)}
+                                       onUpdateGroups={this._onUpdateGroups} />)}
               <div className='clearfix' />
             </div>
             { settingsContext.get('show_paging_buttons')
@@ -402,7 +410,8 @@ class Group extends React.Component {
              onMouseLeave={this._onMouseOut}>
           {this.props.colorClass != '' ? <div className={'select-overlay ' + this.props.colorClass} /> : null}
           {settingsContext.get('timeline_view') && group.type == 'contiguous'
-           ? <Timeline group={group} expand={this.state.expand}  />
+           ? <Timeline group={group} expand={this.state.expand}
+               onUpdateGroups={this.props.onUpdateGroups}  />
            : <div className={group.type}>
              {group.label && group.label !== ''
               ? <div className='group-label'>{group.label}</div>
