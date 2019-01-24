@@ -78,13 +78,13 @@ class Track extends React.Component {
   }
 
   componentDidMount() {
-    document.addEventListener('keypress', this._onKeyPress);
-    document.addEventListener('mousemove', this._onMouseMove);
+    //document.addEventListener('keypress', this._onKeyPress);
+    //document.addEventListener('mousemove', this._onMouseMove);
   }
 
   componentWillUnmount() {
-    document.removeEventListener('keypress', this._onKeyPress);
-    document.removeEventListener('mousemove', this._onMouseMove);
+    //document.removeEventListener('keypress', this._onKeyPress);
+    //document.removeEventListener('mousemove', this._onMouseMove);
   }
 
   render() {
@@ -230,6 +230,7 @@ export default class Timeline extends React.Component {
   }
 
   _onTrackKeyPress = (chr, i) => {
+    // NOTE: NONE OF THIS WORKS RIGHT NOW!
     // Change track gender
     if (chr == 'g') {
       this._pushState();
