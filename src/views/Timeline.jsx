@@ -345,14 +345,40 @@ export default class Timeline extends React.Component {
       //}
     }
 
-    else if (chr == 'r') {
-      let playbackSpeed = this._settingsContext.get('playback_speed');
-      if (playbackSpeed != 1) {
-        this._settingsContext.set('playback_speed', 1);
-        this._lastPlaybackSpeed = playbackSpeed;
-      } else {
-        this._settingsContext.set('playback_speed', this._lastPlaybackSpeed);
+    //else if (chr == 'r') {
+    //  let playbackSpeed = this._settingsContext.get('playback_speed');
+    //  if (playbackSpeed != 1) {
+    //    this._settingsContext.set('playback_speed', 1);
+    //    this._lastPlaybackSpeed = playbackSpeed;
+    //  } else {
+    //    this._settingsContext.set('playback_speed', this._lastPlaybackSpeed);
+    //  }
+    //}
+
+    else if (chr == 'z') {
+      if (this._undoStack.length > 0) {
+        let lastState = this._undoStack.pop();
+        this.props.group.elements = lastState;
       }
+    }
+
+    else if (chr == '+') {
+      let playbackSpeed = this._settingsContext.get('playback_speed');
+      this._settingsContext.set('playback_speed', playbackSpeed + 0.5);
+    }
+
+    else if (chr == '-') {
+      let playbackSpeed = this._settingsContext.get('playback_speed');
+      if (playbackSpeed > 1) {
+        this._settingsContext.set('playback_speed', playbackSpeed - 0.5);
+      }
+      else {
+        this._settingsContext.set('playback_speed', playbackSpeed * .75);
+      }
+    }
+
+    else if (chr == '`') {
+      this._settingsContext.set('playback_speed', 1);
     }
 
     else if (this._settingsContext.get('timeline_annotation_keys').hasOwnProperty(chr)) {
@@ -433,13 +459,6 @@ export default class Timeline extends React.Component {
 
       //  this.setState({trackStart: -1});
       //}
-    }
-
-    else if (chr == 'z') {
-      if (this._undoStack.length > 0) {
-        let lastState = this._undoStack.pop();
-        this.props.group.elements = lastState;
-      }
     }
 
     else {
