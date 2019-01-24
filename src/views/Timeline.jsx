@@ -198,16 +198,14 @@ export default class Timeline extends React.Component {
   //  }
 
   _onClick = (e) => {
+    let timeboxStyle = this._computeTimeboxStyle();
+
     let [x, y] = this._localCoords(e);
-    let video = this._video();
-    let vid_height = this.props.expand ? video.height : 100 * this._settingsContext.get('thumbnail_size');
-    let vid_width = video.width * vid_height / video.height;
-    let width = this.state.clipWidth !== null && this.props.expand ? this.state.clipWidth : vid_width;
-    let newTime = (x / width) * (this.state.maxTime - this.state.minTime) + this.state.minTime;
+    let newTime = (x / timeboxStyle.width) * (this.state.maxTime - this.state.minTime) + this.state.minTime;
     this.setState({
       currentTime: newTime,
       displayTime: newTime,
-      displayFrame: Math.round(newTime * video.fps)
+      displayFrame: Math.round(newTime * this._video().fps)
     });
   }
 
@@ -330,6 +328,8 @@ export default class Timeline extends React.Component {
     let curFrame = this.state.currentTime * fps;
 
     let elements = this.props.group.elements;
+    let timeline_annotation_keys = this._settingsContext.get('timeline_annotation_keys');
+    console.log(timeline_annotation_keys);
     if (chr == '\r') {
       //let lastTrack = elements.map((clip, i) => [clip, i]).filter(([clip, _]) =>
       //  clip.min_frame <= curFrame);
@@ -354,16 +354,19 @@ export default class Timeline extends React.Component {
       }
     }
 
-    else if (chr == 'i') {
+    else if (this._settingsContext.get('timeline_annotation_keys').hasOwnProperty(chr)) {
       this._pushState();
-      if (elements.length == this.state.originalNumTracks) {
+      let trackNum = this._settingsContext.get('timeline_annotation_keys')[chr];
+      while (elements.length <= trackNum) {
         elements.push({'segments': [], 'color': 'blue'});
       }
-      let segmentList = elements[this.state.originalNumTracks].segments;
+      let segmentList = elements[trackNum].segments;
       if (segmentList.length == 0 ||
         segmentList[segmentList.length - 1].hasOwnProperty('max_frame')) {
         // Add a new incomplete segment
-        segmentList.push({'min_frame': this.state.currentTime * fps});
+        segmentList.push({'min_frame': this.state.currentTime * fps,
+          'new_interval': true
+        });
       } else {
         // We have an incomplete segment at the end of this segmentList
         if (segmentList[segmentList.length - 1].min_frame <
@@ -515,6 +518,8 @@ export default class Timeline extends React.Component {
         // snap to the beginning
         this.setState({minTime: 0, maxTime: newSpan});
       }
+    } else {
+      this.setState({minTime: 0, maxTime: this.state.videoDuration});
     }
   }
 
@@ -552,6 +557,27 @@ export default class Timeline extends React.Component {
     let secondsDisplay = Math.floor(60 * (60 * (seconds / 3600 - hours) - minutes));
 
     return "" + hours + ":" + minutes + ":" + secondsDisplay;
+  }
+
+  _computeTimeboxStyle = () => {
+    let expand = this.props.expand;
+    let group = this.props.group;
+    let video = this._video();
+    let vid_height = expand ? video.height : 100 * this._settingsContext.get('thumbnail_size');
+    let vid_width = video.width * vid_height / video.height;
+
+    let num_timelines = group.elements.length;
+    let track_height = expand ? 12 : 4;
+    let timeboxStyle = {
+      width: this.state.clipWidth !== null && expand ? this.state.clipWidth : vid_width,
+      height: Math.max(num_timelines * track_height, expand ? 60 : 20)
+    };
+    let controller_size = timeboxStyle.height;
+    if (expand) {
+      timeboxStyle.width -= controller_size;
+    }
+
+    return timeboxStyle;
   }
 
   componentDidMount() {
@@ -621,14 +647,8 @@ export default class Timeline extends React.Component {
 
         let num_timelines = group.elements.length;
         let track_height = expand ? 12 : 4;
-        let timeboxStyle = {
-          width: this.state.clipWidth !== null && expand ? this.state.clipWidth : vid_width,
-          height: Math.max(num_timelines * track_height, expand ? 60 : 20)
-        };
+        let timeboxStyle = this._computeTimeboxStyle();
         let controller_size = timeboxStyle.height;
-        if (expand) {
-          timeboxStyle.width -= controller_size;
-        }
         let controllerStyle = {
           width: controller_size,
           height: controller_size

@@ -35,7 +35,9 @@ let default_settings = {
   show_paging_buttons: true,
   selected_cached: [],
   ignored_cached: [],
-  max_width: 1130
+  max_width: 1130,
+  // when annotating timelines, use key i to annotate track 0
+  timeline_annotation_keys: {'i': 0}
 };
 
 export default class VGrid extends React.Component {
