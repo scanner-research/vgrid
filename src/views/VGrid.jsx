@@ -59,7 +59,8 @@ export default class VGrid extends React.Component {
       <div className='vgrid'>
         <Provider values={[
           [SettingsContext, this.props.settings], [DataContext, this.props.data]]}>
-          <Groups onSelect={this.props.onSelect} onIgnore={this.props.onIgnore} />
+          <Groups onSelect={this.props.onSelect} onIgnore={this.props.onIgnore}
+            onUpdateGroups={this.props.onUpdateGroups}/>
         </Provider>
       </div>
     );

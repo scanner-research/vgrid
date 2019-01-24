@@ -90,14 +90,17 @@ class Track extends React.Component {
   render() {
     // TODO: show topics on current track if out of sight
     return <Consumer contexts={[SettingsContext, DataContext]} >{(settingsContext, dataContext) => {
-        let {track, segment_index, color, w, h, mw, mh, mf, video, nframes, ..._} = this.props;
-        //let start = track.min_frame / video.fps;
-        //let end = track.max_frame / video.fps;
+        let {track, segment_index, color, w, h, mw, mh, mf, video, nframes, minTime, maxTime, ..._} = this.props;
+        let start = track.min_frame / video.fps;
+        let end = this.props.currentTime;
+        if (track.hasOwnProperty('max_frame')) {
+          end = track.max_frame / video.fps;
+        }
 
         //let range = settingsContext.get('timeline_range');
         //let time_to_x = (t) => w/2 + (t - this.props.currentTime) / (range/2) * w/2;
-        let x1 = track.min_frame / nframes * w;
-        let x2 = track.max_frame / nframes * w;
+        let x1 = (start - minTime) / (maxTime - minTime) * w;
+        let x2 = (end - minTime) / (maxTime - minTime) * w;
 
         if (track.gender_id !== undefined) {
           color = gender_colors[dataContext.categories.genders[track.gender_id].name];
@@ -117,19 +120,21 @@ class Track extends React.Component {
 
         return (
           <g ref={(n) => {this._g = n;}}>
-            <rect x={x1} width={x2-x1} y={y_start} height={h} opacity = {0.5} fill={color} />
-             <g>
-               <foreignObject x={x1+2} y={y_start} width={1000} height={h}>
-                 <div className='track-label-container' xmlns="http://www.w3.org/1999/xhtml">
-                   {texts.map((text, i) =>
-                     <div key={i} className='track-label'>
-                       <span>{text}</span>
-                       <span className="oi oi-x" onClick={() => this._onDeleteLabel(i)}></span>
-                     </div>
-                   )}
-                 </div>
-               </foreignObject>
-             </g>
+            <rect x={x1} width={x2-x1} y={y_start} height={h} opacity = {
+              track.hasOwnProperty('max_frame') ? 0.5 : 0.25} fill={color} />
+            {//<g>
+             //  <foreignObject x={x1+2} y={y_start} width={1000} height={h}>
+             //    <div className='track-label-container' xmlns="http://www.w3.org/1999/xhtml">
+             //      {texts.map((text, i) =>
+             //        <div key={i} className='track-label'>
+             //          <span>{text}</span>
+             //          <span className="oi oi-x" onClick={() => this._onDeleteLabel(i)}></span>
+             //        </div>
+             //      )}
+             //    </div>
+             //  </foreignObject>
+             //</g>
+          }
           </g>
         );
     }}</Consumer>;
@@ -149,7 +154,11 @@ export default class Timeline extends React.Component {
     trackStart: -1,
     moused: false,
     showSelect: false,
-    clipWidth: null
+    clipWidth: null,
+    minTime: 0, // time at beginning of timeline
+    maxTime: null, // time at end of timeline
+    videoDuration: null, // video duration
+    origNumTracks: null // original number of different tracks
   }
 
   _videoPlaying = false;
@@ -194,7 +203,7 @@ export default class Timeline extends React.Component {
     let vid_height = this.props.expand ? video.height : 100 * this._settingsContext.get('thumbnail_size');
     let vid_width = video.width * vid_height / video.height;
     let width = this.state.clipWidth !== null && this.props.expand ? this.state.clipWidth : vid_width;
-    let newTime = (x / width) * (video.num_frames / video.fps);
+    let newTime = (x / width) * (this.state.maxTime - this.state.minTime) + this.state.minTime;
     this.setState({
       currentTime: newTime,
       displayTime: newTime,
@@ -322,17 +331,17 @@ export default class Timeline extends React.Component {
 
     let elements = this.props.group.elements;
     if (chr == '\r') {
-      let lastTrack = elements.map((clip, i) => [clip, i]).filter(([clip, _]) =>
-        clip.min_frame <= curFrame);
-      let offset = e.shiftKey ? -1 : 1;
-      let index = lastTrack[lastTrack.length - 1][1] + offset;
-      if (0 <= index && index < elements.length) {
-        let newTime = elements[index].min_frame / fps + 0.1;
-        this.setState({
-          displayTime: newTime,
-          currentTime: newTime
-        });
-      }
+      //let lastTrack = elements.map((clip, i) => [clip, i]).filter(([clip, _]) =>
+      //  clip.min_frame <= curFrame);
+      //let offset = e.shiftKey ? -1 : 1;
+      //let index = lastTrack[lastTrack.length - 1][1] + offset;
+      //if (0 <= index && index < elements.length) {
+      //  let newTime = elements[index].min_frame / fps + 0.1;
+      //  this.setState({
+      //    displayTime: newTime,
+      //    currentTime: newTime
+      //  });
+      //}
     }
 
     else if (chr == 'r') {
@@ -346,58 +355,80 @@ export default class Timeline extends React.Component {
     }
 
     else if (chr == 'i') {
-      if (this.state.trackStart == -1) {
-        this.setState({trackStart: this.state.currentTime});
-      } else {
-        this._pushState();
-
-        let start = Math.round(this.state.trackStart * fps);
-        let end = Math.round(this.state.currentTime * fps);
-
-        let to_add = [];
-        let to_delete = [];
-        elements.map((clip, i) => {
-          // +++ is the new clip, --- is old clip, overlap prioritized to new clip
-
-          // [---[++]+++]
-          if (clip.min_frame <= start && start <= clip.max_frame && clip.max_frame <= end) {
-            clip.max_frame = start;
-          }
-
-          // [+++[+++]---]
-          else if(start <= clip.min_frame && clip.min_frame <= end && end <= clip.max_frame){
-            clip.min_frame = end;
-          }
-
-          // [---[+++]---]
-          else if (clip.min_frame <= start && end <= clip.max_frame) {
-            let new_clip = _.cloneDeep(clip);
-            new_clip.min_frame = end;
-            clip.max_frame = start;
-            to_add.push(new_clip);
-          }
-
-          // [+++[+++]+++]
-          else if (start <= clip.min_frame && clip.max_frame <= end) {
-            to_delete.push(i);
-          }
-        });
-
-        _.reverse(to_delete);
-        to_delete.map((i) => elements.splice(i, -1));
-        elements.push.apply(elements, to_add);
-        elements.push({
-          video: elements[0].video,
-          min_frame: start,
-          max_frame: end,
-          // TODO(wcrichto): how to define reasonable defaults when labeling different kinds of
-          // tracks?
-          //gender_id: _.find(this._dataContext.genders, (l) => l.name == 'M').id
-        });
-        this.props.group.elements = _.sortBy(elements, ['min_frame']);
-
-        this.setState({trackStart: -1});
+      this._pushState();
+      if (elements.length == this.state.originalNumTracks) {
+        elements.push({'segments': [], 'color': 'blue'});
       }
+      let segmentList = elements[this.state.originalNumTracks].segments;
+      if (segmentList.length == 0 ||
+        segmentList[segmentList.length - 1].hasOwnProperty('max_frame')) {
+        // Add a new incomplete segment
+        segmentList.push({'min_frame': this.state.currentTime * fps});
+      } else {
+        // We have an incomplete segment at the end of this segmentList
+        if (segmentList[segmentList.length - 1].min_frame <
+          this.state.currentTime * fps) {
+          segmentList[segmentList.length - 1].max_frame = this.state.currentTime * fps;
+        } else {
+          segmentList.pop();
+        }
+      }
+      elements[this.state.originalNumTracks].segments = segmentList;
+      this.props.group.elements = elements;
+      this._syncResult();
+
+      //if (this.state.trackStart == -1) {
+      //  this.setState({trackStart: this.state.currentTime});
+      //} else {
+      //  this._pushState();
+
+      //  let start = Math.round(this.state.trackStart * fps);
+      //  let end = Math.round(this.state.currentTime * fps);
+
+      //  let to_add = [];
+      //  let to_delete = [];
+      //  elements.map((clip, i) => {
+      //    // +++ is the new clip, --- is old clip, overlap prioritized to new clip
+
+      //    // [---[++]+++]
+      //    if (clip.min_frame <= start && start <= clip.max_frame && clip.max_frame <= end) {
+      //      clip.max_frame = start;
+      //    }
+
+      //    // [+++[+++]---]
+      //    else if(start <= clip.min_frame && clip.min_frame <= end && end <= clip.max_frame){
+      //      clip.min_frame = end;
+      //    }
+
+      //    // [---[+++]---]
+      //    else if (clip.min_frame <= start && end <= clip.max_frame) {
+      //      let new_clip = _.cloneDeep(clip);
+      //      new_clip.min_frame = end;
+      //      clip.max_frame = start;
+      //      to_add.push(new_clip);
+      //    }
+
+      //    // [+++[+++]+++]
+      //    else if (start <= clip.min_frame && clip.max_frame <= end) {
+      //      to_delete.push(i);
+      //    }
+      //  });
+
+      //  _.reverse(to_delete);
+      //  to_delete.map((i) => elements.splice(i, -1));
+      //  elements.push.apply(elements, to_add);
+      //  elements.push({
+      //    video: elements[0].video,
+      //    min_frame: start,
+      //    max_frame: end,
+      //    // TODO(wcrichto): how to define reasonable defaults when labeling different kinds of
+      //    // tracks?
+      //    //gender_id: _.find(this._dataContext.genders, (l) => l.name == 'M').id
+      //  });
+      //  this.props.group.elements = _.sortBy(elements, ['min_frame']);
+
+      //  this.setState({trackStart: -1});
+      //}
     }
 
     else if (chr == 'z') {
@@ -408,19 +439,25 @@ export default class Timeline extends React.Component {
     }
 
     else {
-      let curTracks = this.props.group.elements.map((clip, i) => [clip, i]).filter(([clip, _]) =>
-        clip.min_frame <= curFrame && curFrame <= clip.max_frame);
-      if (curTracks.length == 0) {
-        console.warn('No tracks to process');
-      } else if (curTracks.length > 1) {
-        console.error('Attempting to process multiple tracks', curTracks);
-      } else {
-        let chr = String.fromCharCode(e.which);
-        this._onTrackKeyPress(chr, curTracks[0][1]);
-      }
+      //let curTracks = this.props.group.elements.map((clip, i) => [clip, i]).filter(([clip, _]) =>
+      //  clip.min_frame <= curFrame && curFrame <= clip.max_frame);
+      //if (curTracks.length == 0) {
+      //  console.warn('No tracks to process');
+      //} else if (curTracks.length > 1) {
+      //  console.error('Attempting to process multiple tracks', curTracks);
+      //} else {
+      //  let chr = String.fromCharCode(e.which);
+      //  this._onTrackKeyPress(chr, curTracks[0][1]);
+      //}
     }
   }
 
+  _syncResult = () => {
+    if (this.props.onUpdateGroups) {
+      this.props.onUpdateGroups(); 
+    }
+  }
+ 
   _containerOnMouseOver = () => {
     this.setState({moused: true});
   }
@@ -429,13 +466,105 @@ export default class Timeline extends React.Component {
     this.setState({moused: false});
   }
 
+  _plusButtonClick = () => {
+    if (this.state.currentTime > this.state.minTime &&
+      this.state.currentTime < this.state.maxTime) {
+      // zoom in, centered around currentTime
+      let newSpan = (this.state.maxTime - this.state.minTime) / 2;
+      if (this.state.currentTime - newSpan / 2 > this.state.minTime) {
+        // beginning fits
+        let newStart = this.state.currentTime - newSpan / 2;
+        if (newStart + newSpan < this.state.maxTime) {
+          // both endpoints fit
+          let newEnd = newStart + newSpan;
+          this.setState({minTime: newStart, maxTime: newEnd});
+        } else {
+          // snap to the end
+          this.setState({maxTime: this.state.maxTime, minTime: this.state.maxTime - newSpan});
+        }
+      } else {
+        // snap to the beginning
+        let newStart = this.state.minTime;
+        let newEnd = newStart + newSpan;
+        this.setState({minTime: newStart, maxTime: newEnd});
+      }
+    } else {
+      // zoom in to the middle
+      let newSpan = (this.state.maxTime - this.state.minTime) / 2;
+      let newStart = this.state.minTime + newSpan / 4;
+      let newEnd = this.state.maxTime - newSpan / 4;
+      this.setState({minTime: newStart, maxTime: newEnd})
+    }
+  }
+
+  _minusButtonClick = () => {
+    let newSpan = (this.state.maxTime - this.state.minTime) * 2;
+    if (newSpan <= this.state.videoDuration) {
+      if (this.state.minTime - newSpan / 4 >= 0) {
+        // new beginning will fit
+        let newStart = this.state.minTime - newSpan / 4;
+        if (newStart + newSpan <= this.state.videoDuration) {
+          // new end will fit
+          this.setState({minTime: newStart, maxTime: newStart + newSpan});
+        } else {
+          // snap to the end
+          this.setState({minTime: this.state.videoDuration - newSpan,
+            maxTime: this.state.videoDuration});
+        }
+      } else {
+        // snap to the beginning
+        this.setState({minTime: 0, maxTime: newSpan});
+      }
+    }
+  }
+
+  _rightButtonClick = () => {
+    if (this.state.maxTime < this.state.videoDuration) {
+      let span = this.state.maxTime - this.state.minTime;
+      let shift = span / 2;
+      if (this.state.maxTime + shift < this.state.videoDuration) {
+        this.setState({minTime: this.state.minTime + shift,
+          maxTime: this.state.maxTime + shift});
+      } else {
+        this.setState({minTime: this.state.videoDuration - span,
+          maxTime: this.state.videoDuration});
+      }
+    }
+  }
+
+  _leftButtonClick = () => {
+    if (this.state.minTime > 0) {
+      let span = this.state.maxTime - this.state.minTime;
+      let shift = span / 2;
+      if (this.state.minTime - shift > 0) {
+        this.setState({minTime: this.state.minTime - shift,
+          maxTime: this.state.maxTime - shift});
+      } else {
+        this.setState({minTime: 0,
+          maxTime: span});
+      }
+    }
+  }
+
+  _humanReadableTime = (seconds) => {
+    let hours = Math.floor(seconds / 3600);
+    let minutes = Math.floor(60 * (seconds / 3600 - hours));
+    let secondsDisplay = Math.floor(60 * (60 * (seconds / 3600 - hours) - minutes));
+
+    return "" + hours + ":" + minutes + ":" + secondsDisplay;
+  }
+
   componentDidMount() {
     document.addEventListener('keypress', this._onKeyPress);
     let min_frame = this.props.group.elements[0].segments.length > 0
       ? this.props.group.elements[0].segments[0].min_frame
       : 0;
     this.setState({
-      currentTime: min_frame / this._video().fps
+      currentTime: min_frame / this._video().fps,
+      minTime: 0,
+      maxTime: this._video().num_frames / this._video().fps,
+      videoDuration: this._video().num_frames / this._video().fps,
+      originalNumTracks: this.props.group.elements.length
     })
   }
 
@@ -496,10 +625,34 @@ export default class Timeline extends React.Component {
           width: this.state.clipWidth !== null && expand ? this.state.clipWidth : vid_width,
           height: Math.max(num_timelines * track_height, expand ? 60 : 20)
         };
+        let controller_size = timeboxStyle.height;
+        if (expand) {
+          timeboxStyle.width -= controller_size;
+        }
+        let controllerStyle = {
+          width: controller_size,
+          height: controller_size
+        }
+        let controllerButtonStyle = {
+          width: controller_size / 2,
+          height: controller_size / 2
+        }
+
+        let timeTicksStyle = {
+          width: timeboxStyle.width,
+          height: 20
+        }
+        let ticks = [];
+        let span = this.state.maxTime - this.state.minTime;
+        let i = this.state.minTime;
+        for (i = this.state.minTime; i < this.state.maxTime; i += span / 10) {
+          ticks.push(i);
+        }
 
         let containerStyle = {
           width: vid_width,
-          height: vid_height + timeboxStyle.height
+          height: vid_height + timeboxStyle.height +
+            (expand ? timeTicksStyle.height : 0)
         };
 
         let tprops = {
@@ -511,6 +664,8 @@ export default class Timeline extends React.Component {
           currentTime: this.state.currentTime,
           video: video,
           nframes: group.num_frames,
+          minTime: this.state.minTime,
+          maxTime: this.state.maxTime
         };
 
         let selectWidth = 300;
@@ -529,6 +684,9 @@ export default class Timeline extends React.Component {
             all_segments.push(arr[i]);
           }));
 
+        let lineX = (this.state.currentTime - this.state.minTime) /
+          (this.state.maxTime - this.state.minTime) * timeboxStyle.width;
+
         return <div className={'timeline ' + (this.props.expand ? 'expanded' : '')}
                     onMouseOver={this._containerOnMouseOver} onMouseOut={this._containerOnMouseOut}>
           <div className='column'>
@@ -543,16 +701,66 @@ export default class Timeline extends React.Component {
                   <Track key={i} i={i} track={segment}
                     segment_index = {segment.segment_index}
                     color = {segment.color}
-                    onKeyPress={this._onTrackKeyPress} {...tprops} />)}
+                    // onKeyPress={this._onTrackKeyPress}
+                    {...tprops} />)}
               </g>
               {this.state.trackStart != -1
                ? <Marker t={this.state.trackStart} type="open" color="rgb(230, 230, 20)" {...tprops} />
                : <g />}
-               <line
-                   x1={tprops.currentTime * tprops.video.fps * tprops.w / tprops.nframes}
-                   x2={tprops.currentTime * tprops.video.fps * tprops.w / tprops.nframes}
-                   y1={0} y2={timeboxStyle.height} stroke="rgb(20, 230, 20)" strokeWidth={tprops.mw} />
+              {(tprops.currentTime > this.state.minTime && tprops.currentTime < this.state.maxTime)
+               ? (<line
+                     x1={lineX}
+                     x2={lineX}
+                     y1={0} y2={timeboxStyle.height} stroke="rgb(20, 230, 20)" strokeWidth={tprops.mw} />)
+               : null}
             </svg>
+            {expand
+                ? (
+                <span class="btn-group timeline-controls" style={controllerStyle}>
+                  <button type="button" class="btn btn-outline-dark"
+                   onClick={this._plusButtonClick}
+                   style={controllerButtonStyle}>
+                   <span class="oi oi-plus"></span></button>
+                  <button type="button" class="btn btn-outline-dark"
+                   onClick={this._minusButtonClick}
+                   style={controllerButtonStyle}>
+                   <span class="oi oi-minus"></span></button>
+                  <button type="button" class="btn btn-outline-dark"
+                   onClick={this._leftButtonClick}
+                   style={controllerButtonStyle}>
+                   <span class="oi oi-caret-left"></span></button>
+                  <button type="button" class="btn btn-outline-dark"
+                   onClick={this._rightButtonClick}
+                   style={controllerButtonStyle}>
+                   <span class="oi oi-caret-right"></span></button>
+               </span>) : null }
+            {expand
+                ? (
+                 <svg style={timeTicksStyle}>
+                   {ticks.map((tick, i) =>
+                     <line
+                       x1={(tick-this.state.minTime) /
+                           (this.state.maxTime - this.state.minTime) *
+                           timeboxStyle.width}
+                       x2={(tick-this.state.minTime) /
+                           (this.state.maxTime - this.state.minTime) *
+                           timeboxStyle.width}
+                       y1={0}
+                       y2={timeTicksStyle.height / 2}
+                       stroke="black"
+                       strokeWidth={1} />
+                   )}
+                   {ticks.map((tick, i) =>
+                     <text
+                       x={(tick-this.state.minTime) /
+                           (this.state.maxTime - this.state.minTime) *
+                           timeboxStyle.width}
+                       y={timeTicksStyle.height}
+                     >{this._humanReadableTime(tick)}</text>
+                   )}
+                 </svg>
+                )
+                : null}
             {this.state.showSelect
              ? <div style={selectStyle}>
                <Select
