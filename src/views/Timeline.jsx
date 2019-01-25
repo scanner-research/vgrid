@@ -403,7 +403,7 @@ export default class Timeline extends React.Component {
           segmentList.pop();
         }
       }
-      elements[this.state.originalNumTracks].segments = segmentList;
+      elements[trackNum].segments = segmentList;
       this.props.group.elements = elements;
       this._syncResult();
 
