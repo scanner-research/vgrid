@@ -180,9 +180,9 @@ export class Groups extends React.Component {
   _onSelectUpTo = (e) => {
     // Select all unselected and unignored groups up to e
     for (let i = 0; i <= e; i++) {
-        if (!this.state.selected.has(i) && !this.state.ignored.has(i)) {
-            this.state.selected.add(i);
-        }
+      if (!this.state.selected.has(i) && !this.state.ignored.has(i)) {
+        this.state.selected.add(i);
+      }
     }
     this.forceUpdate();
     this._syncSelectionsAndIgnored();
@@ -193,18 +193,20 @@ export class Groups extends React.Component {
     let minGroup = this.state.page * resultsPerPage;
     let maxGroup = Math.min(minGroup + resultsPerPage, this._dataContext.groups.length) - 1;
 
-    var allSelected = true;
+    var allSelectedOrIgnored = true;
     for (let i = minGroup; i <= maxGroup; i++) {
-      allSelected &= this.state.selected.has(i);
+      allSelectedOrIgnored &= this.state.selected.has(i) || this.state.ignored.has(i);
     }
 
     for (let i = minGroup; i <= maxGroup; i++) {
-      if (allSelected) {
-        this.state.selected.delete(i);
-        this.state.ignored.delete(i);
+      if (allSelectedOrIgnored) {
+         // Unselect all
+         this.state.selected.delete(i);
       } else {
-        this.state.selected.add(i);
-        this.state.ignored.delete(i);
+         // Select all not ignored
+         if (!this.state.selected.has(i) && !this.state.ignored.has(i)) {
+            this.state.selected.add(i);
+         }
       }
     }
 
@@ -228,19 +230,21 @@ export class Groups extends React.Component {
     let minGroup = this.state.page * resultsPerPage;
     let maxGroup = Math.min(minGroup + resultsPerPage, this._dataContext.groups.length) - 1;
 
-    var allIgnored = true;
+    var allSelectedOrIgnored = true;
     for (let i = minGroup; i <= maxGroup; i++) {
-       allIgnored &= this.state.ignored.has(i);
+      allSelectedOrIgnored &= this.state.selected.has(i) || this.state.ignored.has(i);
     }
 
     for (let i = minGroup; i <= maxGroup; i++) {
-       if (allIgnored) {
-         this.state.ignored.delete(i);
-         this.state.selected.delete(i);
-       } else {
-         this.state.ignored.add(i);
-         this.state.selected.delete(i);
-       }
+      if (allSelectedOrIgnored) {
+        // Unignore all
+        this.state.ignored.delete(i);
+      } else {
+        // Ignore all not selected
+        if (!this.state.selected.has(i) && !this.state.ignored.has(i)) {
+          this.state.ignored.add(i);
+        }
+      }
     }
 
     this.forceUpdate();
