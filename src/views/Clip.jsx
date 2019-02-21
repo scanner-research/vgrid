@@ -7,6 +7,7 @@ import {SettingsContext, DataContext} from './contexts.jsx';
 import VideoPlayer from './VideoPlayer.jsx';
 import Consumer from 'utils/Consumer.jsx';
 import _ from 'lodash';
+import axios from 'axios';
 
 const VideoState = Object.freeze({
   Off: Symbol('Off'),
@@ -20,12 +21,13 @@ export default class Clip extends React.Component {
     videoState: VideoState.Off,
     loopVideo: false,
     subAutoScroll: true,
-    displayTime: null
+    displayTime: null,
+    videoLoaded: false,
+    captions: null
   }
 
   fullScreen = false
-  _currentTime = null
-  _textTrack = null
+  _currentTime = 0
   _lastDisplayTime = -1
   _formattedSubs = null
   _curSub = null
@@ -84,7 +86,8 @@ export default class Clip extends React.Component {
   }
 
   _onLoadedData = () => {
-    this.setState({videoState: VideoState.Showing});
+    let state = this.state.videoState == VideoState.Loading ? VideoState.Showing : VideoState.Off;
+    this.setState({videoState: state, videoLoaded: true});
   }
 
   _subDivScroll = (subDiv) => {
@@ -92,6 +95,10 @@ export default class Clip extends React.Component {
   }
 
   componentDidUpdate() {
+    if (!this.props.expand && this.state.videoState != VideoState.Off) {
+      this.setState({videoState: VideoState.Off});
+    }
+
     if (this.state.videoState == VideoState.Showing) {
       let updateFps = 24;
       if (this._timeUpdateInterval) {
@@ -102,20 +109,22 @@ export default class Clip extends React.Component {
         this.forceUpdate();
       }, 1000 / updateFps);
 
-      // Scroll captions to current time
-      if (this._curSub !== null && this.state.subAutoScroll && this._subContainer !== null) {
-        let subDiv = this._subDivs[this._curSub];
-        this._subContainer.scrollTop = this._subDivScroll(subDiv);
-      }
     } else {
-      this._curSub = null;
-      this._subDivs = null;
+      /* this._curSub = null;
+       * this._subDivs = null;
+       */
 
       // If the video disappears after being shown (e.g. b/c the clip was de-expanded)
       // we have to catch the interval clear then too
       if (this._timeUpdateInterval) {
         clearInterval(this._timeUpdateInterval);
       }
+    }
+
+    // Scroll captions to current time
+    if (this._curSub !== null && this.state.subAutoScroll && this._subContainer !== null) {
+      let subDiv = this._subDivs[this._curSub];
+      this._subContainer.scrollTop = this._subDivScroll(subDiv);
     }
   }
 
@@ -140,21 +149,14 @@ export default class Clip extends React.Component {
 
     i = Math.min(i, _.size(this._subDivs) - 1);
 
-    this.setState({displayTime: this._formattedSubs[i].start});
-  }
-
-  _onTextTrackChange = (_e, player) => {
-    let tracks = player.textTracks();
-    if (tracks.length > 0) {
-      this._textTrack = tracks[0];
-    }
+    this.setState({displayTime: this.state.captions[i].startTime});
   }
 
   _onTimeUpdate = (e, player) => {
-    this._currentTime = player.currentTime();
+    this._currentTime = player.currentTime;
     if (this.state.videoState == VideoState.Showing) {
       if (this.props.onTimeUpdate) {
-        this.props.onTimeUpdate(player.currentTime());
+        this.props.onTimeUpdate(player.currentTime);
       }
     }
   }
@@ -167,10 +169,86 @@ export default class Clip extends React.Component {
     }
   }
 
+  componentDidMount() {
+    let video = this._videoMeta();
+    this._currentTime = this.props.clip.min_frame / video.fps;
+
+    if (video.srt_extension != '') {
+      let url = this.asset_url(`${this._settingsContext.get('endpoints').subtitles}?video=${video.id}&json=true`);
+      axios.get(url).then((response) => {
+        let subs = response.data.captions;
+        let formatted_subs = [];
+
+        // Some subtitles, e.g. CNNW_20150227_110000_New_Day.cc1.srt, don't start with a >>
+        // so our algorithm causes the first lines leading up to the first >> to be displayed
+        // separately. A fix is to make the initial string non-empty if none exists.
+        let hasDoubleArrow = false;
+        _.forEach(subs, (sub) => {
+          if (sub.text.includes('> >')) {
+            hasDoubleArrow = true;
+          }
+        });
+        let curSub = subs[0].text.substring(0, 3) == '> >' ? '' : '\0';
+        if (!hasDoubleArrow) {
+          curSub = '';
+        }
+
+        let startTime = 0;
+        _.forEach(subs, (sub) => {
+          let parts = sub.text.split('> >');
+
+          if (curSub != '' || parts.length > 1) {
+            // We are constructing the current subtitle track from a
+            // previous '>>'
+
+            curSub += parts[0] + ' ';
+            if (parts.length > 1) {
+              formatted_subs.push({
+                text: _.trim(curSub),
+                startTime: startTime,
+                endTime: sub.endTime
+              })
+
+              startTime = sub.startTime;
+              parts.slice(1, -1).forEach((text) => {
+                formatted_subs.push({
+                  text: _.trim(text),
+                  startTime: startTime,
+                  endTime: sub.endTime
+                })
+              });
+
+              curSub = parts[parts.length - 1] + ' ';
+            }
+          } else {
+            // We have not detected a '>>' in this subtitle track
+            curSub = parts[0] + ' ';
+            formatted_subs.push({
+              text: _.trim(curSub),
+              startTime: sub.startTime,
+              endTime: sub.endTime
+            })
+            curSub = '';
+          }
+        });
+
+        this.setState({captions: formatted_subs});
+      });
+    }
+  }
+
   width() {
     console.assert(this._n !== null);
     return this._n.clientWidth;
   }
+
+  asset_url = (path) => {
+    if (window.IPython) {
+      return `/django/${path}`;
+    } else {
+      return path;
+    }
+  };
 
   render() {
     return (
@@ -181,12 +259,13 @@ export default class Clip extends React.Component {
           let clip = this.props.clip;
           let video = this._videoMeta();
           let show_subs = settingsContext.get('subtitle_sidebar');
+          let has_captions = video.srt_extension != '';
 
           let max_width = settingsContext.get('max_width');
           let max_height = video.height * max_width / video.width;
 
           // Figure out how big the thumbnail should be
-          let small_height = this.props.expand ? video.height : 100 * settingsContext.get('thumbnail_size');
+          let small_height = this.props.expand ? video.height : (100 * settingsContext.get('thumbnail_size'));
           let small_width = video.width * small_height / video.height;
 
           if (small_width > max_width) {
@@ -202,15 +281,7 @@ export default class Clip extends React.Component {
                 ? Math.round((clip.max_frame + clip.min_frame) / 2)
                 : clip.min_frame);
 
-          let asset_url = (path) => {
-            if (window.IPython) {
-              return `/django/${path}`;
-            } else {
-              return path;
-            }
-          };
-
-          let thumbnail_path = asset_url(
+          let thumbnail_path = this.asset_url(
             `${settingsContext.get('endpoints').frames}?path=${encodeURIComponent(video.path)}&frame=${display_frame}`);
 
           // Collect inline metadata to display
@@ -239,100 +310,29 @@ export default class Clip extends React.Component {
           let meta_per_row = this.props.expand ? 4 : 2;
           let td_style = {width: `${100 / meta_per_row}%`};
 
-          let sub_width = this.props.expand ? 480 : 50;
           let subStyle = {
-            width: sub_width,
-            fontSize: this.props.expand ? '14px' : '12px'
+            width: this.props.expand ? 480 : small_width,
+            fontSize: this.props.expand ? '14px' : '11px',
+            height: this.props.expand ? '100%' : 100
           };
 
           let Subtitle = () => {
-            if (!this._textTrack) {
-              return <span>Loading track...</span>
-            }
-
-            let subs = this._textTrack.cues;
-            if (!subs || subs.length == 0) {
+            let captions = this.state.captions;
+            if (captions === null) {
               return <span>Loading subtitles...</span>
             }
 
-            // TODO: is there a proper way to cache this? We can't just compute it on the first
-            // go since the text tracks are streamed in, not loaded all in at once.
-            this._formattedSubs = [];
-
-            // Some subtitles, e.g. CNNW_20150227_110000_New_Day.cc1.srt, don't start with a >>
-            // so our algorithm causes the first lines leading up to the first >> to be displayed
-            // separately. A fix is to make the initial string non-empty if none exists.
-            let hasDoubleArrow = false;
-            _.forEach(subs, (sub) => {
-              if (sub.text.includes('>>')) {
-                hasDoubleArrow = true;
-              }
-            });
-            let curSub = subs[0].text.substring(0, 2) == '>>' ? '' : '\0';
-            if (!hasDoubleArrow) {
-              curSub = '';
-            }
-
-            let startTime = 0;
-            _.forEach(subs, (sub) => {
-              let parts = sub.text.split('>>');
-
-              let fmtSub = (sub, text) => {
-                if (sub.startTime <= this._currentTime && this._currentTime <= sub.endTime) {
-                return '<strong>' + text + '</strong>';
-                } else {
-                  return text;
-                }
-              }
-
-              if (curSub != '' || parts.length > 1) {
-                // We are constructing the current subtitle track from a
-                // previous '>>'
-
-                curSub += fmtSub(sub, parts[0]) + ' ';
-                if (parts.length > 1) {
-                  this._formattedSubs.push({
-                    text: _.trim(curSub),
-                    start: startTime,
-                    end: sub.endTime
-                  })
-
-                  startTime = sub.startTime;
-                  parts.slice(1, -1).forEach((text) => {
-                    this._formattedSubs.push({
-                      text: _.trim(fmtSub(sub, text)),
-                      start: startTime,
-                      end: sub.endTime
-                    })
-                  });
-
-                  curSub = fmtSub(sub, parts[parts.length - 1]) + ' ';
-                }
-              } else {
-                // We have not detected a '>>' in this subtitle track
-                curSub = fmtSub(sub, parts[0]) + ' ';
-                this._formattedSubs.push({
-                  text: _.trim(curSub),
-                  start: sub.startTime,
-                  end: sub.endTime
-                })
-                curSub = '';
-              }
-            });
-
             let i = 0;
-            while (i < this._formattedSubs.length && this._formattedSubs[i].start <= this._currentTime) {
+            while (i < captions.length && captions[i].startTime <= this._currentTime) {
               i++;
             }
 
             this._curSub = Math.max(i - 1, 0);
             this._subDivs = {};
-            return <div>{this._formattedSubs.map((sub, j) => {
-                let mkup = {__html: `>>> ${sub.text}`};
+            return <div>{captions.map((sub, j) => {
+                let text = `>>> ${sub.text}`;
                 return <div key={j} className='subtitle' ref={(n) => { this._subDivs[j] = n; }}>
-                  {this._curSub == j
-                   ? <span className="emph" dangerouslySetInnerHTML={mkup} />
-                   : <span dangerouslySetInnerHTML={mkup} />}
+                  <span className={this._curSub == j ? "current-sub" : ""}>{text}</span>
                 </div>;
             })}
             </div>;
@@ -342,24 +342,21 @@ export default class Clip extends React.Component {
                       onMouseEnter={this._onMouseEnter}
                       onMouseLeave={this._onMouseLeave}
                       ref={(n) => {this._n = n;}}>
-            <div className='video-row' style={{height: small_height}}>
+            <div className='video-row' style={{height: small_height + (this.props.expand ? 0 : subStyle.height)}}>
               <div className='media-container' data-vjs-player>
-                {!settingsContext.get('disable_playback') && (this.state.videoState == VideoState.Loading || this.state.videoState == VideoState.Showing)
-                 ? <div style={{display: this.state.videoState == VideoState.Showing ? 'block' : 'none'}}>
+                <div style={{display: this.state.videoState == VideoState.Showing ? 'block' : 'none'}}>
                    <VideoPlayer
-                     video={asset_url(`${settingsContext.get('endpoints').videos}/${video.path}`)}
-                     captions={video.srt_extension != '' ?
-                               asset_url(`${settingsContext.get('endpoints').subtitles}?video=${video.id}`) : null}
+                     video={this.asset_url(`${settingsContext.get('endpoints').videos}/${video.path}`)}
                      onLoadedData={this._onLoadedData}
-                     onTextTrackChange={this._onTextTrackChange}
                      onTimeUpdate={this._onTimeUpdate}
                      width={small_width}
                      height={small_height}
                      track={this.props.clip}
                      playbackRate={settingsContext.get('playback_speed')}
-                     displayTime={this.state.displayTime || this.props.displayTime} />
+                     displayTime={this.state.displayTime || this.props.displayTime}
+                     play={this.state.videoState == VideoState.Loading ||
+                           this.state.videoState == VideoState.Showing} />
                  </div>
-                 : null}
                 {this.state.videoState == VideoState.Loading
                  ? <div className='loading-video'><Spinner /></div>
                  : null}
@@ -382,7 +379,7 @@ export default class Clip extends React.Component {
                   enableLabel={this.props.enableLabel} />
                  : null}
               </div>
-              {!settingsContext.get('disable_captions') && show_subs && this.props.expand && this.state.videoState == VideoState.Showing
+              {!settingsContext.get('disable_captions') && show_subs // this.props.expand && this.state.videoState == VideoState.Showing
                ? <div className='sub-container' style={subStyle}>
                  <button className='sub-autoscroll' onClick={() => {
                      this.setState({subAutoScroll: !this.state.subAutoScroll});

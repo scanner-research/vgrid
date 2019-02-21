@@ -8,41 +8,21 @@ export default class VideoPlayer extends React.Component {
   _lastDisplayTime = -1
 
   componentDidMount() {
-    this._player = videojs(this._videoNode, {
-      width: this.props.width,
-      height: this.props.height,
-      playbackRate: this.props.playbackRate
-    });
-
     let delegate = (k, f) => {
       if (f) {
-        this._player.on(k, (e) => f(e, this._player));
+        this._player.addEventListener(k, (e) => f(e, this._player));
       }
     }
 
     delegate('loadeddata', this.props.onLoadedData);
     delegate('seeked', this.props.onSeeked);
-    delegate('texttrackchange', this.props.onTextTrackChange);
     delegate('timeupdate', this.props.onTimeUpdate);
 
-    this._player.on('timeupdate', this._onTimeUpdate);
+    this._player.addEventListener('timeupdate', this._onTimeUpdate);
 
     let track = this.props.track;
     if (track) {
-      this._player.currentTime(this._toSeconds(track.min_frame));
-
-      if (track.max_frame) {
-        this._player.markers({
-          markerStyle: {
-            'width':'8px',
-            'background-color': 'red'
-          },
-          markers: [
-            {time: this._toSeconds(track.min_frame), text: "start"},
-            {time: this._toSeconds(track.max_frame), text: "end"}
-          ]
-        });
-      }
+      this._player.currentTime = this._toSeconds(track.min_frame)
     }
   }
 
@@ -50,8 +30,8 @@ export default class VideoPlayer extends React.Component {
     // Wrap around if playing in a loop
     if (this.props.loop &&
         this.props.track.max_frame !== undefined &&
-        this._player.currentTime() >= this._toSeconds(this.props.track.max_frame)) {
-      this._player.currentTime(this._toSeconds(this.props.track.min_frame));
+        this._player.currentTime >= this._toSeconds(this.props.track.max_frame)) {
+      this._player.currentTime = this._toSeconds(this.props.track.min_frame);
     }
   }
 
@@ -61,8 +41,8 @@ export default class VideoPlayer extends React.Component {
 
   componentDidUpdate() {
     let checkSet = (k) => {
-      if (this.props[k] && this.props[k] != this._player[k]()) {
-        this._player[k](this.props[k]);
+      if (this.props[k] && this.props[k] != this._player[k]) {
+        this._player[k] = this.props[k];
       }
     };
 
@@ -71,10 +51,9 @@ export default class VideoPlayer extends React.Component {
     checkSet('playbackRate');
 
     if (this.props.displayTime && this._lastDisplayTime != this.props.displayTime) {
-      this._player.currentTime(this.props.displayTime);
+      this._player.currentTime = this.props.displayTime;
       this._lastDisplayTime = this.props.displayTime;
     }
-
   }
 
   componentWillUnmount() {
@@ -89,7 +68,8 @@ export default class VideoPlayer extends React.Component {
       <Consumer contexts={[DataContext]}>{dataContext => {
           this._dataContext = dataContext;
           return <div data-vjs-player>
-            <video preload='auto' autoPlay controls ref={n => this._videoNode = n} className='video-js'>
+            <video preload={this.props.play ? 'auto' : 'none'} autoPlay={this.props.play} controls
+                   ref={n => this._player = n}>
               <source src={this.props.video} />
               {this.props.captions
                ? <track kind='captions' src={this.props.captions} srcLang='en' label='English' default />
