@@ -6,6 +6,7 @@ import {DataContext} from './contexts.jsx';
 
 export default class VideoPlayer extends React.Component {
   _lastDisplayTime = -1
+  _lastPlay = false
 
   componentDidMount() {
     let delegate = (k, f) => {
@@ -53,6 +54,15 @@ export default class VideoPlayer extends React.Component {
     if (this.props.displayTime && this._lastDisplayTime != this.props.displayTime) {
       this._player.currentTime = this.props.displayTime;
       this._lastDisplayTime = this.props.displayTime;
+    }
+
+    if (this.props.play != this._lastPlay) {
+      this._lastPlay = this.props.play;
+      if (this.props.play) {
+        this._player.play();
+      } else {
+        this._player.pause();
+      }
     }
   }
 

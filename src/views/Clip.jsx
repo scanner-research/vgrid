@@ -121,15 +121,41 @@ export default class Clip extends React.Component {
       }
     }
 
-    // Scroll captions to current time
-    if (this._curSub !== null && this.state.subAutoScroll && this._subContainer !== null) {
-      let subDiv = this._subDivs[this._curSub];
-      this._subContainer.scrollTop = this._subDivScroll(subDiv);
+    if (this.props.displayTime != this._lastDisplayTime) {
+      this._lastDisplayTime = this.props.displayTime;
+      this._currentTime = this._lastDisplayTime;
+      this.setState({displayTime: this.props.displayTime});
+    }
+
+    let captions = this.state.captions;
+    if (captions !== null) {
+      // Compute which subtitle we should be highlighting
+      let i = 0;
+      while (i < captions.length && captions[i].startTime <= this._currentTime) {
+        i++;
+      }
+
+      this._curSub = Math.max(i - 1, 0);
+
+      // Scroll captions to current time
+      if (this.state.subAutoScroll) {
+        let subDiv = this._subDivs[this._curSub];
+        this._subContainer.scrollTop = this._subDivScroll(subDiv);
+      }
     }
   }
 
   _videoMeta = () => {
-    return this._dataContext.tables.videos[this.props.clip.video];
+    if (this.props.clip.video === undefined || this.props.clip.video === null) {
+      console.error('Clip did not have a video id');
+    }
+
+    let vid = this._dataContext.tables.videos[this.props.clip.video];
+
+    if (vid === undefined || vid === null) {
+      console.error(`Attempted to access missing video id ${this.props.clip.video}`);
+    }
+    return vid;
   }
 
   _subOnScroll = (e) => {
@@ -322,12 +348,6 @@ export default class Clip extends React.Component {
               return <span>Loading subtitles...</span>
             }
 
-            let i = 0;
-            while (i < captions.length && captions[i].startTime <= this._currentTime) {
-              i++;
-            }
-
-            this._curSub = Math.max(i - 1, 0);
             this._subDivs = {};
             return <div>{captions.map((sub, j) => {
                 let text = `>>> ${sub.text}`;
@@ -381,11 +401,13 @@ export default class Clip extends React.Component {
               </div>
               {!settingsContext.get('disable_captions') && show_subs // this.props.expand && this.state.videoState == VideoState.Showing
                ? <div className='sub-container' style={subStyle}>
-                 <button className='sub-autoscroll' onClick={() => {
-                     this.setState({subAutoScroll: !this.state.subAutoScroll});
-                 }}>
-                   {this.state.subAutoScroll ? 'Disable autoscroll' : 'Enable autoscroll'}
-                 </button>
+                 {this.props.expand ?
+                  <button className='sub-autoscroll' onClick={() => {
+                    this.setState({subAutoScroll: !this.state.subAutoScroll});
+                  }}>
+                    {this.state.subAutoScroll ? 'Disable autoscroll' : 'Enable autoscroll'}
+                  </button>
+                  : null}
                  <div className='sub-scroll' onScroll={this._subOnScroll}
                       style={{overflow: this.state.subAutoScroll ? 'hidden' : 'auto'}}
                       ref={(n) => {this._subContainer = n;}}>

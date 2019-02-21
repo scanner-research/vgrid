@@ -120,7 +120,7 @@ class Track extends React.Component {
 
         return (
           <g ref={(n) => {this._g = n;}}>
-            <rect x={x1} width={x2-x1} y={y_start} height={h} opacity = {
+            <rect x={x1} width={Math.max(x2-x1, 0)} y={y_start} height={h} opacity = {
               track.hasOwnProperty('max_frame') ? 0.5 : 0.25} fill={color} />
             {//<g>
              //  <foreignObject x={x1+2} y={y_start} width={1000} height={h}>
@@ -156,7 +156,7 @@ export default class Timeline extends React.Component {
     showSelect: false,
     clipWidth: null,
     minTime: 0, // time at beginning of timeline
-    maxTime: null, // time at end of timeline
+    maxTime: 1, // time at end of timeline
     videoDuration: null, // video duration
     origNumTracks: null // original number of different tracks
   }
@@ -330,7 +330,6 @@ export default class Timeline extends React.Component {
 
     let elements = this.props.group.elements;
     let timeline_annotation_keys = this._settingsContext.get('timeline_annotation_keys');
-    console.log(timeline_annotation_keys);
     if (chr == '\r') {
       //let lastTrack = elements.map((clip, i) => [clip, i]).filter(([clip, _]) =>
       //  clip.min_frame <= curFrame);
@@ -477,10 +476,10 @@ export default class Timeline extends React.Component {
 
   _syncResult = () => {
     if (this.props.onUpdateGroups) {
-      this.props.onUpdateGroups(); 
+      this.props.onUpdateGroups();
     }
   }
- 
+
   _containerOnMouseOver = () => {
     this.setState({moused: true});
   }
@@ -756,23 +755,23 @@ export default class Timeline extends React.Component {
             </svg>
             {expand
                 ? (
-                <span class="btn-group timeline-controls" style={controllerStyle}>
-                  <button type="button" class="btn btn-outline-dark"
+                <span className="btn-group timeline-controls" style={controllerStyle}>
+                  <button type="button" className="btn btn-outline-dark"
                    onClick={this._plusButtonClick}
                    style={controllerButtonStyle}>
-                   <span class="oi oi-plus"></span></button>
-                  <button type="button" class="btn btn-outline-dark"
+                   <span className="oi oi-plus"></span></button>
+                  <button type="button" className="btn btn-outline-dark"
                    onClick={this._minusButtonClick}
                    style={controllerButtonStyle}>
-                   <span class="oi oi-minus"></span></button>
-                  <button type="button" class="btn btn-outline-dark"
+                   <span className="oi oi-minus"></span></button>
+                  <button type="button" className="btn btn-outline-dark"
                    onClick={this._leftButtonClick}
                    style={controllerButtonStyle}>
-                   <span class="oi oi-caret-left"></span></button>
-                  <button type="button" class="btn btn-outline-dark"
+                   <span className="oi oi-caret-left"></span></button>
+                  <button type="button" className="btn btn-outline-dark"
                    onClick={this._rightButtonClick}
                    style={controllerButtonStyle}>
-                   <span class="oi oi-caret-right"></span></button>
+                   <span className="oi oi-caret-right"></span></button>
                </span>) : null }
             {expand
                 ? (
