@@ -339,7 +339,7 @@ export default class Clip extends React.Component {
           let subStyle = {
             width: this.props.expand ? Math.max(480, video.width) : small_width,
             fontSize: this.props.expand ? '14px' : '11px',
-            height: this.props.expand ? '100%' : 100
+            height: this.props.expand ? 250 : 100
           };
 
           let Subtitle = () => {
