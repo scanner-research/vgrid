@@ -10,7 +10,7 @@ import {asset_url} from './utils';
 import {DbVideo} from './database';
 import {SettingsContext, Consumer} from './contexts';
 import {KeyMode, key_dispatch} from './keyboard';
-import {mouseover_key_listener} from './events';
+import {mouse_key_events} from './events';
 import {Settings} from './settings';
 import {Video} from './video';
 import {SpatialOverlay} from './spatial_overlay';
@@ -29,7 +29,7 @@ interface VideoTrackState {
   video_active: boolean
 }
 
-@mouseover_key_listener
+@mouse_key_events
 @observer
 export default class VideoTrack extends React.Component<VideoTrackProps, VideoTrackState> {
   state = {video_loaded: false, video_active: false}

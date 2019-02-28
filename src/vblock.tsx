@@ -11,7 +11,7 @@ import {KeyMode, key_dispatch} from './keyboard';
 import {Database, DbVideo} from './database';
 import {DatabaseContext, SettingsContext, Consumer} from './contexts';
 import {Settings} from './settings';
-import {mouseover_key_listener} from './events';
+import {mouse_key_events} from './events';
 
 
 interface VBlockProps {
@@ -22,7 +22,7 @@ interface VBlockState {
   expand: boolean
 }
 
-@mouseover_key_listener
+@mouse_key_events
 @observer
 export class VBlock extends React.Component<VBlockProps, VBlockState> {
   state = {expand: false}
@@ -92,9 +92,14 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
           };
 
           return (<div>
-            <VideoTrack intervals={current_intervals} {...args} />
-            <MetadataTrack intervals={current_intervals} {...args} />
-            <TimelineTrack intervals={this.props.intervals} {...args} />
+            <div className='row'>
+              <VideoTrack intervals={current_intervals} {...args} />
+              <MetadataTrack intervals={current_intervals} {...args} />
+              <div className='clearfix' />
+            </div>
+            <div className='row'>
+              <TimelineTrack intervals={this.props.intervals} {...args} />
+            </div>
           </div>);
         }
       }</Consumer>

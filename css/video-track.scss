@@ -1,3 +1,33 @@
+.vblock {
+    float: left;
+
+    .row {}
+
+    &.expanded {
+        .row {
+            > div { float: left; }
+        }
+
+        .metadata-track {
+            padding-left: 5px;
+
+            .metadata-entry {
+                float: none;
+            }
+        }
+
+    }
+}
+
+.metadata-track {
+    .metadata-key { font-weight: bold; }
+
+    .metadata-entry {
+        float: left;
+        margin-right: 5px;
+    }
+}
+
 .video-track {
     position: relative;
 
@@ -18,6 +48,8 @@
     .timeline-box {
         border: 1px solid black;
         position: relative;
+        overflow: hidden;
+        float: left;
 
         .timeline-row-wrapper {
             position: absolute;
@@ -34,5 +66,9 @@
             top: 0;
             z-index: 1000;
         }
+    }
+
+    .timeline-controls {
+        float: left;
     }
 }

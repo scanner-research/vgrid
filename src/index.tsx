@@ -24,6 +24,7 @@ export class VGrid extends React.Component<VGridProps, {}> {
           {this.props.intervals.map((intvls, i) => {
              return <VBlock key={i} intervals={intvls} />;
           })}
+          <div className='clearfix' />
         </div>
       </Provider>
     </div>;
