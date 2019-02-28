@@ -7,7 +7,7 @@ import TimeState from './time_state';
 import {DbVideo} from './database';
 
 interface MetadataTrackProps {
-  intervals: IntervalSet,
+  intervals: {[key: string]: IntervalSet},
   time_state: TimeState,
   video: DbVideo,
   expand: boolean,
@@ -21,8 +21,11 @@ export let MetadataTrack: React.SFC<MetadataTrackProps> = observer((props) => {
     height: props.expand ? props.target_height : 20
   };
 
-  let metadata = props.intervals.to_list().reduce(
-    ((meta: {[key: string]: any}, intvl: Interval) => _.merge(meta, intvl.metadata)), {});
+  let metadata = _.keys(props.intervals).reduce(
+    ((meta: {[key: string]: any}, k: string) =>
+      _.merge(meta, props.intervals[k].to_list().reduce(
+        ((meta: {[key: string]: any}, intvl: Interval) => _.merge(meta, intvl.metadata)), {}))),
+    {});
 
   return <div className='metadata-track' style={style}>
     {_.keys(metadata).map((k) => <div className='metadata-entry' key={k}>

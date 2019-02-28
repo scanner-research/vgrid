@@ -53,12 +53,12 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
     key_dispatch(this.settings, this.key_bindings, key);
   }
 
-  current_intervals = () => {
+  current_intervals = (): {[key: string]: IntervalSet} => {
     let bounds = new Bounds(this.time_state.time);
-    let current_intervals = new IntervalSet([]);
-    for (let is of _.values(this.props.intervals)) {
-      current_intervals = current_intervals.union(is.time_overlaps(bounds));
-    }
+    let current_intervals: {[key: string]: IntervalSet} = {};
+    _.keys(this.props.intervals).forEach((k) => {
+      current_intervals[k] = this.props.intervals[k].time_overlaps(bounds);
+    });
     return current_intervals;
   }
 

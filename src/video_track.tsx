@@ -16,7 +16,7 @@ import {Video} from './video';
 import {SpatialOverlay} from './spatial_overlay';
 
 interface VideoTrackProps {
-  intervals: IntervalSet,
+  intervals: {[key: string]: IntervalSet},
   time_state: TimeState,
   video: DbVideo,
   expand: boolean,

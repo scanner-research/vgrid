@@ -4,7 +4,8 @@ import {Interval} from './interval';
 export interface Drawable {
   interval: Interval,
   width: number,
-  height: number
+  height: number,
+  color: string
 }
 
 class BoundingBoxView extends React.Component<Drawable, {}> {
@@ -17,7 +18,7 @@ class BoundingBoxView extends React.Component<Drawable, {}> {
     let box_style = {
       width: (bbox.x2 - bbox.x1) * this.props.width,
       height: (bbox.y2 - bbox.y1) * this.props.height,
-      border: '1px solid red'
+      border: `2px solid ${this.props.color}`
     };
     return <div className='bounding-box' style={position}>
       <div className='box-outline' style={box_style} />

@@ -1,11 +1,13 @@
 import * as React from 'react';
-import {Database} from './database';
 import {Observer} from 'mobx-react';
+
+import {Database} from './database';
 import {Settings, default_settings} from './settings';
+import {ColorMap} from './color';
 
 export let DatabaseContext = React.createContext<Database>(new Database([]));
 export let SettingsContext = React.createContext<Settings>(default_settings);
-
+export let ColorContext = React.createContext<ColorMap>({});
 
 interface ConsumerProps {
   contexts: any[],

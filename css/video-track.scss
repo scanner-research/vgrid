@@ -50,6 +50,7 @@
         position: relative;
         overflow: hidden;
         float: left;
+        user-select: none;
 
         .timeline-row-wrapper {
             position: absolute;
@@ -70,5 +71,9 @@
 
     .timeline-controls {
         float: left;
+    }
+
+    .timeline-ticks {
+        user-select: none;
     }
 }
