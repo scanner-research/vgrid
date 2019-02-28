@@ -1,0 +1,14 @@
+.vgrid {
+    @import '~open-iconic/font/css/open-iconic-bootstrap.css';
+    @import './video-track.scss';
+
+    font-family: 'Lato', 'Helvetica Neue', Arial, sans-serif;
+
+    .spinner {
+        img { margin: 0 auto; display: block; }
+    }
+
+    .clearfix {
+        clear: both;
+    }
+}

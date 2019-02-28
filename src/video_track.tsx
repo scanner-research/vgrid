@@ -1,50 +1,42 @@
 import * as React from "react";
 import * as _ from 'lodash';
 import {observer} from 'mobx-react';
+
 import Spinner from './spinner';
 import TimeState from './time_state';
 import {IntervalSet, Domain_Video} from './interval';
 import ProgressiveImage from './progressive_image';
 import {asset_url} from './utils';
-import {Database, DbVideo} from './database';
-import {DatabaseContext, SettingsContext, Consumer} from './contexts';
-import {KeyMode, key_dispatch, mouseover_key_listener} from './keyboard';
+import {DbVideo} from './database';
+import {SettingsContext, Consumer} from './contexts';
+import {KeyMode, key_dispatch} from './keyboard';
+import {mouseover_key_listener} from './events';
 import {Settings} from './settings';
-
-interface VideoProps {
-  src: string
-}
-
-class Video extends React.Component<VideoProps, {}> {
-  render() {
-    return <video controls><source src={this.props.src} /></video>
-  }
-}
-
+import {Video} from './video';
+import {SpatialOverlay} from './spatial_overlay';
 
 interface VideoTrackProps {
-  intervals: {[key: string]: IntervalSet},
+  intervals: IntervalSet,
   time_state: TimeState,
-  expand: boolean
-}
-
-enum VideoIOState {
-  Off = 1,
-  Loading = 2,
-  Showing = 3
+  video: DbVideo,
+  expand: boolean,
+  target_width: number,
+  target_height: number
 }
 
 interface VideoTrackState {
-  video_io_state: VideoIOState
+  video_loaded: boolean,
+  video_active: boolean
 }
 
 @mouseover_key_listener
 @observer
 export default class VideoTrack extends React.Component<VideoTrackProps, VideoTrackState> {
-  state = {video_io_state: VideoIOState.Off}
+  state = {video_loaded: false, video_active: false}
+  settings: Settings
 
   play_video = () => {
-    this.setState({video_io_state: VideoIOState.Loading});
+    this.setState({video_active: true});
   }
 
   key_bindings = {
@@ -56,35 +48,52 @@ export default class VideoTrack extends React.Component<VideoTrackProps, VideoTr
     }
   }
 
+  onKeyDown = (key: string) => {
+    key_dispatch(this.settings, this.key_bindings, key);
+  }
+
+  onVideoLoaded = () => {
+    this.setState({video_loaded: true});
+  }
+
+  componentDidUpdate(prev_props: VideoTrackProps) {
+    if (!this.props.expand && this.state.video_active) {
+      this.setState({video_active: false, video_loaded: false});
+    }
+  }
+
   render() {
-    return <Consumer contexts={[DatabaseContext, SettingsContext]}>{(database: Database, settings: Settings) => {
-      let example_set = _.values(this.props.intervals)[0];
-      let example_interval = example_set.intervals[0];
-      let domain = example_interval.bounds.domain;
+    return <Consumer contexts={[SettingsContext]}>{
+      (settings: Settings) => {
+        this.settings = settings;
 
-      let video_id;
-      if (domain instanceof Domain_Video) {
-        video_id = domain.video_id;
-      } else {
-        throw Error(`Unsupported domain: ${domain}`);
-      }
+        // Get current frame
+        let time = this.props.time_state.time;
+        let video = this.props.video;
+        let frame = Math.round(time * video.fps);
 
-      let time = this.props.time_state.time;
+        // Get assets paths
+        let image_path = asset_url(
+          `${settings.endpoints.frames}?path=${encodeURIComponent(video.path)}&frame=${frame}`);
+        let video_path = asset_url(`${settings.endpoints.videos}/${video.path}`);
 
-      let video = database.tables.videos.lookup<DbVideo>(video_id);
-      let frame = Math.round(time * video.fps);
-
-      let preview_path = asset_url(
-        `${settings.endpoints.frames}?path=${encodeURIComponent(video.path)}&frame=${frame}`);
-
-      let target_height = undefined;
-      if (!this.props.expand) {
-        target_height = 100;
-      }
-
-      return <div className='video-track'>
-        <ProgressiveImage src={preview_path} width={video.width} height={video.height} target_height={target_height} />
-      </div>
-    }}</Consumer>;
+        return <div className='video-track'>
+          {this.state.video_active
+           ? <div>
+             <Video src={video_path} width={this.props.target_width} height={this.props.target_height}
+                    time_state={this.props.time_state} onLoaded={this.onVideoLoaded} />
+             {!this.state.video_loaded ? <div className='loading-video'><Spinner /></div> : null}
+           </div>
+           : <ProgressiveImage
+               src={image_path} width={video.width} height={video.height}
+               target_width={this.props.target_width} target_height={this.props.target_height} />}
+          <div className='track-overlay'>
+            <SpatialOverlay
+              intervals={this.props.intervals} width={this.props.target_width}
+              height={this.props.target_height} />
+          </div>
+        </div>
+      }}
+    </Consumer>;
   }
 }

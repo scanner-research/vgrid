@@ -1,0 +1,38 @@
+.video-track {
+    position: relative;
+
+    .track-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+}
+
+.spatial-overlay {}
+
+.bounding-box {
+    position: absolute;
+}
+
+.timeline-track {
+    .timeline-box {
+        border: 1px solid black;
+        position: relative;
+
+        .timeline-row-wrapper {
+            position: absolute;
+            left: 0;
+
+            .timeline-interval-wrapper {
+                position: absolute;
+            }
+        }
+
+        .timeline-cursor {
+            background: #84db57;
+            position: absolute;
+            top: 0;
+            z-index: 1000;
+        }
+    }
+}

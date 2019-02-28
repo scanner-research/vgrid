@@ -1,12 +1,6 @@
-abstract class DrawType {}
+import {DrawType} from './drawable';
 
-export class DrawType_Bbox extends DrawType {}
-
-export class DrawType_Keypoints extends DrawType {}
-
-export class DrawType_Caption extends DrawType {}
-
-abstract class Domain {}
+export abstract class Domain {}
 
 export class Domain_Video extends Domain {
   video_id: number;
@@ -32,16 +26,20 @@ export class BoundingBox {
 }
 
 export class Bounds {
-  domain: Domain;
+  domain?: Domain;
   t1: number;
   t2: number;
   bbox: BoundingBox;
 
-  constructor(domain: Domain, t1: number, t2?: number, bbox?: BoundingBox) {
-    this.domain = domain;
+  constructor(t1: number, t2?: number, bbox?: BoundingBox, domain?: Domain) {
     this.t1 = t1;
     this.t2 = t2 ? t2 : t1;
     this.bbox = bbox ? bbox : new BoundingBox();
+    this.domain = domain;
+  }
+
+  time_overlaps(other: Bounds): boolean {
+    return this.t1 <= other.t2 && this.t2 >= other.t1;
   }
 }
 
@@ -58,9 +56,21 @@ export class Interval {
 }
 
 export class IntervalSet {
-  intervals: Interval[];
+  private intervals: Interval[];
 
   constructor(intervals: Interval[]) {
     this.intervals = intervals;
+  }
+
+  time_overlaps(bounds: Bounds): IntervalSet {
+    return new IntervalSet(this.intervals.filter((i) => i.bounds.time_overlaps(bounds)));
+  }
+
+  union(other: IntervalSet): IntervalSet {
+    return new IntervalSet(this.intervals.concat(other.intervals));
+  }
+
+  to_list(): Interval[] {
+    return this.intervals;
   }
 }

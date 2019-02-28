@@ -3,9 +3,10 @@
     "outDir": "./dist/",
     "sourceMap": true,
     "module": "commonjs",
-    "target": "es2015",
+    "target": "es2017",
     "jsx": "react",
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "noImplicitAny": true
   },
   "include": [
     "./src/**/*"

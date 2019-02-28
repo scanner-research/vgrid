@@ -3,7 +3,7 @@ import {Database} from './database';
 import {Observer} from 'mobx-react';
 import {Settings, default_settings} from './settings';
 
-export let DatabaseContext = React.createContext<Database>(new Database({}));
+export let DatabaseContext = React.createContext<Database>(new Database([]));
 export let SettingsContext = React.createContext<Settings>(default_settings);
 
 
@@ -14,9 +14,9 @@ interface ConsumerProps {
 
 export class Consumer extends React.Component<ConsumerProps, {}> {
   render() {
-    let args = [];
+    let args: any[] = [];
     return this.props.contexts.reduce(
-      (acc, ctx) => () => <ctx.Consumer>{ x => { args.unshift(x); return acc() }}</ctx.Consumer>,
+      (acc, ctx) => () => <ctx.Consumer>{ (x: any) => { args.unshift(x); return acc() }}</ctx.Consumer>,
       () => <Observer>{() => this.props.children(...args)}</Observer>)();
   }
 }

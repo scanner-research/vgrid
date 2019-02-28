@@ -1,5 +1,5 @@
 import * as React from "react";
-import DevTools from 'mobx-react-devtools';
+import 'main.scss';
 
 import {VBlock} from'./vblock';
 import {IntervalSet} from './interval';
@@ -9,6 +9,7 @@ import {Provider, SettingsContext, DatabaseContext} from './contexts';
 // Re-exports
 export * from './interval';
 export * from './database';
+export * from './drawable';
 
 export interface VGridProps {
   intervals: {[key: string]: IntervalSet}[],
@@ -18,7 +19,6 @@ export interface VGridProps {
 export class VGrid extends React.Component<VGridProps, {}> {
   render() {
     return <div className='vgrid'>
-      <DevTools />
       <Provider values={[[DatabaseContext, this.props.database]]}>
         <div className='vblock-container'>
           {this.props.intervals.map((intvls, i) => {

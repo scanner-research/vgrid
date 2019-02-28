@@ -28,11 +28,11 @@ export default class ProgressiveImage extends React.Component<ProgressiveImagePr
     }
   }
 
-  onError = (e) => {
+  onError = (e: any) => {
     console.error(`Failed to load image ${this.props.src}`, e);
   }
 
-  componentWillReceiveProps(props) {
+  componentWillReceiveProps(props: ProgressiveImageProps) {
     if (this.props.src != props.src) {
       this.setState({loaded: false});
     }
@@ -58,7 +58,7 @@ export default class ProgressiveImage extends React.Component<ProgressiveImagePr
         backgroundImage: `url(${this.props.src})`,
         backgroundPosition: `-${crop.x1 * width * scale}px -${crop.y1 * height * scale}px`,
         backgroundSize: `${width * scale}px ${height * scale}px`,
-        backgroundStyle: 'no-repeat',
+        backgroundRepeat: 'no-repeat',
         width: bbox_width * width * scale,
         height: bbox_height * height * scale
       }
@@ -67,14 +67,14 @@ export default class ProgressiveImage extends React.Component<ProgressiveImagePr
     }
     let imgStyle = {
       display: (this.state.loaded && !crop) ? 'inline-block' : 'none',
-      width: target_width ? target_width : 'auto' === null ? 'auto' : target_width,
+      width: target_width ? target_width : 'auto',
       height: target_height ? target_height : 'auto'
     };
     return (
       <div>
         {this.state.loaded
          ? null
-         : <Spinner />}
+         : <Spinner width={imgStyle.width} height={imgStyle.height} />}
         <img src={this.props.src} draggable={false} onLoad={this.onLoad} onError={this.onError} style={imgStyle} />
         {crop !== null
          ? <div style={cropStyle} />

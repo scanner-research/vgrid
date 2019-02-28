@@ -3,8 +3,8 @@ import {SettingsContext} from './contexts';
 import {observer} from 'mobx-react';
 
 interface SpinnerProps {
-  width?: number,
-  height?: number
+  width?: number | string,
+  height?: number | string
 }
 
 @observer
@@ -25,8 +25,11 @@ export default class Spinner extends React.Component<SpinnerProps, {}> {
         : 'spinner.gif';
 
       return (
-          <img src={`${window.location.protocol}//${window.location.hostname}/static/images/${spinner}`}
-               {...this.props} />
+        <div className='spinner' style={{width: this.props.width, height: this.props.height}}>
+          <img
+            src={`${window.location.protocol}//${window.location.hostname}/static/images/${spinner}`}
+            style={{height: this.props.height}} />
+        </div>
       );
     }}</SettingsContext.Consumer>;
   }

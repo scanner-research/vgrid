@@ -28,18 +28,21 @@
     "@types/react": "^16.8.3",
     "@types/react-dom": "^16.8.2",
     "awesome-typescript-loader": "^5.2.1",
+    "css-loader": "^2.1.0",
+    "extract-text-webpack-plugin": "^4.0.0-beta.0",
     "mobx": "^4.8.0",
     "mobx-react": "^5.4.3",
     "react": "^16.8.2",
     "react-dom": "^16.8.2",
+    "sass-loader": "^7.1.0",
     "source-map-loader": "^0.2.4",
+    "style-loader": "^0.23.1",
     "typescript": "^3.3.3",
     "webpack": "^4.29.5",
     "webpack-cli": "^3.2.3"
   },
   "dependencies": {
-    "mobx-react-devtools": "^6.0.3",
-    "mobx-state-tree": "^3.10.2",
-    "mobx-wiretap": "^0.13.1"
+    "open-iconic": "^1.1.1",
+    "react-select": "^2.4.1"
   }
 }

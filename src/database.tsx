@@ -8,12 +8,15 @@ export interface DbVideo {
   fps: number
   width: number
   height: number
+  num_frames: number
 }
 
 export class Table {
+  name: string
   rows: {[id: number]: Row}
 
-  constructor(rows: Row[]) {
+  constructor(name: string, rows: Row[]) {
+    this.name = name;
     this.rows = {};
     rows.forEach((row) => { this.rows[row.id] = row; });
   }
@@ -30,7 +33,8 @@ export class Table {
 export class Database {
   tables: {[table: string]: Table}
 
-  constructor(tables: {[table: string]: Table}) {
-    this.tables = tables;
+  constructor(tables: Table[]) {
+    this.tables = {};
+    tables.forEach((table) => { this.tables[table.name] = table });
   }
 }
