@@ -4,7 +4,7 @@
     .row {}
 
     &.expanded {
-        .row {
+        .vblock-row {
             > div { float: left; }
         }
 
@@ -36,6 +36,13 @@
         top: 0;
         left: 0;
     }
+
+    .loading-video {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 1000;
+    }
 }
 
 .spatial-overlay {}
@@ -51,15 +58,6 @@
         overflow: hidden;
         float: left;
         user-select: none;
-
-        .timeline-row-wrapper {
-            position: absolute;
-            left: 0;
-
-            .timeline-interval-wrapper {
-                position: absolute;
-            }
-        }
 
         .timeline-cursor {
             background: #84db57;

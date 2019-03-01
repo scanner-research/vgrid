@@ -25,18 +25,24 @@ interface VideoTrackProps {
 }
 
 interface VideoTrackState {
-  video_loaded: boolean,
   video_active: boolean
 }
 
 @mouse_key_events
 @observer
 export default class VideoTrack extends React.Component<VideoTrackProps, VideoTrackState> {
-  state = {video_loaded: false, video_active: false}
+  state = {video_active: false}
   settings: Settings
+  video: any
+
+  constructor(props: VideoTrackProps) {
+    super(props);
+    this.video = React.createRef();
+  }
 
   play_video = () => {
     this.setState({video_active: true});
+    this.video.current.play()
   }
 
   key_bindings = {
@@ -52,13 +58,9 @@ export default class VideoTrack extends React.Component<VideoTrackProps, VideoTr
     key_dispatch(this.settings, this.key_bindings, key);
   }
 
-  onVideoLoaded = () => {
-    this.setState({video_loaded: true});
-  }
-
   componentDidUpdate(prev_props: VideoTrackProps) {
     if (!this.props.expand && this.state.video_active) {
-      this.setState({video_active: false, video_loaded: false});
+      this.setState({video_active: false});
     }
   }
 
@@ -78,20 +80,20 @@ export default class VideoTrack extends React.Component<VideoTrackProps, VideoTr
         let video_path = asset_url(`${settings.endpoints.videos}/${video.path}`);
 
         return <div className='video-track'>
-          {this.state.video_active
-           ? <div>
-             <Video src={video_path} width={this.props.target_width} height={this.props.target_height}
-                    time_state={this.props.time_state} onLoaded={this.onVideoLoaded} />
-             {!this.state.video_loaded ? <div className='loading-video'><Spinner /></div> : null}
-           </div>
+
+          {!settings.use_frameserver || this.state.video_active
+           ? <Video src={video_path} width={this.props.target_width} height={this.props.target_height}
+                    time_state={this.props.time_state} expand={this.props.expand} ref={this.video} />
            : <ProgressiveImage
                src={image_path} width={video.width} height={video.height}
                target_width={this.props.target_width} target_height={this.props.target_height} />}
+
           <div className='track-overlay'>
             <SpatialOverlay
               intervals={this.props.intervals} width={this.props.target_width}
               height={this.props.target_height} />
           </div>
+
         </div>
       }}
     </Consumer>;

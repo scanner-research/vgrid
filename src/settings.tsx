@@ -9,7 +9,8 @@ export interface Endpoints {
 export interface Settings {
   spinner_dev_mode: boolean,
   endpoints: Endpoints,
-  key_mode: KeyMode
+  key_mode: KeyMode,
+  use_frameserver: boolean
 }
 
 export let default_settings = {
@@ -19,5 +20,6 @@ export let default_settings = {
     subtitles: '/api/subtitles',
     frames: '/frameserver/fetch'
   },
-  key_mode: KeyMode.Standalone
+  key_mode: KeyMode.Standalone,
+  use_frameserver: false
 };

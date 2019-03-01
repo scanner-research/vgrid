@@ -16,16 +16,18 @@ interface MetadataTrackProps {
 }
 
 export let MetadataTrack: React.SFC<MetadataTrackProps> = observer((props) => {
-  let style = {
-    width: props.expand ? 100 : props.target_width,
-    height: props.expand ? props.target_height : 20
-  };
 
   let metadata = _.keys(props.intervals).reduce(
     ((meta: {[key: string]: any}, k: string) =>
       _.merge(meta, props.intervals[k].to_list().reduce(
         ((meta: {[key: string]: any}, intvl: Interval) => _.merge(meta, intvl.metadata)), {}))),
     {});
+
+  let style = {
+    width: props.expand ? 100 : props.target_width,
+    height: props.expand ? props.target_height : 20,
+    display: metadata.length == 0 ? 'none' : 'block'
+  };
 
   return <div className='metadata-track' style={style}>
     {_.keys(metadata).map((k) => <div className='metadata-entry' key={k}>

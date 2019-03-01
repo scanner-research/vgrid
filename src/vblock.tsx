@@ -12,7 +12,7 @@ import {Database, DbVideo} from './database';
 import {DatabaseContext, SettingsContext, Consumer} from './contexts';
 import {Settings} from './settings';
 import {mouse_key_events} from './events';
-
+import CaptionTrack from './caption_track';
 
 interface VBlockProps {
   intervals: {[key: string]: IntervalSet}
@@ -29,6 +29,7 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
 
   time_state: TimeState;
   settings: any;
+  captions: IntervalSet | null;
 
   constructor(props: VBlockProps) {
     super(props);
@@ -92,13 +93,16 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
           };
 
           return (<div>
-            <div className='row'>
+            <div className='vblock-row'>
               <VideoTrack intervals={current_intervals} {...args} />
               <MetadataTrack intervals={current_intervals} {...args} />
               <div className='clearfix' />
             </div>
-            <div className='row'>
+            <div className='vblock-row'>
               <TimelineTrack intervals={this.props.intervals} {...args} />
+            </div>
+            <div className='vblock-row'>
+
             </div>
           </div>);
         }

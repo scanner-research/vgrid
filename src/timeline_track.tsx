@@ -19,13 +19,7 @@ interface TimelineIntervalProps {
 // Single interval of a set
 class TimelineInterval extends React.Component<TimelineIntervalProps, {}> {
   render() {
-    let style = {
-      width: this.props.width,
-      height: this.props.height,
-      backgroundColor: this.props.color
-    }
-
-    return <div className='timeline-interval' style={style}></div>;
+    return <rect width={this.props.width} height={this.props.height} fill={this.props.color} />;
   }
 }
 
@@ -48,25 +42,24 @@ function x_to_time(x: number, bounds: TimelineBounds, width: number): number {
 // Single row of the timeline corresponding to one interval set
 class TimelineRow extends React.Component<TimelineRowProps, {}> {
   render() {
-    return <div className='timeline-row'>
+    return <g>
       {this.props.intervals.to_list().map((intvl, i) => {
          let bounds = intvl.bounds;
          let timeline_duration = this.props.timeline_bounds.span();
-         let left = time_to_x(bounds.t1, this.props.timeline_bounds, this.props.timeline_width);
-         let style = {left: left};
+         let x1 = time_to_x(bounds.t1, this.props.timeline_bounds, this.props.timeline_width);
 
-         let right = time_to_x(bounds.t2, this.props.timeline_bounds, this.props.timeline_width);
-         let width = right - left;
+         let x2 = time_to_x(bounds.t2, this.props.timeline_bounds, this.props.timeline_width);
+         let width = x2 - x1;
          if (width == 0) {
            width = 1;
          }
 
-         return <div className='timeline-interval-wrapper' style={style} key={i} >
+         return <svg key={i} x={x1} y={0}>
            <TimelineInterval
-             interval={intvl} width={width} height={this.props.row_height} color={this.props.color}/>
-         </div>;
+             interval={intvl} width={width} height={this.props.row_height} color={this.props.color} />
+         </svg>;
       })}
-    </div>;
+    </g>;
   }
 }
 
@@ -181,8 +174,6 @@ class Timeline extends React.Component<TimelineProps, {}> {
     let row_height = this.props.timeline_height / keys.length;
     let time = this.props.time_state.time;
 
-    console.log(this.props.timeline_bounds);
-
     return <div className='timeline-box' style={
       {width: this.props.timeline_width, height: this.props.timeline_height}}>
 
@@ -192,18 +183,19 @@ class Timeline extends React.Component<TimelineProps, {}> {
         left: time_to_x(time, this.props.timeline_bounds, this.props.timeline_width)
       }} />
 
-      {keys.map((k, i) => {
-         let style = {top: row_height * i};
-         return <div key={k} className='timeline-row-wrapper' style={style}>
-           <TimelineRow
-             intervals={this.props.intervals[k]}
-             row_height={row_height}
-             timeline_width={this.props.timeline_width}
-             timeline_bounds={this.props.timeline_bounds}
-             color={default_palette[i]}
-           />
-         </div>
-      })}
+      <svg width={this.props.timeline_width} height={this.props.timeline_height}>
+        {keys.map((k, i) =>
+          <svg key={k} y={row_height * i} x={0}>
+            <TimelineRow
+              intervals={this.props.intervals[k]}
+              row_height={row_height}
+              timeline_width={this.props.timeline_width}
+              timeline_bounds={this.props.timeline_bounds}
+              color={default_palette[i]}
+            />
+          </svg>
+        )}
+      </svg>
     </div>;
   }
 }

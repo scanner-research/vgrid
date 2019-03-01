@@ -19,7 +19,6 @@ export class SpatialOverlay extends React.Component<SpatialOverlayProps, {}> {
         (color_map: ColorMap) =>
           _.keys(this.props.intervals).map((k) =>
             this.props.intervals[k].to_list().map((intvl, i) => {
-              console.log(color_map, k, color_map[k]);
               let View = intvl.draw_type.view();
               return View
                    ? <View

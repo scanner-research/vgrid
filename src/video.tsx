@@ -1,5 +1,6 @@
 import * as React from "react";
 
+import Spinner from './spinner';
 import TimeState from './time_state';
 
 interface VideoProps {
@@ -7,10 +8,11 @@ interface VideoProps {
   width: number,
   height: number,
   time_state: TimeState,
-  onLoaded?: (video: any) => void,
+  expand: boolean,
 }
 
-export class Video extends React.Component<VideoProps, {}> {
+export class Video extends React.Component<VideoProps, {loaded: boolean}> {
+  state = {loaded: false}
   video: any
 
   constructor(props: VideoProps) {
@@ -19,9 +21,21 @@ export class Video extends React.Component<VideoProps, {}> {
   }
 
   onTimeUpdate = (video: any) => {
-    if (video) {
+    if (video && video.currentTime) {
       this.props.time_state.time = video.currentTime;
     }
+  }
+
+  onLoaded = (video: any) => {
+    this.setState({loaded: true});
+  }
+
+  play = () => {
+    this.video.current.play();
+  }
+
+  pause = () => {
+    this.video.current.play();
   }
 
   componentDidMount() {
@@ -29,17 +43,20 @@ export class Video extends React.Component<VideoProps, {}> {
       this.video.current.addEventListener(k, () => f(this.video.current));
     };
 
-    if (this.props.onLoaded) {
-      delegate('loadeddata', this.props.onLoaded);
-    }
-
+    delegate('loadeddata', this.onLoaded);
     delegate('timeupdate', this.onTimeUpdate);
   }
 
   componentDidUpdate() {
-    let target_time = this.props.time_state.time;
-    if (target_time != this.video.current.currentTime) {
-      this.video.current.currentTime = target_time;
+    if (this.video.current) {
+      let target_time = this.props.time_state.time;
+      if (target_time != this.video.current.currentTime) {
+        this.video.current.currentTime = target_time;
+      }
+
+      if (!this.props.expand) {
+        this.video.current.pause();
+      }
     }
   }
 
@@ -50,9 +67,17 @@ export class Video extends React.Component<VideoProps, {}> {
   }
 
   render() {
-    return <video controls autoPlay style={{width: this.props.width, height: this.props.height}}
-           ref={this.video}>
-      <source src={this.props.src} />
-    </video>
+    let video_style = {
+      width: this.props.width,
+      height: this.props.height,
+      display: this.state.loaded ? 'block' : 'none'
+    };
+
+    return <div>
+      <video controls={this.props.expand} style={video_style} ref={this.video}>
+        <source src={this.props.src} />
+      </video>
+      {!this.state.loaded ? <Spinner width={this.props.width} height={this.props.height} /> : null}
+    </div>
   }
 }
