@@ -165,7 +165,7 @@ class Timeline extends React.Component<TimelineProps, {}> {
   componentDidUpdate() {
     let time = this.props.time_state.time
     if (time < this.props.timeline_bounds.start || time > this.props.timeline_bounds.end) {
-      //this.props.timeline_bounds.start =
+      // TODO: automatically shift timeline bounds if the time changes and it's no longer visible
     }
   }
 
@@ -173,6 +173,8 @@ class Timeline extends React.Component<TimelineProps, {}> {
     let keys = _.keys(this.props.intervals);
     let row_height = this.props.timeline_height / keys.length;
     let time = this.props.time_state.time;
+
+    // TODO: use the window/canvas approach as in caption track
 
     return <div className='timeline-box' style={
       {width: this.props.timeline_width, height: this.props.timeline_height}}>

@@ -105,6 +105,7 @@
         .caption {
             &.active {
                 -webkit-text-stroke: 1px black;
+                text-decoration: underline;
             }
 
             &.flag {
