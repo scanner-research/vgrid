@@ -26,7 +26,7 @@ export let MetadataTrack: React.SFC<MetadataTrackProps> = observer((props) => {
   let style = {
     width: props.expand ? 100 : props.target_width,
     height: props.expand ? props.target_height : 20,
-    display: metadata.length == 0 ? 'none' : 'block'
+    display: _.keys(metadata).length == 0 ? 'none' : 'block'
   };
 
   return <div className='metadata-track' style={style}>

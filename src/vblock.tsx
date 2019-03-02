@@ -13,6 +13,7 @@ import {DatabaseContext, SettingsContext, Consumer} from './contexts';
 import {Settings} from './settings';
 import {mouse_key_events} from './events';
 import CaptionTrack from './caption_track';
+import {DrawType_Caption} from './drawable';
 
 interface VBlockProps {
   intervals: {[key: string]: IntervalSet}
@@ -37,6 +38,14 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
     let first_time =
       _.values(props.intervals).reduce((n, is) => Math.min(n, is.to_list()[0].bounds.t1), Infinity);
     this.time_state = new TimeState(first_time);
+
+    this.captions = null;
+    for (let k of _.keys(this.props.intervals)) {
+      let is = this.props.intervals[k];
+      if (is.to_list()[0].draw_type instanceof DrawType_Caption) {
+        this.captions = is;
+      }
+    }
   }
 
   toggle_expand = () => {this.setState({expand: !this.state.expand});}
@@ -101,9 +110,11 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
             <div className='vblock-row'>
               <TimelineTrack intervals={this.props.intervals} {...args} />
             </div>
-            <div className='vblock-row'>
-
+            {this.captions !== null
+            ? <div className='vblock-row'>
+              <CaptionTrack intervals={this.captions} delimiter={"> > "} {...args} />
             </div>
+            : null}
           </div>);
         }
       }</Consumer>

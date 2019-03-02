@@ -39,5 +39,12 @@ export class DrawType_Keypoints extends DrawType {
 }
 
 export class DrawType_Caption extends DrawType {
+  text: string
+
+  constructor(text: string) {
+    super();
+    this.text = text;
+  }
+
   view(): null { return null; }
 }

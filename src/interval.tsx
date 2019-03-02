@@ -1,4 +1,5 @@
 import {DrawType} from './drawable';
+import {Metadata} from './metadata';
 
 export abstract class Domain {}
 
@@ -46,12 +47,12 @@ export class Bounds {
 export class Interval {
   bounds: Bounds;
   draw_type: DrawType;
-  metadata: {[key: string]: any};
+  metadata: {[key: string]: Metadata};
 
-  constructor(bounds: Bounds, draw_type: DrawType, metadata: {[key: string]: any}) {
+  constructor(bounds: Bounds, draw_type: DrawType, metadata?: {[key: string]: any}) {
     this.bounds = bounds;
     this.draw_type = draw_type;
-    this.metadata = metadata;
+    this.metadata = metadata ? metadata : {};
   }
 }
 

@@ -13,10 +13,11 @@ import {default_palette, ColorMap} from './color';
 export * from './interval';
 export * from './database';
 export * from './drawable';
+export * from './metadata';
 
 export interface VGridProps {
   intervals: {[key: string]: IntervalSet}[],
-  database: Database
+  database: Database,
 }
 
 export class VGrid extends React.Component<VGridProps, {}> {
