@@ -30,6 +30,7 @@ interface VBlockState {
 
 @inject("settings", "database")
 @mouse_key_events
+@observer
 export class VBlock extends React.Component<VBlockProps, VBlockState> {
   state = {expand: false}
 
@@ -82,8 +83,6 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
   }
 
   render() {
-    console.log('render');
-
     let example_interval = _.values(this.props.intervals)[0].to_list()[0];
     let current_intervals = this.current_intervals();
     let video_id = (example_interval.bounds.domain as Domain_Video).video_id;

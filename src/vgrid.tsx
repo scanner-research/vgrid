@@ -27,10 +27,17 @@ interface VGridState {
 
 export class VGrid extends React.Component<VGridProps, VGridState> {
   blocks_selected: {[block_index: number]: BlockSelectType}
+  color_map: ColorMap
 
   constructor(props: VGridProps) {
     super(props);
     this.blocks_selected = {};
+
+    // Set a default color for each interval set
+    this.color_map = {};
+    _.keys(this.props.intervals[0]).forEach((k, i) => {
+      this.color_map[k] = default_palette[i];
+    });
   }
 
   on_block_selected = (block_index: number, type: BlockSelectType) => {
@@ -44,13 +51,8 @@ export class VGrid extends React.Component<VGridProps, VGridState> {
   }
 
   render() {
-    // Set a default color for each interval set
-    let color_map: ColorMap = {};
-    _.keys(this.props.intervals[0]).forEach((k, i) => {
-      color_map[k] = default_palette[i];
-    });
 
-    return <Provider database={this.props.database} colors={color_map} settings={default_settings}>
+    return <Provider database={this.props.database} colors={this.color_map} settings={default_settings}>
       <div className='vgrid'>
         {this.props.intervals.map((intvls, i) =>
           <VBlock key={i} intervals={intvls}

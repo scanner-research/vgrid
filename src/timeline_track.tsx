@@ -141,6 +141,8 @@ class Timeline extends React.Component<TimelineProps, {}> {
         creating: true,
         time_start: time
       }});
+    } else {
+      this.setState({new_state: {creating: false, time_start: 0}});
     }
   }
 
