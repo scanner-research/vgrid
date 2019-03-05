@@ -10,12 +10,12 @@ import {Metadata_Flag} from './metadata';
 let CaptionGroup: React.SFC<{group: Interval[], time_state: TimeState}> = (props) => {
   let cur_time = new Bounds(props.time_state.time);
   return <div className='caption-group'>{
-    props.group.map((i) => {
-      let overlaps = i.bounds.time_overlaps(cur_time);
-      let flag = Object.keys(_.filter(i.metadata, (v) => v instanceof Metadata_Flag)).length;
-      return <span>
+    props.group.map((intvl, i) => {
+      let overlaps = intvl.bounds.time_overlaps(cur_time);
+      let flag = Object.keys(_.filter(intvl.metadata, (v) => v instanceof Metadata_Flag)).length;
+      return <span key={i}>
         <span className={'caption ' + (overlaps ? 'active ' : ' ') + (flag ? 'flag' : ' ')}>
-          {(i.draw_type as DrawType_Caption).text}
+          {(intvl.draw_type as DrawType_Caption).text}
         </span> &nbsp;
       </span>
     })
@@ -108,7 +108,7 @@ export default class CaptionTrack extends React.Component<CaptionTrackProps, {}>
     }
 
     return <div className='caption-track' style={track_style}>
-      <div className='caption-window' style={track_style}>
+      <div className='caption-window'>
         <div className='caption-canvas' style={{top: -top}} ref={this.canvas_ref}>
           {this.caption_groups.map((group, i) => {
              return <div key={i} ref={this.group_refs[i]}>

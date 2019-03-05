@@ -48,12 +48,11 @@ export default class ProgressiveImage extends React.Component<ProgressiveImagePr
     if (crop) {
       let bbox_width = crop.x2 - crop.x1;
       let bbox_height = crop.y2 - crop.y1;
-      let scale;
-      if (target_height) {
-        scale = target_height / (height * height);
-      } else {
-        scale = target_width / (width * width);
-      }
+      let scale =
+        target_height
+        ? target_height / (height * height)
+        : (target_width as number) / (width * width);
+
       cropStyle = {
         backgroundImage: `url(${this.props.src})`,
         backgroundPosition: `-${crop.x1 * width * scale}px -${crop.y1 * height * scale}px`,

@@ -14,9 +14,12 @@ import {Settings} from './settings';
 import {mouse_key_events} from './events';
 import CaptionTrack from './caption_track';
 import {DrawType_Caption} from './drawable';
+import {BlockSelectType} from './select_state';
 
 interface VBlockProps {
   intervals: {[key: string]: IntervalSet}
+  on_select: (type: BlockSelectType) => void
+  selected: BlockSelectType | null
 }
 
 interface VBlockState {
@@ -50,12 +53,16 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
 
   toggle_expand = () => {this.setState({expand: !this.state.expand});}
 
+  select = (type: BlockSelectType) => () => { this.props.on_select(type); }
+
   key_bindings = {
     [KeyMode.Standalone]: {
-      'f': this.toggle_expand
+      'f': this.toggle_expand,
+      's': this.select(BlockSelectType.Positive),
+      'x': this.select(BlockSelectType.Negative),
     },
     [KeyMode.Jupyter]: {
-      '=': this.toggle_expand
+      '=': this.toggle_expand,
     }
   }
 
@@ -75,49 +82,58 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
   render() {
     let example_interval = _.values(this.props.intervals)[0].to_list()[0];
     let current_intervals = this.current_intervals();
-    return <div className={'vblock ' + (this.state.expand ? 'expanded' : '')}>
-      <Consumer contexts={[DatabaseContext, SettingsContext]}>{
-        (database: Database, settings: Settings) => {
-          this.settings = settings;
-          let video_id = (example_interval.bounds.domain as Domain_Video).video_id;
-          let video = database.tables.videos.lookup<DbVideo>(video_id);
+    return <Consumer contexts={[DatabaseContext, SettingsContext]}>{
+      (database: Database, settings: Settings) => {
+        this.settings = settings;
+        let video_id = (example_interval.bounds.domain as Domain_Video).video_id;
+        let video = database.tables.videos.lookup<DbVideo>(video_id);
 
-          // Compute asset height
-          let target_height;
-          let target_width;
-          if (!this.state.expand) {
-            target_height = 100;
-            target_width = video.width * (target_height / video.height);
-          } else {
-            target_width = video.width;
-            target_height = video.height;
-          }
-
-          let args = {
-            time_state: this.time_state,
-            video: video,
-            expand: this.state.expand,
-            target_width: target_width,
-            target_height: target_height
-          };
-
-          return (<div>
-            <div className='vblock-row'>
-              <VideoTrack intervals={current_intervals} {...args} />
-              <MetadataTrack intervals={current_intervals} {...args} />
-              <div className='clearfix' />
-            </div>
-            <div className='vblock-row'>
-              <TimelineTrack intervals={this.props.intervals} {...args} />
-            </div>
-            {this.captions !== null
-            ? <div className='vblock-row'>
-              <CaptionTrack intervals={this.captions} delimiter={"> > "} {...args} />
-            </div>
-            : null}
-          </div>);
+        // Compute asset height
+        let target_height;
+        let target_width;
+        if (!this.state.expand) {
+          target_height = 100;
+          target_width = video.width * (target_height / video.height);
+        } else {
+          target_width = video.width;
+          target_height = video.height;
         }
-      }</Consumer>
-    </div>;
+
+        let args = {
+          time_state: this.time_state,
+          video: video,
+          expand: this.state.expand,
+          target_width: target_width,
+          target_height: target_height
+        };
+
+        let select_class =
+          this.props.selected
+          ? (this.props.selected == BlockSelectType.Positive ? 'select-positive'
+           : this.props.selected == BlockSelectType.Negative ? 'select-negative'
+           : '')
+          : '';
+
+        return (
+          <div className={'vblock ' + (this.state.expand ? 'expanded' : '')}>
+            <div className={`vblock-highlight ${select_class}`}>
+              <div className='vblock-row'>
+                <VideoTrack intervals={current_intervals} {...args} />
+                <MetadataTrack intervals={current_intervals} {...args} />
+                <div className='clearfix' />
+              </div>
+              <div className='vblock-row'>
+                <TimelineTrack intervals={this.props.intervals} {...args} />
+              </div>
+              {this.captions !== null
+               ? <div className='vblock-row'>
+                 <CaptionTrack intervals={this.captions} delimiter={"> > "} {...args} />
+               </div>
+               : null}
+            </div>
+          </div>
+        );
+      }
+    }</Consumer>
   }
 }

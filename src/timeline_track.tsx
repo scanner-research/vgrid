@@ -64,8 +64,8 @@ class TimelineRow extends React.Component<TimelineRowProps, {}> {
 }
 
 class TimelineBounds {
-  @observable start: number
-  @observable end: number
+  @observable start: number = 0
+  @observable end: number = 0
 
   span() {
     return this.end - this.start;

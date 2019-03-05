@@ -3,12 +3,30 @@
 
     .row {}
 
+    .vblock-highlight {
+        padding: 5px;
+
+        &.select-positive {
+            background-color: #FFDEAD;
+        }
+
+        &.select-negative {
+            background-color: #FFB6C1;
+        }
+    }
+
     &.expanded {
-        .vblock-row {
-            > div { float: left; }
+
+        /* .vblock-highlight { */
+        /*     padding: 5px; */
+        /* } */
+
+        .video-track {
+            float: left;
         }
 
         .metadata-track {
+            float: left;
             padding-left: 5px;
 
             .metadata-entry {
@@ -30,6 +48,8 @@
 }
 
 .metadata-track {
+    background: white;
+
     .metadata-key { font-weight: bold; }
 
     .metadata-entry {
@@ -40,6 +60,7 @@
 
 .video-track {
     position: relative;
+    background: white;
 
     .track-overlay {
         position: absolute;
@@ -62,6 +83,8 @@
 }
 
 .timeline-track {
+    background: white;
+
     .timeline-box {
         border: 1px solid black;
         position: relative;
@@ -88,11 +111,13 @@
 
 .caption-track {
     border: 1px solid black;
+    background: white;
 
     .caption-window {
         position: relative;
         overflow: hidden;
-
+        width: 100%;
+        height: 100%;
     }
 
     .caption-canvas {

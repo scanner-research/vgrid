@@ -1,12 +1,12 @@
 import * as React from "react";
 
-export let mouse_key_events = <P extends object, C extends React.ComponentClass<P>>(Component: C): C  =>
-  (class WithMouseKeyEvents extends React.Component<P, {last_x: number, last_y: number}> {
+export let mouse_key_events = <C extends object>(Component: C): C  =>
+  (class WithMouseKeyEvents extends React.Component<any, {last_x: number, last_y: number}> {
     state = {last_x: 0, last_y: 0}
     component: any
     div: any
 
-    constructor(props: P) {
+    constructor(props: any) {
       super(props);
       this.component = React.createRef();
       this.div = React.createRef();

@@ -32,7 +32,7 @@ interface VideoTrackState {
 @observer
 export default class VideoTrack extends React.Component<VideoTrackProps, VideoTrackState> {
   state = {video_active: false}
-  settings: Settings
+  settings: Settings | null = null;
   video: any
 
   constructor(props: VideoTrackProps) {
@@ -55,7 +55,7 @@ export default class VideoTrack extends React.Component<VideoTrackProps, VideoTr
   }
 
   onKeyDown = (key: string) => {
-    key_dispatch(this.settings, this.key_bindings, key);
+    key_dispatch(this.settings!, this.key_bindings, key);
   }
 
   componentDidUpdate(prev_props: VideoTrackProps) {

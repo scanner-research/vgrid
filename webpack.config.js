@@ -6,7 +6,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 module.exports = {
   context: __dirname,
 
-  entry: "./src/index.tsx",
+  entry: "./src/vgrid.tsx",
 
   output: {
     filename: "bundle.js",

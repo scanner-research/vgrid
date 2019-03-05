@@ -6,7 +6,8 @@
     "target": "es2017",
     "jsx": "react",
     "experimentalDecorators": true,
-    "noImplicitAny": true
+    "strict": true,
+    "noImplicitReturns": true
   },
   "include": [
     "./src/**/*"
