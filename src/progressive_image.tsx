@@ -17,7 +17,8 @@ interface ProgressiveImageState {
 }
 
 // ProgressiveImage displays a loading gif (the spinner) while an image is loading.
-export default class ProgressiveImage extends React.Component<ProgressiveImageProps, ProgressiveImageState> {
+export default class ProgressiveImage
+extends React.Component<ProgressiveImageProps, ProgressiveImageState> {
   state = {loaded: false}
 
   onLoad = () => {

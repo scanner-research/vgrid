@@ -139,21 +139,19 @@
         font-size: 9px;
         line-height: 1em;
 
-        .caption {
-            &.active {
-                -webkit-text-stroke: 1px black;
-                text-decoration: underline;
-            }
-
-            &.flag {
-                background: red;
-                color: white;
-            }
+        .active {
+            -webkit-text-stroke: 1px black;
+            text-decoration: underline;
         }
 
+        .flag {
+            background: red;
+            color: white;
+        }
     }
 
     .caption-group {
         margin-bottom: 2px;
+        word-break: break-all;
     }
 }

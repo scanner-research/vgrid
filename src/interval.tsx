@@ -1,4 +1,4 @@
-import {DrawType} from './drawable';
+import {DrawType, DrawType_Bbox} from './drawable';
 import {Metadata} from './metadata';
 
 export abstract class Domain {}
@@ -49,18 +49,20 @@ export class Interval {
   draw_type: DrawType;
   metadata: {[key: string]: Metadata};
 
-  constructor(bounds: Bounds, draw_type: DrawType, metadata?: {[key: string]: any}) {
+  constructor(bounds: Bounds, draw_type?: DrawType, metadata?: {[key: string]: any}) {
     this.bounds = bounds;
-    this.draw_type = draw_type;
+    this.draw_type = draw_type ? draw_type : new DrawType_Bbox();
     this.metadata = metadata ? metadata : {};
   }
 }
 
 export class IntervalSet {
   private intervals: Interval[];
+  dirty: boolean
 
   constructor(intervals: Interval[]) {
     this.intervals = intervals;
+    this.dirty = false;
   }
 
   time_overlaps(bounds: Bounds): IntervalSet {

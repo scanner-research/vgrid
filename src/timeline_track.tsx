@@ -1,13 +1,26 @@
 import * as React from "react";
 import * as _ from 'lodash';
 import {observable, computed, action} from 'mobx';
-import {observer} from 'mobx-react';
+import {observer, inject} from 'mobx-react';
 
+import {DrawType_Bbox} from './drawable';
 import {IntervalSet, Interval, Bounds} from './interval';
 import TimeState from './time_state';
 import {DbVideo} from './database';
 import {default_palette} from './color';
 import {mouse_key_events} from './events';
+import {key_dispatch, KeyMode} from './keyboard';
+import {Settings} from './settings';
+
+let Constants = {
+  timeline_unexpanded_height: 50,
+  timeline_expanded_height: 100,
+
+  new_labels_name: 'new_labels',
+
+  tick_height: 20,
+  num_ticks: 10
+}
 
 interface TimelineRowProps {
   intervals: IntervalSet,
@@ -16,6 +29,13 @@ interface TimelineRowProps {
   full_duration: number
   color: string
 }
+
+// https://stackoverflow.com/questions/22266826/how-can-i-do-a-shallow-comparison-of-the-properties-of-two-objects-with-javascri
+let shallowCompare = (obj1: any, obj2: any): boolean =>
+  Object.keys(obj1).length === Object.keys(obj2).length &&
+  Object.keys(obj1).every(key =>
+    obj2.hasOwnProperty(key) && obj1[key] === obj2[key]
+  );
 
 function time_to_x(t: number, bounds: TimelineBounds, width: number): number {
   return (t - bounds.start) / bounds.span() * width;
@@ -27,7 +47,12 @@ function x_to_time(x: number, bounds: TimelineBounds, width: number): number {
 
 // Single row of the timeline corresponding to one interval set
 class TimelineRow extends React.Component<TimelineRowProps, {}> {
+  shouldComponentUpdate(next_props: TimelineRowProps, next_state: {}) {
+    return !shallowCompare(this.props, next_props) || this.props.intervals.dirty;
+  }
+
   render() {
+    this.props.intervals.dirty = false;
     return <g>
       {this.props.intervals.to_list().map((intvl, i) => {
          let bounds = intvl.bounds;
@@ -62,10 +87,10 @@ interface TimelineProps {
   timeline_height: number
   expand: boolean
   video: DbVideo
+  settings?: Settings
 }
 
-interface TimelineState {
-  shift_held: boolean
+interface DragTimelineState {
   dragging: boolean
   click_x: number
   click_y: number
@@ -74,13 +99,60 @@ interface TimelineState {
   click_end_time: number
 }
 
+interface NewIntervalState {
+  creating: boolean
+  time_start: number
+}
+
+interface TimelineState {
+  shift_held: boolean
+  drag_state: DragTimelineState
+  new_state: NewIntervalState
+}
+
+@inject("settings")
 @mouse_key_events
 @observer
 class Timeline extends React.Component<TimelineProps, {}> {
   state = {
-    shift_held: false, dragging: false, click_x: 0, click_y: 0, click_time: 0, click_start_time: 0,
-    click_end_time: 0
+    shift_held: false,
+    drag_state: {
+      dragging: false, click_x: 0, click_y: 0, click_time: 0, click_start_time: 0, click_end_time: 0
+    },
+    new_state: {
+      creating: false, time_start: 0
+    }
   }
+
+  create_interval = () => {
+    let newstate = this.state.new_state;
+    if (!newstate.creating) {
+      let set_name = Constants.new_labels_name;
+      if (!(set_name in this.props.intervals)) {
+        this.props.intervals[set_name] = new IntervalSet([]);
+      }
+
+      let time = this.props.time_state.time;
+      let intvls = this.props.intervals[set_name];
+      intvls.to_list().push(new Interval(new Bounds(time)));
+      intvls.dirty = true;
+
+      this.setState({new_state: {
+        creating: true,
+        time_start: time
+      }});
+    }
+  }
+
+  key_bindings = {
+    [KeyMode.Standalone]: {
+      'i': this.create_interval
+    },
+    [KeyMode.Jupyter]: {
+      'i': this.create_interval
+    }
+  }
+
 
   onKeyDown = (char: string, x: number, y: number) => {
     if (char == 'Shift') {
@@ -92,11 +164,14 @@ class Timeline extends React.Component<TimelineProps, {}> {
     if (char == 'Shift') {
       this.setState({shift_held: false});
     }
+
+    key_dispatch(this.props.settings!, this.key_bindings, char);
   }
 
   onMouseLeave = (x: number, y: number) => {
     // Make sure to reset all state so we don't get into a weird situation on re-entering the timeline
-    this.setState({shift_held: false, dragging: false});
+    this.state.drag_state.dragging = false;
+    this.setState({shift_held: false});
   }
 
   onMouseDown = (x: number, y: number) => {
@@ -104,24 +179,27 @@ class Timeline extends React.Component<TimelineProps, {}> {
       // Record all current state so we can compute deltas relative to state at initial click
       let click_time = x_to_time(x, this.props.timeline_bounds, this.props.timeline_width);
       this.setState({
-        dragging: true,
-        click_x: x,
-        click_y: y,
-        click_time: click_time,
-        click_start_time: this.props.timeline_bounds.start,
-        click_end_time: this.props.timeline_bounds.end
+        drag_state: {
+          dragging: true,
+          click_x: x,
+          click_y: y,
+          click_time: click_time,
+          click_start_time: this.props.timeline_bounds.start,
+          click_end_time: this.props.timeline_bounds.end
+        }
       });
     }
   }
 
   onMouseMove = (x: number, y: number) => {
-    if (this.state.dragging) {
+    let drag = this.state.drag_state;
+    if (drag.dragging) {
       // Compute new timeline state relative to initial click
-      let diff_x = x - this.state.click_x;
+      let diff_x = x - drag.click_x;
       let delta = diff_x / this.props.timeline_width * (this.props.timeline_bounds.end - this.props.timeline_bounds.start);
       let duration = this.props.video.num_frames / this.props.video.fps;
-      let new_start = this.state.click_start_time - delta;
-      let new_end = this.state.click_end_time - delta;
+      let new_start = drag.click_start_time - delta;
+      let new_end = drag.click_end_time - delta;
       if (0 <= new_start && new_end < duration) {
         this.props.timeline_bounds.set_bounds(new_start, new_end);
       }
@@ -129,12 +207,14 @@ class Timeline extends React.Component<TimelineProps, {}> {
   }
 
   onMouseUp = (x: number, y: number) => {
-    if (!this.state.dragging) {
+    console.log(x, y);
+    if (!this.state.drag_state.dragging) {
       // If the user just normally clicks on the timeline, shift the cursor to that point
       this.props.time_state.time = x_to_time(
         x, this.props.timeline_bounds, this.props.timeline_width);
     } else {
-      this.setState({dragging: false});
+      this.state.drag_state.dragging = false;
+      this.forceUpdate();
     }
   }
 
@@ -142,6 +222,16 @@ class Timeline extends React.Component<TimelineProps, {}> {
     let time = this.props.time_state.time
     if (time < this.props.timeline_bounds.start || time > this.props.timeline_bounds.end) {
       // TODO: automatically shift timeline bounds if the time changes and it's no longer visible
+    }
+
+    if (this.state.new_state.creating) {
+      let intvls = this.props.intervals[Constants.new_labels_name];
+      let target = intvls.to_list()[intvls.to_list().length - 1];
+      if (time > this.state.new_state.time_start && time != target.bounds.t2) {
+        target.bounds.t2 = time;
+        intvls.dirty = true;
+        this.forceUpdate();
+      }
     }
   }
 
@@ -233,6 +323,8 @@ class TimelineControls extends React.Component<TimelineControlsProps, {}> {
     let new_end;
     let new_span = (end - start) / 2;
 
+    console.log('+');
+
     if (start <= cur_time && cur_time <= end) {
       // zoom in, centered around current time
       if (cur_time - new_span / 2 > start) {
@@ -261,6 +353,9 @@ class TimelineControls extends React.Component<TimelineControlsProps, {}> {
   }
 
   zoom_out = () => {
+
+    console.log('-');
+
     let start = this.props.timeline_bounds.start;
     let end = this.props.timeline_bounds.end;
     let new_start;
@@ -324,6 +419,13 @@ class TimelineControls extends React.Component<TimelineControlsProps, {}> {
     }
   }
 
+  shouldComponentUpdate(new_props: TimelineControlsProps, new_state: {}) {
+    // Once the timeline controls are drawn, they should never update.
+    // This prevents the buttons from redrawing while the video is playing, causing buttons
+    // to miss mouse clicks.
+    return false;
+  }
+
   render() {
     let ControllerButton = (props: {callback: () => void, cls: string}) =>
       (<button type="button" className="btn btn-outline-dark" onClick={props.callback}
@@ -368,7 +470,10 @@ export default class TimelineTrack extends React.Component<TimelineTrackProps, {
 
   render() {
     let timeline_width = this.props.target_width;
-    let timeline_height = this.props.expand ? 100 : 50;
+    let timeline_height =
+      this.props.expand
+      ? Constants.timeline_expanded_height
+      : Constants.timeline_unexpanded_height;
 
     let controller_size = timeline_height;
     let track_width = this.props.expand ? timeline_width + controller_size : timeline_width;
@@ -398,12 +503,11 @@ export default class TimelineTrack extends React.Component<TimelineTrackProps, {
          ? <Ticks
              timeline_width={timeline_width}
              timeline_bounds={this.timeline_bounds}
-             height={20}
-             num_ticks={10} />
+             height={Constants.tick_height}
+             num_ticks={Constants.num_ticks} />
          : null}
         <div className='clearfix' />
       </div>
-
     </div>;
   }
 }

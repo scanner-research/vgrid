@@ -1,6 +1,7 @@
 import * as React from "react";
 import * as _ from 'lodash';
-import {observer} from 'mobx-react';
+import {observer, inject} from 'mobx-react';
+import classNames from 'classnames';
 
 import TimeState from './time_state';
 import VideoTrack from './video_track';
@@ -9,7 +10,6 @@ import {MetadataTrack} from './metadata_track';
 import {IntervalSet, Bounds, Domain_Video} from './interval';
 import {KeyMode, key_dispatch} from './keyboard';
 import {Database, DbVideo} from './database';
-import {DatabaseContext, SettingsContext, Consumer} from './contexts';
 import {Settings} from './settings';
 import {mouse_key_events} from './events';
 import CaptionTrack from './caption_track';
@@ -20,14 +20,16 @@ interface VBlockProps {
   intervals: {[key: string]: IntervalSet}
   on_select: (type: BlockSelectType) => void
   selected: BlockSelectType | null
+  settings?: Settings
+  database?: Database
 }
 
 interface VBlockState {
   expand: boolean
 }
 
+@inject("settings", "database")
 @mouse_key_events
-@observer
 export class VBlock extends React.Component<VBlockProps, VBlockState> {
   state = {expand: false}
 
@@ -66,8 +68,8 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
     }
   }
 
-  onKeyDown = (key: string) => {
-    key_dispatch(this.settings, this.key_bindings, key);
+  onKeyUp = (key: string) => {
+    key_dispatch(this.props.settings!, this.key_bindings, key);
   }
 
   current_intervals = (): {[key: string]: IntervalSet} => {
@@ -80,60 +82,57 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
   }
 
   render() {
+    console.log('render');
+
     let example_interval = _.values(this.props.intervals)[0].to_list()[0];
     let current_intervals = this.current_intervals();
-    return <Consumer contexts={[DatabaseContext, SettingsContext]}>{
-      (database: Database, settings: Settings) => {
-        this.settings = settings;
-        let video_id = (example_interval.bounds.domain as Domain_Video).video_id;
-        let video = database.tables.videos.lookup<DbVideo>(video_id);
+    let video_id = (example_interval.bounds.domain as Domain_Video).video_id;
+    let video = this.props.database!.tables.videos.lookup<DbVideo>(video_id);
 
-        // Compute asset height
-        let target_height;
-        let target_width;
-        if (!this.state.expand) {
-          target_height = 100;
-          target_width = video.width * (target_height / video.height);
-        } else {
-          target_width = video.width;
-          target_height = video.height;
-        }
+    // Compute asset height
+    let target_height;
+    let target_width;
+    if (!this.state.expand) {
+      target_height = 100;
+      target_width = video.width * (target_height / video.height);
+    } else {
+      target_width = video.width;
+      target_height = video.height;
+    }
 
-        let args = {
-          time_state: this.time_state,
-          video: video,
-          expand: this.state.expand,
-          target_width: target_width,
-          target_height: target_height
-        };
+    let args = {
+      time_state: this.time_state,
+      video: video,
+      expand: this.state.expand,
+      target_width: target_width,
+      target_height: target_height
+    };
 
-        let select_class =
-          this.props.selected
-          ? (this.props.selected == BlockSelectType.Positive ? 'select-positive'
-           : this.props.selected == BlockSelectType.Negative ? 'select-negative'
-           : '')
-          : '';
+    let select_class =
+      this.props.selected
+      ? (this.props.selected == BlockSelectType.Positive ? 'select-positive'
+       : this.props.selected == BlockSelectType.Negative ? 'select-negative'
+       : '')
+      : '';
 
-        return (
-          <div className={'vblock ' + (this.state.expand ? 'expanded' : '')}>
-            <div className={`vblock-highlight ${select_class}`}>
-              <div className='vblock-row'>
-                <VideoTrack intervals={current_intervals} {...args} />
-                <MetadataTrack intervals={current_intervals} {...args} />
-                <div className='clearfix' />
-              </div>
-              <div className='vblock-row'>
-                <TimelineTrack intervals={this.props.intervals} {...args} />
-              </div>
-              {this.captions !== null
-               ? <div className='vblock-row'>
-                 <CaptionTrack intervals={this.captions} delimiter={"> > "} {...args} />
-               </div>
-               : null}
-            </div>
+    return (
+      <div className={classNames({vblock: true, expanded: this.state.expand})}>
+        <div className={`vblock-highlight ${select_class}`}>
+          <div className='vblock-row'>
+            <VideoTrack intervals={current_intervals} {...args} />
+            <MetadataTrack intervals={current_intervals} {...args} />
+            <div className='clearfix' />
           </div>
-        );
-      }
-    }</Consumer>
+          <div className='vblock-row'>
+            <TimelineTrack intervals={this.props.intervals} {...args} />
+          </div>
+          {this.captions !== null
+           ? <div className='vblock-row'>
+             <CaptionTrack intervals={this.captions} delimiter={"> > "} {...args} />
+           </div>
+           : null}
+        </div>
+      </div>
+    );
   }
 }

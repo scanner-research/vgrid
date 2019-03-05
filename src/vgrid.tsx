@@ -1,12 +1,13 @@
 import * as React from "react";
 import * as _ from 'lodash';
+import {Provider} from 'mobx-react';
 
 import 'main.scss';
 
 import {VBlock} from'./vblock';
 import {IntervalSet} from './interval';
 import {Database} from './database';
-import {Provider, SettingsContext, DatabaseContext, ColorContext} from './contexts';
+import {default_settings} from './settings';
 import {default_palette, ColorMap} from './color';
 import {BlockSelectType} from './select_state';
 
@@ -49,7 +50,7 @@ export class VGrid extends React.Component<VGridProps, VGridState> {
       color_map[k] = default_palette[i];
     });
 
-    return <Provider values={[[DatabaseContext, this.props.database], [ColorContext, color_map]]}>
+    return <Provider database={this.props.database} colors={color_map} settings={default_settings}>
       <div className='vgrid'>
         {this.props.intervals.map((intvls, i) =>
           <VBlock key={i} intervals={intvls}

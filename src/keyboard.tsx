@@ -5,6 +5,7 @@ export enum KeyMode {
   Jupyter = 2
 }
 
+// Calls the corresponding method for a key given the current key mode
 export let key_dispatch = (
   settings: Settings,
   methods: {[mode: number]: {[key: string]: () => void}},

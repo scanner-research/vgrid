@@ -6,6 +6,8 @@ import {IntervalSet, Interval} from './interval';
 import TimeState from './time_state';
 import {DbVideo} from './database';
 
+/* The metadata track shows the interval metadata for all intervals at the current time. */
+
 interface MetadataTrackProps {
   intervals: {[key: string]: IntervalSet},
   time_state: TimeState,

@@ -1,8 +1,12 @@
 import * as React from "react";
 
+// React component decorator that adds event handlers for tracking mouse movement and key presses.
+// For key presses, the onKeyDown/onKeyUp are only listened to/fired when the mouse is inside the
+// component. For mouse movement, the callbacks are x/y mouse coordinates relative to the component.
 export let mouse_key_events = <C extends object>(Component: C): C  =>
-  (class WithMouseKeyEvents extends React.Component<any, {last_x: number, last_y: number}> {
-    state = {last_x: 0, last_y: 0}
+  (class WithMouseKeyEvents extends React.Component<any, {}> {
+    last_x: number = 0
+    last_y: number = 0
     component: any
     div: any
 
@@ -12,23 +16,25 @@ export let mouse_key_events = <C extends object>(Component: C): C  =>
       this.div = React.createRef();
     }
 
-    coords = (e: React.MouseEvent<HTMLElement>) => {
+    coords = (ex: number, ey: number) => {
+      // Note: calling getBoundingClientRect
       let rect = this.div.current.getBoundingClientRect();
-      let x = e.clientX - rect.left;
-      let y = e.clientY - rect.top;
+      let x = ex - rect.left;
+      let y = ey - rect.top;
       return [x, y];
     }
 
     call_if = (f: ((x: number, y: number) => void) | undefined, e: React.MouseEvent<HTMLElement>) => {
       if (f) {
-        let [x, y] = this.coords(e);
+        let [x, y] = this.coords(e.clientX, e.clientY);
         f(x, y);
       }
     }
 
     call_if_kbd = (f: ((char: string, x: number, y: number) => void) | undefined, e: any) => {
       if (f) {
-        f(e.key, this.state.last_x, this.state.last_y);
+        let [x, y] = this.coords(this.last_x, this.last_y);
+        f(e.key, x, y);
       }
     }
 
@@ -41,8 +47,8 @@ export let mouse_key_events = <C extends object>(Component: C): C  =>
     }
 
     onMouseMove = (e: React.MouseEvent<HTMLElement>) => {
-      let [x, y] = this.coords(e);
-      this.setState({last_x: x, last_y: y});
+      this.last_x = e.clientX;
+      this.last_y = e.clientY;
       this.call_if(this.component.current.onMouseMove, e);
     }
 
@@ -75,7 +81,7 @@ export let mouse_key_events = <C extends object>(Component: C): C  =>
       return <div ref={this.div} onClick={this.onClick} onMouseDown={this.onMouseDown}
         onMouseMove={this.onMouseMove} onMouseUp={this.onMouseUp} onMouseEnter={this.onMouseEnter}
         onMouseLeave={this.onMouseLeave}>
-        <_Component {...this.props} ref={this.component}/>
+        <_Component {...this.props} ref={this.component} />
       </div>
     }
   }) as any as C

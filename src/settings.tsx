@@ -1,8 +1,8 @@
 import {KeyMode} from './keyboard';
 
+// Base URL for visual assets
 export interface Endpoints {
   videos: string
-  subtitles: string
   frames: string
 }
 
