@@ -98,6 +98,18 @@
             top: 0;
             z-index: 1000;
         }
+
+        .timeline-window {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .timeline-svg {
+            position: absolute;
+            top: 0;
+        }
     }
 
     .timeline-controls {

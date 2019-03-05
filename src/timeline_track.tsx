@@ -9,25 +9,11 @@ import {DbVideo} from './database';
 import {default_palette} from './color';
 import {mouse_key_events} from './events';
 
-interface TimelineIntervalProps {
-  interval: Interval
-  width: number,
-  height: number,
-  color: string
-}
-
-// Single interval of a set
-class TimelineInterval extends React.Component<TimelineIntervalProps, {}> {
-  render() {
-    return <rect width={this.props.width} height={this.props.height} fill={this.props.color} />;
-  }
-}
-
 interface TimelineRowProps {
   intervals: IntervalSet,
   row_height: number
-  timeline_width: number
-  timeline_bounds: TimelineBounds
+  full_width: number
+  full_duration: number
   color: string
 }
 
@@ -45,19 +31,9 @@ class TimelineRow extends React.Component<TimelineRowProps, {}> {
     return <g>
       {this.props.intervals.to_list().map((intvl, i) => {
          let bounds = intvl.bounds;
-         let timeline_duration = this.props.timeline_bounds.span();
-         let x1 = time_to_x(bounds.t1, this.props.timeline_bounds, this.props.timeline_width);
-
-         let x2 = time_to_x(bounds.t2, this.props.timeline_bounds, this.props.timeline_width);
-         let width = x2 - x1;
-         if (width == 0) {
-           width = 1;
-         }
-
-         return <svg key={i} x={x1} y={0}>
-           <TimelineInterval
-             interval={intvl} width={width} height={this.props.row_height} color={this.props.color} />
-         </svg>;
+         let x = bounds.t1 / this.props.full_duration * this.props.full_width;
+         let width = (bounds.t2 - bounds.t1) / this.props.full_duration * this.props.full_width;
+         return <rect key={i} width={width} height={this.props.row_height} fill={this.props.color} x={x} y={0} />;
       })}
     </g>;
   }
@@ -174,30 +150,37 @@ class Timeline extends React.Component<TimelineProps, {}> {
     let row_height = this.props.timeline_height / keys.length;
     let time = this.props.time_state.time;
 
-    // TODO: use the window/canvas approach as in caption track
+    let video_span = this.props.video.num_frames / this.props.video.fps;
+    let window_span = this.props.timeline_bounds.span();
+    let full_width = this.props.timeline_width * video_span / window_span;
+
+    let svg_position = {
+      left: -(this.props.timeline_bounds.start / video_span) * full_width
+    };
 
     return <div className='timeline-box' style={
       {width: this.props.timeline_width, height: this.props.timeline_height}}>
-
       <div className='timeline-cursor' style={{
         width: this.props.expand ? 4 : 2,
         height: this.props.timeline_height,
         left: time_to_x(time, this.props.timeline_bounds, this.props.timeline_width)
       }} />
 
-      <svg width={this.props.timeline_width} height={this.props.timeline_height}>
-        {keys.map((k, i) =>
-          <svg key={k} y={row_height * i} x={0}>
-            <TimelineRow
-              intervals={this.props.intervals[k]}
-              row_height={row_height}
-              timeline_width={this.props.timeline_width}
-              timeline_bounds={this.props.timeline_bounds}
-              color={default_palette[i]}
-            />
-          </svg>
-        )}
-      </svg>
+      <div className='timeline-window'>
+        <svg className='timeline-svg' width={full_width} height={this.props.timeline_height} style={svg_position}>
+          {keys.map((k, i) =>
+            <svg key={k} y={row_height * i} x={0}>
+              <TimelineRow
+                intervals={this.props.intervals[k]}
+                row_height={row_height}
+                full_width={full_width}
+                full_duration={video_span}
+                color={default_palette[i]}
+              />
+            </svg>
+          )}
+        </svg>
+      </div>
     </div>;
   }
 }
