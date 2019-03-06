@@ -1,5 +1,6 @@
 import * as React from "react";
 import * as _ from "lodash";
+import {observable, ObservableSet} from 'mobx';
 import {inject, observer} from 'mobx-react';
 import classNames from 'classnames';
 
@@ -11,6 +12,7 @@ import {Metadata_Flag, Metadata_CaptionMeta, Metadata_Generic} from './metadata'
 import {mouse_key_events} from './events';
 import {key_dispatch, KeyMode} from './keyboard';
 import {Settings} from './settings';
+import {BlockLabelState} from './label_state';
 
 /* The caption track shows time-aligned captions in a vertically scrolling box and allows
  * labeling through text selection. The main concept in the caption track is the "caption group"
@@ -18,11 +20,21 @@ import {Settings} from './settings';
  * line of text. Caption groups are separated by a provided delimiter, e.g. ">>" in TV news.
  */
 
-let CaptionGroup: React.SFC<{group_index: number, group: Interval[], time_state: TimeState}> = (props) => {
+interface CaptionGroupProps {
+  group_index: number,
+  group: Interval[],
+  time_state: TimeState
+  label_state: BlockLabelState
+  reverse_index: {[interval: number]: number}
+}
+
+let CaptionGroup: React.SFC<CaptionGroupProps> = observer((props: CaptionGroupProps) => {
   let cur_time = new Bounds(props.time_state.time);
+  let selected = props.label_state.captions_selected;
   let flags: boolean[] =
-    props.group.map((intvl) =>
-      Object.keys(_.filter(intvl.metadata, (v) => v instanceof Metadata_Flag)).length > 0);
+    props.group.map((intvl, i) => (
+      Object.keys(_.filter(intvl.metadata, (v) => v instanceof Metadata_Flag)).length > 0 ||
+      (selected !== undefined && selected.has(props.reverse_index[i]))));
 
   return <div className='caption-group'>{
     props.group.map((intvl, i) => {
@@ -44,7 +56,7 @@ let CaptionGroup: React.SFC<{group_index: number, group: Interval[], time_state:
       </span>
     })
   }</div>;
-};
+});
 
 interface CaptionTrackProps {
   intervals: IntervalSet,
@@ -55,13 +67,16 @@ interface CaptionTrackProps {
   target_height: number,
   delimiter: string
   settings?: Settings
+  label_state?: BlockLabelState
 }
 
-@inject("settings")
+@inject("settings", "label_state")
 @mouse_key_events
 @observer
 export default class CaptionTrack extends React.Component<CaptionTrackProps, {}> {
   caption_groups: Interval[][]
+  flat_to_nested: {[index: number]: {group: number, interval: number}[]}
+  nested_to_flat: {[group: number]: {[interval: number]: number}}
   group_refs: any[]
   canvas_ref: any
   settings: Settings | null = null;
@@ -82,40 +97,50 @@ export default class CaptionTrack extends React.Component<CaptionTrackProps, {}>
     let selection = window.getSelection();
 
     // Get the interval indices corresponding to the given selection
-    let get_index = (node: any, is_start: boolean): {group: number, interval: number} => {
+    let get_index = (node: any): {group: number, interval: number, boundary: boolean} => {
       let parent = node.parentElement;
+      let boundary = false;
+
+      // If the spacing span is selected, get the sibling span for the caption
       if (parent.className.indexOf('caption') == -1) {
         parent = parent.parentElement.querySelector('span.caption')!;
-        let ds = parent.dataset;
-        if (is_start) {
-          if (ds.interval == this.caption_groups[ds.group].length - 1) {
-            return {group: parseInt(ds.group) + 1, interval: 0}
-          } else {
-            return {group: parseInt(ds.group), interval: parseInt(ds.interval) + 1};
-          }
-        } else {
-          return {group: parseInt(ds.group), interval: parseInt(ds.interval)};
-        }
+        boundary = true;
+      }
+
+      let ds = parent.dataset;
+      return {group: parseInt(ds.group), interval: parseInt(ds.interval), boundary: boundary};
+    };
+
+    let start = get_index(selection.anchorNode);
+    let end = get_index(selection.focusNode);
+
+    // If the user selects in reverse (i.e. from right to left), then we have to detect this
+    // and swap accordingly
+    if (start.group > end.group || (start.group == end.group && start.interval > end.interval)) {
+      let tmp = start;
+      start = end;
+      end = tmp;
+    }
+
+    // If the user selected the spacing for the start of the selection, the actual selection should
+    // start on the next caption
+    if (start.boundary) {
+      if (start.interval == this.caption_groups[start.group].length - 1) {
+        start = {group: start.group + 1, interval: 0, boundary: false};
       } else {
-        let ds = parent.dataset;
-        return {group: parseInt(ds.group), interval: parseInt(ds.interval)};
+        start = {group: start.group, interval: start.interval + 1, boundary: false};
       }
     }
 
-    let start = get_index(selection.anchorNode, true);
-    let end = get_index(selection.focusNode, false);
-
-    // Add metadata to all intervals between start/end
+    // Add metadata to all captions between start/end
     _.range(start.group, end.group+1).map((group) => {
       let istart = group == start.group ? start.interval : 0;
       let iend = group == end.group ? end.interval+1 : this.caption_groups[group].length;
       _.range(istart, iend).map((interval) => {
-        this.caption_groups[group][interval].metadata.flag = new Metadata_Flag();
+        let selected = this.props.label_state!.captions_selected;
+        selected.add(this.nested_to_flat[group][interval]);
       });
     });
-
-    // Force update since changing the interval set doesn't cause a re-render
-    this.forceUpdate();
   }
 
   key_bindings = {
@@ -132,25 +157,36 @@ export default class CaptionTrack extends React.Component<CaptionTrackProps, {}>
     super(props);
 
     this.caption_groups = [];
+    this.flat_to_nested = {};
+    this.nested_to_flat = {};
 
     let delimiter = props.delimiter;
     let intervals = props.intervals.to_list();
 
     let current_group: any = [];
 
+    let push_intvl = (intvl: Interval, index: number) => {
+      current_group.push(intvl);
+      let group = this.caption_groups.length;
+      let interval = current_group.length;
+      if (!(group in this.nested_to_flat)) { this.nested_to_flat[group] = {}; }
+      this.nested_to_flat[group][interval] = index;
+    };
+
     /* Parse through the captions and split them into groups by the provided delimiter.
      * Note that some new intervals will have to be created if an interval contains a delimiter
      * in the middle. */
-    intervals.forEach(intvl => {
+    intervals.forEach((intvl, index) => {
       let text = (intvl.draw_type as DrawType_Caption).text;
       let parts = text.split(delimiter);
 
       if (parts.length == 1) {
-        current_group.push(intvl);
+        push_intvl(intvl, index);
       } else {
         parts.forEach((part, i) => {
           let part_text = (i == 0 ? '' : delimiter) + part;
-          current_group.push(new Interval(intvl.bounds, new DrawType_Caption(part_text), intvl.metadata));
+          push_intvl(
+            new Interval(intvl.bounds, new DrawType_Caption(part_text), intvl.metadata), index);
 
           if (i != parts.length - 1) {
             this.caption_groups.push(current_group);
@@ -162,8 +198,18 @@ export default class CaptionTrack extends React.Component<CaptionTrackProps, {}>
 
     // Make sure to include the unfinished caption group at the end.
     if (current_group.length > 0) {
-      this.caption_groups.push(current_group);
+      push_intvl(current_group, intervals.length - 1);
     }
+
+    _.map(this.nested_to_flat, (v, k: number) => {
+      _.map(v, (index, k2: number) => {
+        if (!(index in this.flat_to_nested)) {
+          this.flat_to_nested[index] = []
+        }
+
+        this.flat_to_nested[index].push({group: k, interval: k2});
+      });
+    });
 
     // If the first caption contains a delimiter, then this edge case will create an empty
     // first caption group, so we remove it.
@@ -215,7 +261,9 @@ export default class CaptionTrack extends React.Component<CaptionTrackProps, {}>
              ref={this.canvas_ref}>
           {this.caption_groups.map((group, i) => {
              return <div key={i} ref={this.group_refs[i]}>
-               <CaptionGroup group={group} group_index={i} time_state={this.props.time_state} />
+               <CaptionGroup group={group} group_index={i} time_state={this.props.time_state}
+                             label_state={this.props.label_state!}
+                             reverse_index={this.nested_to_flat[i]} />
              </div>;
           })}
         </div>

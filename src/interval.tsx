@@ -1,5 +1,8 @@
-import {DrawType, DrawType_Bbox} from './drawable';
-import {Metadata} from './metadata';
+import * as _ from 'lodash';
+
+import {DrawType, DrawType_Bbox, DrawType_Caption} from './drawable';
+import {Metadata, Metadata_Flag} from './metadata';
+import {Database, DbVideo} from './database';
 
 export abstract class Domain {}
 
@@ -75,5 +78,41 @@ export class IntervalSet {
 
   to_list(): Interval[] {
     return this.intervals;
+  }
+
+  static from_json(intervals: any, video_id: number, database: Database, is_captions: boolean): IntervalSet {
+    let video = database.tables.videos.lookup<DbVideo>(video_id);
+    return new IntervalSet(intervals.map((intvl: any) => {
+      let t1, t2;
+      if (is_captions) {
+        t1 = intvl.t[0];
+        t2 = intvl.t[1];
+      } else {
+        t1 = intvl.t[0] / video.fps;
+        t2 = intvl.t[1] / video.fps;
+      }
+
+      let payload = intvl.payload || {};
+      let draw_type =
+        is_captions
+        ? new DrawType_Caption(payload.draw_type)
+        : new DrawType_Bbox();
+
+      let metadata = _.mapValues((payload.metadata || {}), (v) => {
+        if (v.type == 'flag') {
+          return new Metadata_Flag();
+        } else {
+          throw Error("Not yet imlemented");
+        }
+      });
+
+      return new Interval(
+        new Bounds(
+          t1, t2,
+          new BoundingBox(intvl.x[0], intvl.x[1], intvl.y[0], intvl.y[1]),
+          new Domain_Video(video_id)),
+        draw_type,
+        metadata);
+    }));
   }
 }

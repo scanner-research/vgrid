@@ -11,12 +11,11 @@ import {default_palette} from './color';
 import {mouse_key_events} from './events';
 import {key_dispatch, KeyMode} from './keyboard';
 import {Settings} from './settings';
+import {BlockLabelState} from './label_state';
 
 let Constants = {
   timeline_unexpanded_height: 50,
   timeline_expanded_height: 100,
-
-  new_labels_name: 'new_labels',
 
   tick_height: 20,
   num_ticks: 10
@@ -88,6 +87,7 @@ interface TimelineProps {
   expand: boolean
   video: DbVideo
   settings?: Settings
+  label_state?: BlockLabelState
 }
 
 interface DragTimelineState {
@@ -110,7 +110,7 @@ interface TimelineState {
   new_state: NewIntervalState
 }
 
-@inject("settings")
+@inject("settings", "label_state")
 @mouse_key_events
 @observer
 class Timeline extends React.Component<TimelineProps, {}> {
@@ -127,13 +127,8 @@ class Timeline extends React.Component<TimelineProps, {}> {
   create_interval = () => {
     let newstate = this.state.new_state;
     if (!newstate.creating) {
-      let set_name = Constants.new_labels_name;
-      if (!(set_name in this.props.intervals)) {
-        this.props.intervals[set_name] = new IntervalSet([]);
-      }
-
       let time = this.props.time_state.time;
-      let intvls = this.props.intervals[set_name];
+      let intvls = this.props.label_state!.new_intervals;
       intvls.to_list().push(new Interval(new Bounds(time)));
       intvls.dirty = true;
 
@@ -227,7 +222,7 @@ class Timeline extends React.Component<TimelineProps, {}> {
     }
 
     if (this.state.new_state.creating) {
-      let intvls = this.props.intervals[Constants.new_labels_name];
+      let intvls = this.props.label_state!.new_intervals;
       let target = intvls.to_list()[intvls.to_list().length - 1];
       if (time > this.state.new_state.time_start && time != target.bounds.t2) {
         target.bounds.t2 = time;
@@ -239,6 +234,12 @@ class Timeline extends React.Component<TimelineProps, {}> {
 
   render() {
     let keys = _.keys(this.props.intervals);
+
+    let new_intervals = this.props.label_state!.new_intervals;
+    if (new_intervals.to_list().length > 0) {
+      keys.push('__new_intervals');
+    }
+
     let row_height = this.props.timeline_height / keys.length;
     let time = this.props.time_state.time;
 
@@ -263,7 +264,7 @@ class Timeline extends React.Component<TimelineProps, {}> {
           {keys.map((k, i) =>
             <svg key={k} y={row_height * i} x={0}>
               <TimelineRow
-                intervals={this.props.intervals[k]}
+                intervals={k == '__new_intervals' ? new_intervals : this.props.intervals[k]}
                 row_height={row_height}
                 full_width={full_width}
                 full_duration={video_span}

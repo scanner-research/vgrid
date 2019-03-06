@@ -1,6 +1,6 @@
 import * as React from "react";
 import * as _ from 'lodash';
-import {observer, inject} from 'mobx-react';
+import {observer, inject, Provider} from 'mobx-react';
 import classNames from 'classnames';
 
 import TimeState from './time_state';
@@ -14,12 +14,13 @@ import {Settings} from './settings';
 import {mouse_key_events} from './events';
 import CaptionTrack from './caption_track';
 import {DrawType_Caption} from './drawable';
-import {BlockSelectType} from './select_state';
+import {BlockSelectType, BlockLabelState} from './label_state';
 
 interface VBlockProps {
   intervals: {[key: string]: IntervalSet}
   on_select: (type: BlockSelectType) => void
   selected: BlockSelectType | null
+  label_state: BlockLabelState
   settings?: Settings
   database?: Database
 }
@@ -115,23 +116,25 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
       : '';
 
     return (
-      <div className={classNames({vblock: true, expanded: this.state.expand})}>
-        <div className={`vblock-highlight ${select_class}`}>
-          <div className='vblock-row'>
-            <VideoTrack intervals={current_intervals} {...args} />
-            <MetadataTrack intervals={current_intervals} {...args} />
-            <div className='clearfix' />
+      <Provider label_state={this.props.label_state}>
+        <div className={classNames({vblock: true, expanded: this.state.expand})}>
+          <div className={`vblock-highlight ${select_class}`}>
+            <div className='vblock-row'>
+              <VideoTrack intervals={current_intervals} {...args} />
+              <MetadataTrack intervals={current_intervals} {...args} />
+              <div className='clearfix' />
+            </div>
+            <div className='vblock-row'>
+              <TimelineTrack intervals={this.props.intervals} {...args} />
+            </div>
+            {this.captions !== null
+             ? <div className='vblock-row'>
+               <CaptionTrack intervals={this.captions} delimiter={"> > "} {...args} />
+             </div>
+             : null}
           </div>
-          <div className='vblock-row'>
-            <TimelineTrack intervals={this.props.intervals} {...args} />
-          </div>
-          {this.captions !== null
-           ? <div className='vblock-row'>
-             <CaptionTrack intervals={this.captions} delimiter={"> > "} {...args} />
-           </div>
-           : null}
         </div>
-      </div>
+      </Provider>
     );
   }
 }

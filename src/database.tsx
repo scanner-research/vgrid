@@ -1,3 +1,5 @@
+import * as _ from 'lodash';
+
 export interface Row {
   id: number
 }
@@ -36,5 +38,9 @@ export class Database {
   constructor(tables: Table[]) {
     this.tables = {};
     tables.forEach((table) => { this.tables[table.name] = table });
+  }
+
+  static from_json(tables: any): Database {
+    return new Database(_.keys(tables).map((k) => new Table(k, tables[k])));
   }
 }
