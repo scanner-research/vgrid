@@ -1,6 +1,6 @@
 import React from 'react';
 import {observer} from 'mobx-react';
-import {SettingsContext, DataContext} from './contexts';
+import {UpdateContext, SettingsContext, DataContext} from './contexts';
 import Spinner from './Spinner.jsx';
 import Consumer from 'utils/Consumer.jsx';
 import keyboardManager from 'utils/KeyboardManager.jsx';
@@ -546,6 +546,7 @@ export class Frame extends React.Component {
     if (this.state.startX != -1 && this.state.showDraw) {
       if (keyboardManager.modifiers.has('shift')) {
         this.props.bboxes.push(this._makeBox());
+        this._updateContext();
       }
 
       this.setState({startX: -1, clicked: false});
@@ -632,8 +633,9 @@ export class Frame extends React.Component {
 
   render() {
     return (
-      <Consumer contexts={[SettingsContext, DataContext]}>{(settingsContext, dataContext) => {
+      <Consumer contexts={[SettingsContext, DataContext, UpdateContext]}>{(settingsContext, dataContext, updateContext) => {
           this._dataContext = dataContext;
+          this._updateContext = updateContext;
           return <div className='frame'
                       onMouseDown={this._onMouseDownLocal}
                       onMouseUp={this._onMouseUpLocal}

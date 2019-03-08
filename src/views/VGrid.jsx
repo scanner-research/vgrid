@@ -1,7 +1,7 @@
 import React from 'react';
 import {observable, autorun, toJS} from 'mobx';
 import {LABEL_MODES, SELECT_MODES, Groups} from 'views/Groups.jsx';
-import {SettingsContext, DataContext} from 'views/contexts.jsx';
+import {UpdateContext, SettingsContext, DataContext} from 'views/contexts.jsx';
 import Provider from 'utils/Provider.jsx';
 
 let default_settings = {
@@ -60,7 +60,8 @@ export default class VGrid extends React.Component {
     return (
       <div className='vgrid'>
         <Provider values={[
-          [SettingsContext, this.props.settings], [DataContext, this.props.data]]}>
+          [SettingsContext, this.props.settings], [DataContext, this.props.data],
+          [UpdateContext, () => {this.props.onUpdateResult(this.props.data.groups);}]]}>
           <Groups onSelect={this.props.onSelect} onIgnore={this.props.onIgnore}
             onUpdateGroups={this.props.onUpdateGroups}/>
         </Provider>

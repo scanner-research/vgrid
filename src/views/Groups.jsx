@@ -425,7 +425,7 @@ class Group extends React.Component {
                  /* TODO(wcrichto): toggle labeler */
                  <div key={i} className='element'>
                    <Clip clip={clip} showMeta={true} expand={this.state.expand}
-                         enableLabel={false} />
+                         enableLabel={true} />
                  </div>)}
                <div className='clearfix' />
              </div>
