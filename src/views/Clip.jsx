@@ -199,7 +199,7 @@ export default class Clip extends React.Component {
     let video = this._videoMeta();
     this._currentTime = this.props.clip.min_frame / video.fps;
 
-    if (video.srt_extension != '') {
+    if (!this._settingsContext.get('disable_captions') && video.srt_extension != '') {
       let url = this.asset_url(`${this._settingsContext.get('endpoints').subtitles}?video=${video.id}&json=true`);
       axios.get(url).then((response) => {
         let subs = response.data.captions;
@@ -337,9 +337,9 @@ export default class Clip extends React.Component {
           let td_style = {width: `${100 / meta_per_row}%`};
 
           let subStyle = {
-            width: this.props.expand ? 480 : small_width,
+            width: this.props.expand ? Math.max(480, video.width) : small_width,
             fontSize: this.props.expand ? '14px' : '11px',
-            height: this.props.expand ? '100%' : 100
+            height: this.props.expand ? 250 : 100
           };
 
           let Subtitle = () => {
@@ -362,7 +362,7 @@ export default class Clip extends React.Component {
                       onMouseEnter={this._onMouseEnter}
                       onMouseLeave={this._onMouseLeave}
                       ref={(n) => {this._n = n;}}>
-            <div className='video-row' style={{height: small_height + (this.props.expand ? 0 : subStyle.height)}}>
+            <div className='video-row' style={{height: small_height + (this.props.expand || settingsContext.get('disable_captions') ? 0 : subStyle.height)}}>
               <div className='media-container' data-vjs-player>
                 <div style={{display: this.state.videoState == VideoState.Showing ? 'block' : 'none'}}>
                    <VideoPlayer

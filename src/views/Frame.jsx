@@ -428,7 +428,7 @@ class ProgressiveImage extends React.Component {
       <div>
         {this.state.loaded
          ? null
-         : <Spinner />}
+         : <div style={{width: target_width, height: target_height}}><Spinner /></div>}
         <img src={this.props.src} draggable={false} onLoad={this._onLoad} onError={this._onError} style={imgStyle} />
         {crop !== null
          ? <div style={cropStyle} />
