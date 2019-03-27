@@ -71,9 +71,9 @@ export default class VideoTrack extends React.Component<VideoTrackProps, VideoTr
     let frame = Math.round(time * video.fps);
 
     // Get assets paths
-    let image_path = asset_url(
-      `${this.props.settings!.endpoints.frames}?path=${encodeURIComponent(video.path)}&frame=${frame}`);
-    let video_path = asset_url(`${this.props.settings!.endpoints.videos}/${video.path}`);
+    let image_path =
+      `${this.props.settings!.endpoints.frames}?path=${encodeURIComponent(video.path)}&frame=${frame}`;
+    let video_path = `${this.props.settings!.endpoints.videos}/${video.path}`;
 
     return <div className='video-track'>
 

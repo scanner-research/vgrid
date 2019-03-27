@@ -8,7 +8,7 @@ import 'main.scss';
 import {VBlock} from'./vblock';
 import {IntervalSet} from './interval';
 import {Database} from './database';
-import {default_settings} from './settings';
+import {default_settings, Settings} from './settings';
 import {default_palette, ColorMap} from './color';
 import {BlockSelectType, BlockLabelState, LabelState} from './label_state';
 
@@ -21,6 +21,7 @@ export * from './metadata';
 export interface VGridProps {
   intervals: {[key: string]: IntervalSet}[]
   database: Database
+  settings?: {[key: string]: any}
   label_callback?: (state: LabelState) => void
 }
 
@@ -28,6 +29,7 @@ export interface VGridProps {
 export class VGrid extends React.Component<VGridProps, {}> {
   label_state: LabelState
   color_map: ColorMap
+  settings: Settings
 
   constructor(props: VGridProps) {
     super(props);
@@ -49,6 +51,13 @@ export class VGrid extends React.Component<VGridProps, {}> {
         deepObserve((this.label_state as any)[k], () => {
           this.props.label_callback!(this.label_state);
         });
+      });
+    }
+
+    this.settings = default_settings;
+    if (this.props.settings) {
+      _.keys(this.props.settings).forEach((k) => {
+        (this.settings as any)[k] = this.props.settings![k];
       });
     }
   }
