@@ -73,9 +73,11 @@ export class Video extends React.Component<VideoProps, {loaded: boolean}> {
       display: this.state.loaded ? 'block' : 'none'
     };
 
+
+
     return <div>
       <video controls={this.props.expand} style={video_style} ref={this.video}>
-        <source src={this.props.src} />
+        <source src={`${this.props.src}#t=${this.props.time_state.time}`} />
       </video>
       {!this.state.loaded ? <Spinner width={this.props.width} height={this.props.height} /> : null}
     </div>
