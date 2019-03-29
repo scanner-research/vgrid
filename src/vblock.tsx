@@ -124,9 +124,11 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
               <MetadataTrack intervals={current_intervals} {...args} />
               <div className='clearfix' />
             </div>
-            <div className='vblock-row'>
-              <TimelineTrack intervals={this.props.intervals} {...args} />
-            </div>
+            {this.props.settings!.show_timeline
+             ? <div className='vblock-row'>
+               <TimelineTrack intervals={this.props.intervals} {...args} />
+             </div>
+             : null}
             {this.captions !== null
              ? <div className='vblock-row'>
                <CaptionTrack intervals={this.captions} delimiter={"> > "} {...args} />

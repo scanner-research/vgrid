@@ -10,7 +10,8 @@ export interface Settings {
   spinner_dev_mode: boolean,
   endpoints: Endpoints,
   key_mode: KeyMode,
-  use_frameserver: boolean
+  use_frameserver: boolean,
+  show_timeline: boolean
 }
 
 export let default_settings = {
@@ -21,5 +22,6 @@ export let default_settings = {
     frames: '/frameserver/fetch'
   },
   key_mode: KeyMode.Standalone,
-  use_frameserver: false
+  use_frameserver: false,
+  show_timeline: true
 };
