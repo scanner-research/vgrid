@@ -19,7 +19,7 @@ export * from './drawable';
 export * from './metadata';
 
 export interface VGridProps {
-  intervals: {[key: string]: IntervalSet}[]
+  interval_blocks: {[key: string]: IntervalSet}[]
   database: Database
   settings?: {[key: string]: any}
   label_callback?: (state: LabelState) => void
@@ -74,10 +74,10 @@ export class VGrid extends React.Component<VGridProps, {}> {
   render() {
     let selected = this.label_state.blocks_selected;
     return <Provider
-             database={this.props.database} colors={this.color_map}  settings={default_settings}>
+             database={this.props.database} colors={this.color_map} settings={default_settings}>
       <div className='vgrid'>
-        {this.props.intervals.map((intvls, i) =>
-          <VBlock key={i} intervals={intvls}
+        {this.props.interval_blocks.map((block, i) =>
+          <VBlock key={i} intervals={block}
                   on_select={(type) => this.on_block_selected(i, type)}
                   selected={selected.has(i) ? selected.get(i)! : null}
                   label_state={this.label_state.block_labels.get(i)!} />

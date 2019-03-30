@@ -326,8 +326,6 @@ class TimelineControls extends React.Component<TimelineControlsProps, {}> {
     let new_end;
     let new_span = (end - start) / 2;
 
-    console.log('+');
-
     if (start <= cur_time && cur_time <= end) {
       // zoom in, centered around current time
       if (cur_time - new_span / 2 > start) {
