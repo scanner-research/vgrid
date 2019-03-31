@@ -1,5 +1,5 @@
 import {observable, ObservableMap, ObservableSet, toJS} from 'mobx';
-import {IntervalSet} from './interval';
+import {VData, IntervalSet} from './interval';
 
 // Indicates the kind of selection a block has
 export enum BlockSelectType {

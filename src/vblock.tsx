@@ -49,7 +49,7 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
     this.captions = null;
     for (let k of _.keys(this.props.intervals)) {
       let is = this.props.intervals[k];
-      if (is.to_list()[0].draw_type instanceof DrawType_Caption) {
+      if (is.to_list()[0].data.draw_type instanceof DrawType_Caption) {
         this.captions = is;
       }
     }

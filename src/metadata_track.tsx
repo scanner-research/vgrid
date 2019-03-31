@@ -5,6 +5,7 @@ import {observer} from 'mobx-react';
 import {IntervalSet, Interval} from './interval';
 import TimeState from './time_state';
 import {DbVideo} from './database';
+import {Metadata_Generic} from './metadata';
 
 /* The metadata track shows the interval metadata for all intervals at the current time. */
 
@@ -22,7 +23,8 @@ export let MetadataTrack: React.SFC<MetadataTrackProps> = observer((props) => {
   let metadata = _.keys(props.intervals).reduce(
     ((meta: {[key: string]: any}, k: string) =>
       _.merge(meta, props.intervals[k].to_list().reduce(
-        ((meta: {[key: string]: any}, intvl: Interval) => _.merge(meta, intvl.metadata)), {}))),
+        ((meta: {[key: string]: any}, intvl: Interval) =>
+          _.merge(meta, _.filter(intvl.data.metadata, (v) => v instanceof Metadata_Generic))), {}))),
     {});
 
   let style = {

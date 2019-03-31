@@ -129,7 +129,8 @@ class Timeline extends React.Component<TimelineProps, {}> {
     if (!newstate.creating) {
       let time = this.props.time_state.time;
       let intvls = this.props.label_state!.new_intervals;
-      intvls.to_list().push(new Interval(new Bounds(time)));
+      intvls.to_list().push(new Interval(
+        new Bounds(time), {draw_type: new DrawType_Bbox(), metadata: {}}));
       intvls.dirty = true;
 
       this.setState({new_state: {
@@ -204,7 +205,6 @@ class Timeline extends React.Component<TimelineProps, {}> {
   }
 
   onMouseUp = (x: number, y: number) => {
-    console.log(x, y);
     if (!this.state.drag_state.dragging) {
       // If the user just normally clicks on the timeline, shift the cursor to that point
       this.props.time_state.time = x_to_time(
@@ -354,9 +354,6 @@ class TimelineControls extends React.Component<TimelineControlsProps, {}> {
   }
 
   zoom_out = () => {
-
-    console.log('-');
-
     let start = this.props.timeline_bounds.start;
     let end = this.props.timeline_bounds.end;
     let new_start;

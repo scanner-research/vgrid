@@ -1,6 +1,7 @@
 import * as React from "react";
 import * as _ from 'lodash';
 import {inject, observer} from 'mobx-react';
+import {Metadata_Categorical} from './metadata';
 
 import {Interval, Domain, Bounds, IntervalSet} from './interval';
 import {ColorMap} from './color';
@@ -23,11 +24,18 @@ export class SpatialOverlay extends React.Component<SpatialOverlayProps, {}> {
     return <div className='spatial-overlay'>
       {_.keys(this.props.intervals).map((k) =>
         this.props.intervals[k].to_list().map((intvl, i) => {
-          let View = intvl.draw_type.view();
+          let View = intvl.data.draw_type.view();
+          let color = this.props.colors![k];
+          _.forEach(intvl.data.metadata, (meta, name) => {
+            if (meta instanceof Metadata_Categorical) {
+              color = 'blue';
+            }
+          });
+
           return View
                ? <View
                    key={i} interval={intvl} width={this.props.width} height={this.props.height}
-                   color={this.props.colors![k]} />
+                   color={color} />
                : null;
         }))}
     </div>

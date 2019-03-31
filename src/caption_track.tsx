@@ -33,7 +33,7 @@ let CaptionGroup: React.SFC<CaptionGroupProps> = observer((props: CaptionGroupPr
   let selected = props.label_state.captions_selected;
   let flags: boolean[] =
     props.group.map((intvl, i) => (
-      Object.keys(_.filter(intvl.metadata, (v) => v instanceof Metadata_Flag)).length > 0 ||
+      Object.keys(_.filter(intvl.data.metadata, (v) => v instanceof Metadata_Flag)).length > 0 ||
       (selected !== undefined && selected.has(props.reverse_index[i]))));
 
   return <div className='caption-group'>{
@@ -45,7 +45,7 @@ let CaptionGroup: React.SFC<CaptionGroupProps> = observer((props: CaptionGroupPr
       return <span key={i}>
         <span className={classNames({caption: true, active: overlaps, flag: flag})}
               data-group={props.group_index} data-interval={i}>
-          {(intvl.draw_type as DrawType_Caption).text}
+          {(intvl.data.draw_type as DrawType_Caption).text}
         </span>
         {/* To avoid discontinuously highlighting individual words, we also highlight the spacing
           * if the next caption is also supposed to be highlighted. */}
@@ -177,7 +177,7 @@ export default class CaptionTrack extends React.Component<CaptionTrackProps, {}>
      * Note that some new intervals will have to be created if an interval contains a delimiter
      * in the middle. */
     intervals.forEach((intvl, index) => {
-      let text = (intvl.draw_type as DrawType_Caption).text;
+      let text = (intvl.data.draw_type as DrawType_Caption).text;
       let parts = text.split(delimiter);
 
       if (parts.length == 1) {
@@ -186,7 +186,10 @@ export default class CaptionTrack extends React.Component<CaptionTrackProps, {}>
         parts.forEach((part, i) => {
           let part_text = (i == 0 ? '' : delimiter) + part;
           push_intvl(
-            new Interval(intvl.bounds, new DrawType_Caption(part_text), intvl.metadata), index);
+            new Interval(
+              intvl.bounds,
+              {draw_type: new DrawType_Caption(part_text), metadata: intvl.data.metadata}),
+            index);
 
           if (i != parts.length - 1) {
             this.caption_groups.push(current_group);
@@ -213,7 +216,7 @@ export default class CaptionTrack extends React.Component<CaptionTrackProps, {}>
 
     // If the first caption contains a delimiter, then this edge case will create an empty
     // first caption group, so we remove it.
-    if ((this.caption_groups[0][0].draw_type as DrawType_Caption).text == '') {
+    if ((this.caption_groups[0][0].data.draw_type as DrawType_Caption).text == '') {
       this.caption_groups.splice(0, 1);
     }
 

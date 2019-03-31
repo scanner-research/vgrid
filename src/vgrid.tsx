@@ -35,13 +35,13 @@ export class VGrid extends React.Component<VGridProps, {}> {
     super(props);
 
     this.label_state = new LabelState();
-    props.intervals.forEach((_, i) => {
+    props.interval_blocks.forEach((_, i) => {
       this.label_state.block_labels.set(i, new BlockLabelState());
     });
 
     // Set a default color for each interval set
     this.color_map = {};
-    _.keys(this.props.intervals[0]).forEach((k, i) => {
+    _.keys(this.props.interval_blocks[0]).forEach((k, i) => {
       this.color_map[k] = default_palette[i];
     });
 
