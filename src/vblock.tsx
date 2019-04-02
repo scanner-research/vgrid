@@ -7,7 +7,7 @@ import TimeState from './time_state';
 import VideoTrack from './video_track';
 import TimelineTrack from './timeline_track';
 import {MetadataTrack} from './metadata_track';
-import {IntervalSet, Bounds, Domain_Video} from './interval';
+import {IntervalSet, Bounds} from './interval';
 import {KeyMode, key_dispatch} from './keyboard';
 import {Database, DbVideo} from './database';
 import {Settings} from './settings';
@@ -17,6 +17,7 @@ import {DrawType_Caption} from './drawable';
 import {BlockSelectType, BlockLabelState} from './label_state';
 
 interface VBlockProps {
+  video_id: number
   intervals: {[key: string]: IntervalSet}
   on_select: (type: BlockSelectType) => void
   selected: BlockSelectType | null
@@ -84,10 +85,8 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
   }
 
   render() {
-    let example_interval = _.values(this.props.intervals)[0].to_list()[0];
     let current_intervals = this.current_intervals();
-    let video_id = (example_interval.bounds.domain as Domain_Video).video_id;
-    let video = this.props.database!.tables.videos.lookup<DbVideo>(video_id);
+    let video = this.props.database!.tables.videos.lookup<DbVideo>(this.props.video_id);
 
     // Compute asset height
     let target_height;

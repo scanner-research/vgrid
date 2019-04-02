@@ -3,6 +3,7 @@ import * as _ from 'lodash';
 import {inject, observer} from 'mobx-react';
 import {Metadata_Categorical} from './metadata';
 
+import {Database, DbCategory} from './database';
 import {Interval, Domain, Bounds, IntervalSet} from './interval';
 import {ColorMap} from './color';
 
@@ -15,8 +16,10 @@ interface SpatialOverlayProps {
   height: number,
   time: number, // just here to trigger re-render when time changes
   colors?: ColorMap
+  database?: Database
 }
 
+@inject("database")
 @inject("colors")
 @observer
 export class SpatialOverlay extends React.Component<SpatialOverlayProps, {}> {
@@ -28,7 +31,8 @@ export class SpatialOverlay extends React.Component<SpatialOverlayProps, {}> {
           let color = this.props.colors![k];
           _.forEach(intvl.data.metadata, (meta, name) => {
             if (meta instanceof Metadata_Categorical) {
-              color = 'blue';
+              color = this.props.database!.table(meta.category_type)
+                          .lookup<DbCategory>(meta.category).color;
             }
           });
 

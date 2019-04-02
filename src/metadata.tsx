@@ -56,3 +56,11 @@ export class Metadata_CaptionMeta extends Metadata {
     throw new Error('Not yet implemented');
   }
 }
+
+export let metadata_from_json = (obj: any): Metadata => {
+  let types: any = {
+    'Metadata_Categorical': Metadata_Categorical
+  };
+
+  return types[obj.type].from_json(obj.args);
+};

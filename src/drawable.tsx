@@ -32,6 +32,7 @@ export abstract class DrawType {
 
 export class DrawType_Bbox extends DrawType {
   view(): React.ComponentType<Drawable> { return BoundingBoxView; }
+  static from_json(obj: any): DrawType_Bbox { return new DrawType_Bbox(); }
 }
 
 export class DrawType_Keypoints extends DrawType {
@@ -48,3 +49,11 @@ export class DrawType_Caption extends DrawType {
 
   view(): null { return null; }
 }
+
+export let drawtype_from_json = (obj: any): DrawType => {
+  let types: any = {
+    'DrawType_Bbox': DrawType_Bbox
+  };
+
+  return new types[obj.type](obj.args);
+};

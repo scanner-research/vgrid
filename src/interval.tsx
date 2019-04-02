@@ -1,8 +1,8 @@
 import * as _ from 'lodash';
 import * as rekall from 'rekall';
 
-import {DrawType, DrawType_Bbox, DrawType_Caption} from './drawable';
-import {Metadata, Metadata_Flag, Metadata_Categorical} from './metadata';
+import {DrawType, drawtype_from_json} from './drawable';
+import {Metadata, metadata_from_json} from './metadata';
 import {Database, DbVideo} from './database';
 
 export interface VData {
@@ -13,6 +13,13 @@ export interface VData {
 export class Interval extends rekall.Interval<VData> {}
 export class IntervalSet extends rekall.IntervalSet<VData> {}
 export {Bounds, BoundingBox, Domain, Domain_Video} from 'rekall';
+
+export let vdata_from_json = (obj: any): VData => {
+  return {
+    draw_type: drawtype_from_json(obj.draw_type),
+    metadata: _.mapValues(obj.metadata, metadata_from_json)
+  }
+};
 
 /*
  *
