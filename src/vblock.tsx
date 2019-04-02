@@ -86,7 +86,7 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
 
   render() {
     let current_intervals = this.current_intervals();
-    let video = this.props.database!.tables.videos.lookup<DbVideo>(this.props.video_id);
+    let video = this.props.database!.table('videos').lookup<DbVideo>(this.props.video_id);
 
     // Compute asset height
     let target_height;

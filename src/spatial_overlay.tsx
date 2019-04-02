@@ -31,7 +31,8 @@ export class SpatialOverlay extends React.Component<SpatialOverlayProps, {}> {
           let color = this.props.colors![k];
           _.forEach(intvl.data.metadata, (meta, name) => {
             if (meta instanceof Metadata_Categorical) {
-              color = this.props.database!.table(meta.category_type)
+              color = this.props.database!
+                          .table(meta.category_type)
                           .lookup<DbCategory>(meta.category).color;
             }
           });

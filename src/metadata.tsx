@@ -25,17 +25,17 @@ export class Metadata_Generic extends Metadata {
 
 // Categorical metadata, e.g. gender or shot type.
 export class Metadata_Categorical extends Metadata {
+  category_type: string
   category: number
-  category_type: number
 
-  constructor(category: number, category_type: number) {
+  constructor(category_type: string, category: number) {
     super();
-    this.category = category;
     this.category_type = category_type;
+    this.category = category;
   }
 
   static from_json(obj: any): Metadata_Categorical {
-    return new Metadata_Categorical(obj.category, obj.category_type);
+    return new Metadata_Categorical(obj.category_type, obj.category);
   }
 }
 

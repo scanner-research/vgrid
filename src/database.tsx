@@ -36,25 +36,22 @@ export class Table {
 }
 
 export class Database {
-  tables: {[table: string]: Table}
-  id_to_name: {[id: number]: string}
+  private tables: {[table: string]: Table}
 
-  constructor(tables: Table[], id_to_name: {[id: number]: string}) {
+  constructor(tables: Table[]) {
     this.tables = {};
     tables.forEach((table) => { this.tables[table.name] = table });
-    this.id_to_name = id_to_name;
   }
 
-  table = (id: number): Table => {
-    if (!(id in this.id_to_name)) {
-      throw new Error(`Error: database does not contain table id ${id}`);
+  table = (name: string): Table => {
+    if (!(name in this.tables)) {
+      throw new Error(`Error: database does not contain table ${name}`);
     }
-    return this.tables[this.id_to_name[id]];
+    return this.tables[name];
   }
 
   static from_json(obj: any): Database {
-    return new Database(
-      _.keys(obj.tables).map((k) => new Table(k, obj.tables[k])),
-      obj.id_to_name);
+    return new Database(_.keys(obj).map((k) => new Table(k, obj[k])))
+
   }
 }
