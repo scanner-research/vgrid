@@ -1,32 +1,35 @@
-// https://itnext.io/how-to-package-your-react-component-for-distribution-via-npm-d32d4bf71b4f
+"use strict"
 
-const path = require('path');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const pkg = require('./package.json');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = {
   context: __dirname,
 
-  entry: {
-    index: './src/index'
-  },
+  entry: "./src/vgrid.tsx",
 
-  // Include source maps for all compiled files
-  devtool: 'source-map',
-
-  // Put all output files at assets/bundles
   output: {
-    path: path.resolve('./dist'),
-    filename: `${pkg.name}.js`,
-    library: pkg.name,
+    filename: "bundle.js",
+    path: __dirname + "/dist",
     libraryTarget: 'umd',
-    publicPath: '/dist/',
+    library: pkg.name,
     umdNamedDefine: true
   },
+
 
   plugins: [
      new ExtractTextPlugin(`${pkg.name}.css`),
   ],
+
+  // Enable sourcemaps for debugging webpack's output.
+  devtool: "source-map",
+
+  resolve: {
+    modules: ['node_modules', 'src', 'assets', 'css'],
+
+    // Add '.ts' and '.tsx' as resolvable extensions.
+    extensions: [".ts", ".tsx", ".js", ".json", '.scss']
+  },
 
   module: {
     rules: [
@@ -56,25 +59,12 @@ module.exports = {
         }]
       },
 
-      {
-        // Compile JSX files to JS
-        test: /\.jsx?$/,
-        exclude: /node_modules/,
-        use: [{
-          loader: 'babel-loader',
-          options: {
-            plugins: ['transform-decorators-legacy'],
-            presets: ['env', 'stage-0', 'react']
-          }
-        }]
-      }
-    ]
-  },
+      // All files with a '.ts' or '.tsx' extension will be handled by 'awesome-typescript-loader'.
+      { test: /\.tsx?$/, loader: "awesome-typescript-loader" },
 
-  // TODO: generic way to resolve aliases?
-  resolve: {
-    modules: ['node_modules', 'assets', 'css', 'src'],
-    extensions: ['.js', '.jsx', '.scss', '.css'],
+      // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
+      { enforce: "pre", test: /\.js$/, loader: "source-map-loader" }
+    ]
   },
 
   externals: {
@@ -92,4 +82,4 @@ module.exports = {
       root: 'ReactDOM'
     }
   }
-}
+};

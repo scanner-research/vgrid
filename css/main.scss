@@ -1,13 +1,15 @@
 .vgrid {
-    @import '~react-select/dist/react-select.css';
     @import '~open-iconic/font/css/open-iconic-bootstrap.css';
-    @import 'groups';
+    @import './video-track.scss';
 
     font-family: 'Lato', 'Helvetica Neue', Arial, sans-serif;
+    padding-bottom: 20px;
 
     .spinner {
-        content: url('../assets/images/spinner.gif');
+        img { margin: 0 auto; display: block; }
     }
+
+    .btn-group .btn { margin-left: 0; }
 
     .clearfix {
         clear: both;

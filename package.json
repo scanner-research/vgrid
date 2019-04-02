@@ -1,10 +1,16 @@
 {
   "name": "vgrid",
+  "version": "0.1.0",
   "description": "",
-  "version": "1.0.0",
+  "main": "dist/bundle.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack",
+    "watch": "webpack -w --mode=development"
+  },
   "repository": {
     "type": "git",
-    "url": "https://github.com/scanner-research/vgrid.git"
+    "url": "git+https://github.com/scanner-research/vgrid.git"
   },
   "author": "Will Crichton",
   "license": "Apache-2.0",
@@ -12,50 +18,37 @@
     "url": "https://github.com/scanner-research/vgrid/issues"
   },
   "homepage": "https://github.com/scanner-research/vgrid#readme",
-  "scripts": {
-    "build": "webpack",
-    "prepublish": "webpack -p",
-    "watch": "webpack -w"
-  },
-  "main": "dist/vgrid.js",
   "peerDependencies": {
-    "react": "^16.3.2",
-    "react-dom": "^16.3.2",
+    "react": "^16.8.2",
+    "react-dom": "^16.8.2",
     "mobx": "^4.8.0",
     "mobx-react": "^5.4.3"
   },
   "devDependencies": {
-    "babel-core": "^6.24.1",
-    "babel-loader": "^7.0.0",
-    "babel-plugin-transform-decorators-legacy": "^1.3.4",
-    "babel-preset-env": "^1.6.1",
-    "babel-preset-react": "^6.24.1",
-    "babel-preset-stage-0": "^6.24.1",
-    "css-loader": "^0.28.1",
-    "extract-text-webpack-plugin": "^2.1.0",
-    "file-loader": "^0.11.2",
-    "node-sass": "^4.9.3",
-    "sass-loader": "^6.0.7",
-    "style-loader": "^0.23.0",
-    "url-loader": "^0.5.9",
-    "webpack": "^2.5.1",
-    "react": "^16.3.2",
-    "react-dom": "^16.3.2",
+    "@types/classnames": "^2.2.7",
+    "@types/lodash": "^4.14.123",
+    "@types/react": "^16.8.3",
+    "@types/react-dom": "^16.8.2",
+    "awesome-typescript-loader": "^5.2.1",
+    "css-loader": "^2.1.0",
+    "extract-text-webpack-plugin": "^4.0.0-beta.0",
     "mobx": "^4.8.0",
-    "mobx-react": "^5.4.3"
+    "mobx-react": "^5.4.3",
+    "node-sass": "^4.11.0",
+    "react": "^16.8.2",
+    "react-dom": "^16.8.2",
+    "sass-loader": "^7.1.0",
+    "source-map-loader": "^0.2.4",
+    "style-loader": "^0.23.1",
+    "typescript": "^3.3.3",
+    "url-loader": "^1.1.2",
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.2.3"
   },
   "dependencies": {
-    "bootstrap": "^3.3.7",
-    "lodash": "^4.17.4",
+    "classnames": "^2.2.6",
+    "mobx-utils": "^5.2.0",
     "open-iconic": "^1.1.1",
-    "react-bootstrap": "0.31.3",
-    "react-select": "^1.2.1",
-    "video.js": "^7.0.3",
-    "videojs-markers": "^1.0.1",
-    "axios": "^0.18.0"
-  },
-  "files": ["dist"],
-  "config": {
-    "unsafe-perm": true
+    "react-select": "^2.4.1"
   }
 }
