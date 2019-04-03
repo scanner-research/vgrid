@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import * as rekall from 'rekall';
+import * as rekall from '@wcrichto/rekall';
 
 import {DrawType, drawtype_from_json} from './drawable';
 import {Metadata, metadata_from_json} from './metadata';
@@ -12,7 +12,7 @@ export interface VData {
 
 export class Interval extends rekall.Interval<VData> {}
 export class IntervalSet extends rekall.IntervalSet<VData> {}
-export {Bounds, BoundingBox, Domain, Domain_Video} from 'rekall';
+export {Bounds, BoundingBox, Domain, Domain_Video} from '@wcrichto/rekall';
 
 export let vdata_from_json = (obj: any): VData => {
   return {
