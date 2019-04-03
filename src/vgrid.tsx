@@ -17,6 +17,7 @@ export * from './interval';
 export * from './database';
 export * from './drawable';
 export * from './metadata';
+export * from './label_state';
 
 export interface VGridProps {
   interval_blocks: {interval_sets: {[key: string]: IntervalSet}, video_id: number}[]
