@@ -6,5 +6,6 @@ deploy:
   email: wcrichto@cs.stanford.edu
   api_key:
     secure: mJkcsEbnuJRGnZzrazm3dsI5VMIEsx9hQNfhB9wEiLhWDoTeWxPfuJkFEVTClFfZI3cMmI16QtmVQyPv4KsYu7K59faYQBN5E3Igi+B3UK1G0bn69erFeSoIJmMYZgtQK03NtNMKObC/PoFJSFDvEldIkT8KEAnj6HSkDeSfSWoGUcYW6x0aXU+FO1ynYhODJLhUm3JfppE0Yx9iMTdlbfkbSJ2IZBFuOCOdRHjGBQMMhXTONVsZ2YrTMhZpVKavgjfkuPoJNnsE+9h+F295HPnuuCVyGm9WUbPUYR4FxFYCqvGYmjjAb0MAfyPcnubgiucG2eQbn0xWfZJl2DSIjiNqdRnWX1H2tCm3pjrLWtLnws64yAqcVmEmn22iPUlpYXEkYL28/IFfgfa+RekaUKL4gHMTk9poSFnqwwNyZeoPTHKfafflbqvLpA0o+lzJHlani/6Ai227EvV+ayHJxzj3iPrx6U8LV/97bdikTCG7+KOirtv+AYsNG515tolq6UJ2/gXqtneQUxtxT14rLe3ptCUMpSwmFdoJ4Sa+R50ez+i+ceMry3DShHqHuglFgYEZKnUZ7MEMcFde1Dt6RDHjGd4P/MYj4tqLc8PpCThDf+NlC6lwuMgtTHD5NvtmtaiVusjkF/qXK28+8WWDOyUfwlO8saNqYotFAt45v+E=
+  skip_cleanup: true # Don't clean/reset working directory
   on:
     tags: true
