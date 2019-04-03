@@ -51,6 +51,6 @@
     "mobx-utils": "^5.2.0",
     "open-iconic": "^1.1.1",
     "react-select": "^2.4.1",
-    "@wcrichto/rekall": "^0.1.0"
+    "@wcrichto/rekall": "latest"
   }
 }
