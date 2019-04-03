@@ -11,7 +11,7 @@ Documentation coming soon!
 ### From npm
 
 ```
-npm install @wcrichto/vgrid
+npm install --save @wcrichto/vgrid
 ```
 
 ### From source
@@ -21,4 +21,5 @@ git clone https://github.com/scanner-research/vgrid
 cd vgrid
 npm install
 npm run prepublishOnly
+npm link
 ```
