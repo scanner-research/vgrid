@@ -94,7 +94,7 @@ export default class CaptionTrack extends React.Component<CaptionTrackProps, {}>
    * to get the full list of captions to select.
    */
   select_text = () => {
-    let selection = window.getSelection();
+    let selection: any = window.getSelection();
 
     // Get the interval indices corresponding to the given selection
     let get_index = (node: any): {group: number, interval: number, boundary: boolean} => {

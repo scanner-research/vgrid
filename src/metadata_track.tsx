@@ -20,7 +20,7 @@ interface MetadataTrackProps {
 
 export let MetadataTrack: React.SFC<MetadataTrackProps> = observer((props) => {
 
-  let metadata = _.keys(props.intervals).reduce(
+  let metadata: any = _.keys(props.intervals).reduce(
     ((meta: {[key: string]: any}, k: string) =>
       _.merge(meta, props.intervals[k].to_list().reduce(
         ((meta: {[key: string]: any}, intvl: Interval) =>
