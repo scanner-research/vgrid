@@ -1,7 +1,5 @@
-"use strict"
-
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const pkg = require('./package.json');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = {
   context: __dirname,
@@ -18,7 +16,7 @@ module.exports = {
 
 
   plugins: [
-     new ExtractTextPlugin(`${pkg.name}.css`),
+     new MiniCssExtractPlugin({filename: 'vgrid.css'}),
   ],
 
   // Enable sourcemaps for debugging webpack's output.
@@ -36,13 +34,7 @@ module.exports = {
       {
         // Compile Sass into CSS, bundle into a single file
         test: /\.*css$/,
-        use: ExtractTextPlugin.extract({
-          fallback: 'style-loader',
-          use: [
-            'css-loader',
-            'sass-loader'
-          ]
-        })
+        use: ['style-loader', MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader']
       },
 
       {
