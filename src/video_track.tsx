@@ -72,13 +72,12 @@ export default class VideoTrack extends React.Component<VideoTrackProps, VideoTr
 
     // Get assets paths
     let image_path =
-      `${this.props.settings!.endpoints.frames}?path=${encodeURIComponent(video.path)}&frame=${frame}`;
-    let video_path = `${this.props.settings!.endpoints.videos}/${video.path}`;
+      `${this.props.settings!.frameserver_endpoint}?path=${encodeURIComponent(video.path)}&frame=${frame}`;
 
     return <div className='video-track'>
 
       {!this.props.settings!.use_frameserver || this.state.video_active
-       ? <Video src={video_path} width={this.props.target_width} height={this.props.target_height}
+       ? <Video src={video.path} width={this.props.target_width} height={this.props.target_height}
                 time_state={this.props.time_state} expand={this.props.expand} ref={this.video} />
        : <ProgressiveImage
            src={image_path} width={video.width} height={video.height}

@@ -74,9 +74,15 @@
         left: 0;
         z-index: 1000;
     }
+
+    /* Make the video controls on Chrome always show over the spatial overlay */
+    video::-webkit-media-controls-panel {
+        position: relative;
+        z-index: 1001;
+    }
 }
 
-.spatial-overlay {}
+.spatial-overlay {z-index: 1;}
 
 .bounding-box {
     position: absolute;
