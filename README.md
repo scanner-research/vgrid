@@ -10,6 +10,8 @@ Documentation coming soon!
 
 ## Installation
 
+You must have [npm](https://www.npmjs.com/get-npm) installed.
+
 ### From npm
 
 ```
@@ -22,6 +24,7 @@ npm install --save @wcrichto/vgrid
 git clone https://github.com/scanner-research/vgrid
 cd vgrid
 npm install
+npm link @wcrichto/rekall # only if you installed rekall from source
 npm run prepublishOnly
 npm link
 ```
