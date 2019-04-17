@@ -35,10 +35,13 @@ npm link
 
 ## Usage
 
-```js
+This is an example that shows a block with a single interval from time 0s to 10s for a video `test.mp4`.
+
+```jsx
 import ReactDOM from 'react-dom';
 import {VGrid, Database, IntervalSet, Interval, Bounds} from '@wcrichto/vgrid';
 
+// Setup intervals
 let interval_blocks = {
   video_id: 0,
   interval_sets: {
@@ -46,17 +49,21 @@ let interval_blocks = {
   }
 };
 
+// Associate video IDs with metadata
 let database = new Database(
-  new Table('videos', [{path: 'test.mp4', num_frames: 1000, width: 640, height: 480, fps: 29.97}]));
+  new Table('videos', [{id: 0, path: 'test.mp4', num_frames: 1000, width: 640, height: 480, fps: 29.97}]));
 
+// Modify display settings
 let settings = {
   show_timeline: false
 };
 
+// Run code when user provides labeling input
 let label_callback = (label_state) => {
   console.log(label_state.blocks_selected);
 };
 
+// Render React component into a <div id="#vgrid"></div>
 ReactDOM.render(
   <VGrid interval_blocks={interval_blocks} database={database}
          settings={settings} label_callback={label_callback} />,
