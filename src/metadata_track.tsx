@@ -32,13 +32,13 @@ export let MetadataTrack: React.SFC<MetadataTrackProps> = observer((props) => {
   let style = {
     width: props.expand ? 100 : props.width,
     height: props.expand ? props.height : 20,
-    display: _.keys(metadata).length == 0 ? 'none' : 'block'
+    display: _.keys(generic_metadata).length == 0 ? 'none' : 'block'
   };
 
   return <div className='metadata-track' style={style}>
-    {_.keys(metadata).map((k) => <div className='metadata-entry' key={k}>
+    {_.keys(generic_metadata).map((k) => <div className='metadata-entry' key={k}>
       <span className='metadata-key'>{k}:</span> &nbsp;
-      <span className='metadata-value'>{metadata[k].toString()}</span>
+      <span className='metadata-value'>{generic_metadata[k].toString()}</span>
     </div>)}
   </div>;
 });
