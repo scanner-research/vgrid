@@ -3,14 +3,14 @@ import * as _ from 'lodash';
 import {deepObserve} from 'mobx-utils';
 import {Provider, observer} from 'mobx-react';
 
-import 'main.scss';
-
 import {VBlock} from'./vblock';
 import {IntervalSet} from './interval';
 import {Database} from './database';
 import {default_settings, Settings} from './settings';
 import {default_palette, ColorMap} from './color';
 import {BlockSelectType, BlockLabelState, LabelState} from './label_state';
+
+import 'main.scss';
 
 // Re-exports
 export * from './interval';
@@ -19,13 +19,34 @@ export * from './drawable';
 export * from './metadata';
 export * from './label_state';
 
+/** Core unit of visualization in the grid for a single video */
+export interface IntervalBlock {
+  /** Set of named interval sets within the same video **/
+  interval_sets: {[key: string]: IntervalSet}
+
+  /** ID of the corresponding video */
+  video_id: number
+}
+
+/** Top-level interface to the VGrid widget. */
 export interface VGridProps {
-  interval_blocks: {interval_sets: {[key: string]: IntervalSet}, video_id: number}[]
+  /** List of interval blocks to render */
+  interval_blocks: IntervalBlock[]
+
+  /** Metadata about videos and categories */
   database: Database
+
+  /** Map of partial [[Settings]] */
   settings?: {[key: string]: any}
+
+  /** Function called whenever the user triggers a labeling action */
   label_callback?: (state: LabelState) => void
 }
 
+/**
+ * VGrid top-level React component.
+ * @noInheritDoc
+ */
 @observer
 export class VGrid extends React.Component<VGridProps, {}> {
   label_state: LabelState
