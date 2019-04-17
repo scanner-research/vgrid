@@ -452,8 +452,8 @@ interface TimelineTrackProps {
   time_state: TimeState,
   video: DbVideo,
   expand: boolean,
-  target_width: number,
-  target_height: number
+  width: number,
+  height: number
 }
 
 export default class TimelineTrack extends React.Component<TimelineTrackProps, {}> {
@@ -467,7 +467,7 @@ export default class TimelineTrack extends React.Component<TimelineTrackProps, {
   }
 
   render() {
-    let timeline_width = this.props.target_width;
+    let timeline_width = this.props.width;
     let timeline_height =
       this.props.expand
       ? Constants.timeline_expanded_height

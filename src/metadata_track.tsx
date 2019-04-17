@@ -7,20 +7,22 @@ import TimeState from './time_state';
 import {DbVideo} from './database';
 import {Metadata_Generic} from './metadata';
 
-/* The metadata track shows the interval metadata for all intervals at the current time. */
-
 interface MetadataTrackProps {
+  /** Intervals at the current time. */
   intervals: {[key: string]: IntervalSet},
   time_state: TimeState,
   video: DbVideo,
   expand: boolean,
-  target_width: number,
-  target_height: number
+  width: number,
+  height: number
 }
 
+/**
+ * Component that shows the interval metadata for all intervals at the current time.
+ */
 export let MetadataTrack: React.SFC<MetadataTrackProps> = observer((props) => {
-
-  let metadata: any = _.keys(props.intervals).reduce(
+  // Collect all generic metadata from every current interval.
+  let generic_metadata: any = _.keys(props.intervals).reduce(
     ((meta: {[key: string]: any}, k: string) =>
       _.merge(meta, props.intervals[k].to_list().reduce(
         ((meta: {[key: string]: any}, intvl: Interval) =>
@@ -28,8 +30,8 @@ export let MetadataTrack: React.SFC<MetadataTrackProps> = observer((props) => {
     {});
 
   let style = {
-    width: props.expand ? 100 : props.target_width,
-    height: props.expand ? props.target_height : 20,
+    width: props.expand ? 100 : props.width,
+    height: props.expand ? props.height : 20,
     display: _.keys(metadata).length == 0 ? 'none' : 'block'
   };
 

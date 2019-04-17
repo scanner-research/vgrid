@@ -3,7 +3,7 @@ import * as _ from 'lodash';
 import {deepObserve} from 'mobx-utils';
 import {Provider, observer} from 'mobx-react';
 
-import {VBlock} from'./vblock';
+import {VBlock, IntervalBlock} from'./vblock';
 import {IntervalSet} from './interval';
 import {Database} from './database';
 import {default_settings, Settings} from './settings';
@@ -18,15 +18,6 @@ export * from './database';
 export * from './drawable';
 export * from './metadata';
 export * from './label_state';
-
-/** Core unit of visualization in the grid for a single video */
-export interface IntervalBlock {
-  /** Set of named interval sets within the same video **/
-  interval_sets: {[key: string]: IntervalSet}
-
-  /** ID of the corresponding video */
-  video_id: number
-}
 
 /** Top-level interface to the VGrid widget. */
 export interface VGridProps {
@@ -44,7 +35,7 @@ export interface VGridProps {
 }
 
 /**
- * VGrid top-level React component.
+ * VGrid top-level React component. See [[VGridProps]] for parameters.
  * @noInheritDoc
  */
 @observer
@@ -68,6 +59,7 @@ export class VGrid extends React.Component<VGridProps, {}> {
     });
 
     if (this.props.label_callback) {
+      // Watch changes to the label state to invoke the label_callback
       _.keys(this.label_state).forEach((k) => {
         // TODO: even deep observe doesn't seem to pick up on nested changes?
         deepObserve((this.label_state as any)[k], () => {
@@ -76,6 +68,7 @@ export class VGrid extends React.Component<VGridProps, {}> {
       });
     }
 
+    // Copy in any provided settings, otherwise use defaults
     this.settings = default_settings;
     if (this.props.settings) {
       _.keys(this.props.settings).forEach((k) => {
@@ -84,6 +77,7 @@ export class VGrid extends React.Component<VGridProps, {}> {
     }
   }
 
+  // Handle block-level selection by updating LabelState.blocks_selected set
   on_block_selected = (block_index: number, type: BlockSelectType) => {
     let selected = this.label_state.blocks_selected;
     if (selected.has(block_index) && selected.get(block_index)! == type) {
@@ -99,8 +93,8 @@ export class VGrid extends React.Component<VGridProps, {}> {
              database={this.props.database} colors={this.color_map} settings={default_settings}>
       <div className='vgrid'>
         {this.props.interval_blocks.map((block, i) =>
-          <VBlock key={i} intervals={block.interval_sets}
-                  video_id={block.video_id}
+          <VBlock key={i}
+                  block={block}
                   on_select={(type) => this.on_block_selected(i, type)}
                   selected={selected.has(i) ? selected.get(i)! : null}
                   label_state={this.label_state.block_labels.get(i)!} />

@@ -63,8 +63,8 @@ interface CaptionTrackProps {
   time_state: TimeState,
   video: DbVideo,
   expand: boolean,
-  target_width: number,
-  target_height: number,
+  width: number,
+  height: number,
   delimiter: string
   settings?: Settings
   label_state?: BlockLabelState
@@ -230,7 +230,7 @@ export default class CaptionTrack extends React.Component<CaptionTrackProps, {}>
 
   render() {
     let track_style = {
-      width: this.props.target_width,
+      width: this.props.width,
       height: this.props.expand ? 200 : 50
     };
 

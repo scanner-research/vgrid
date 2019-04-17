@@ -51,7 +51,9 @@ let interval_blocks = {
 
 // Associate video IDs with metadata
 let database = new Database(
-  new Table('videos', [{id: 0, path: 'test.mp4', num_frames: 1000, width: 640, height: 480, fps: 29.97}]));
+  new Table(
+    'videos',
+    [{id: 0, path: 'test.mp4', num_frames: 1000, width: 640, height: 480, fps: 29.97}]));
 
 // Modify display settings
 let settings = {

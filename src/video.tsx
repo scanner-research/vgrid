@@ -4,9 +4,15 @@ import Spinner from './spinner';
 import TimeState from './time_state';
 
 interface VideoProps {
+  /** Path to the video */
   src: string,
+
+  /** Width in pixels */
   width: number,
+
+  /** Height in pixels */
   height: number,
+
   time_state: TimeState,
   expand: boolean,
 }
@@ -39,6 +45,7 @@ export class Video extends React.Component<VideoProps, {loaded: boolean}> {
   }
 
   componentDidMount() {
+    // Add DOM events once video element has loaded onto the page
     let delegate = (k: string, f: (video: any) => void) => {
       this.video.current.addEventListener(k, () => f(this.video.current));
     };
@@ -49,11 +56,13 @@ export class Video extends React.Component<VideoProps, {loaded: boolean}> {
 
   componentDidUpdate() {
     if (this.video.current) {
+      // Seek video to current time if it's different than video time
       let target_time = this.props.time_state.time;
       if (target_time != this.video.current.currentTime) {
         this.video.current.currentTime = target_time;
       }
 
+      // Stop playing video if block is no longer expanded
       if (!this.props.expand) {
         this.video.current.pause();
       }
