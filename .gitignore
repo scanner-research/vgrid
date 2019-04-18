@@ -4,3 +4,6 @@ dist
 *.swp
 package-lock.json
 docs
+*.egg-info
+*/__pycache__
+*.pyc
