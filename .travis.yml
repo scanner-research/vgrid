@@ -4,7 +4,7 @@ matrix:
   - language: python
     python: 3.5
     before_install: cd vgridpy
-    script: python3 setup.py
+    script: python3 setup.py .
 
   - language: node_js
     node_js: 10
