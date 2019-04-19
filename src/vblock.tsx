@@ -16,12 +16,28 @@ import CaptionTrack from './caption_track';
 import {DrawType_Caption} from './drawable';
 import {BlockSelectType, BlockLabelState} from './label_state';
 
-interface VBlockProps {
+/** Core unit of visualization in the grid for a single video */
+export interface IntervalBlock {
+  /** Set of named interval sets within the same video **/
+  interval_sets: {[key: string]: IntervalSet}
+
+  /** ID of the corresponding video */
   video_id: number
-  intervals: {[key: string]: IntervalSet}
+}
+
+interface VBlockProps {
+  /** Block to render */
+  block: IntervalBlock
+
+  /** Callback for when user selects this block */
   on_select: (type: BlockSelectType) => void
+
+  /** Whether this block is selected or not */
   selected: BlockSelectType | null
+
   label_state: BlockLabelState
+
+  /* Injected */
   settings?: Settings
   database?: Database
 }
@@ -30,6 +46,10 @@ interface VBlockState {
   expand: boolean
 }
 
+/**
+ * Component for an individual block in the grid.
+ * @noInheritDoc
+ */
 @inject("settings", "database")
 @mouse_key_events
 @observer
@@ -43,13 +63,15 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
   constructor(props: VBlockProps) {
     super(props);
 
+    // Compute earliest time in all interval blocks to determine where to start the timeline
     let first_time =
-      _.values(props.intervals).reduce((n, is) => Math.min(n, is.to_list()[0].bounds.t1), Infinity);
+      _.values(props.block.interval_sets).reduce((n, is) => Math.min(n, is.to_list()[0].bounds.t1), Infinity);
     this.time_state = new TimeState(first_time);
 
+    // Find captions in interval sets if they exist
     this.captions = null;
-    for (let k of _.keys(this.props.intervals)) {
-      let is = this.props.intervals[k];
+    for (let k of _.keys(this.props.block.interval_sets)) {
+      let is = this.props.block.interval_sets[k];
       if (is.to_list()[0].data.draw_type instanceof DrawType_Caption) {
         this.captions = is;
       }
@@ -75,36 +97,39 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
     key_dispatch(this.props.settings!, this.key_bindings, key);
   }
 
+  /** Get the intervals from all sets that overlap with the current time. */
   current_intervals = (): {[key: string]: IntervalSet} => {
     let bounds = new Bounds(this.time_state.time);
     let current_intervals: {[key: string]: IntervalSet} = {};
-    _.keys(this.props.intervals).forEach((k) => {
-      current_intervals[k] = this.props.intervals[k].time_overlaps(bounds);
+    _.keys(this.props.block.interval_sets).forEach((k) => {
+      current_intervals[k] = this.props.block.interval_sets[k].time_overlaps(bounds);
     });
     return current_intervals;
   }
 
   render() {
     let current_intervals = this.current_intervals();
-    let video = this.props.database!.table('videos').lookup<DbVideo>(this.props.video_id);
 
-    // Compute asset height
-    let target_height;
-    let target_width;
+    // Get video metadata out of the database
+    let video = this.props.database!.table('videos').lookup<DbVideo>(this.props.block.video_id);
+
+    // Compute block height
+    let height;
+    let width;
     if (!this.state.expand) {
-      target_height = 100;
-      target_width = video.width * (target_height / video.height);
+      height = 100;
+      width = video.width * (height / video.height);
     } else {
-      target_width = video.width;
-      target_height = video.height;
+      width = video.width;
+      height = video.height;
     }
 
     let args = {
       time_state: this.time_state,
       video: video,
       expand: this.state.expand,
-      target_width: target_width,
-      target_height: target_height
+      width: width,
+      height: height
     };
 
     let select_class =
@@ -125,7 +150,7 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
             </div>
             {this.props.settings!.show_timeline
              ? <div className='vblock-row'>
-               <TimelineTrack intervals={this.props.intervals} {...args} />
+               <TimelineTrack intervals={this.props.block.interval_sets} {...args} />
              </div>
              : null}
             {this.captions !== null

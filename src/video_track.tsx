@@ -15,12 +15,22 @@ import {Video} from './video';
 import {SpatialOverlay} from './spatial_overlay';
 
 interface VideoTrackProps {
+  /** Intervals to draw over the video */
   intervals: {[key: string]: IntervalSet},
-  time_state: TimeState,
+
+  /** Video metadata */
   video: DbVideo,
+
+  time_state: TimeState,
   expand: boolean,
-  target_width: number,
-  target_height: number,
+
+  /** Desired width of video track in pixels */
+  width: number,
+
+  /** Desired height of video track in pixels */
+  height: number,
+
+  /* Injected */
   settings?: Settings
 }
 
@@ -28,6 +38,10 @@ interface VideoTrackState {
   video_active: boolean
 }
 
+/**
+ * Component for a video and spatial metadata on top of it (via [[SpatialOverlay]]).
+ * @noInheritDoc
+ */
 @inject("settings")
 @mouse_key_events
 @observer
@@ -77,17 +91,17 @@ export default class VideoTrack extends React.Component<VideoTrackProps, VideoTr
     return <div className='video-track'>
 
       {!this.props.settings!.use_frameserver || this.state.video_active
-       ? <Video src={video.path} width={this.props.target_width} height={this.props.target_height}
+       ? <Video src={video.path} width={this.props.width} height={this.props.height}
                 time_state={this.props.time_state} expand={this.props.expand} ref={this.video} />
        : <ProgressiveImage
            src={image_path} width={video.width} height={video.height}
-           target_width={this.props.target_width} target_height={this.props.target_height} />}
+           target_width={this.props.width} target_height={this.props.height} />}
 
       <div className='track-overlay'>
         <SpatialOverlay
           time={time}
-          intervals={this.props.intervals} width={this.props.target_width}
-          height={this.props.target_height} />
+          intervals={this.props.intervals} width={this.props.width}
+          height={this.props.height} />
       </div>
 
     </div>;

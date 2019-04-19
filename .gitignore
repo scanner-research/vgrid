@@ -3,3 +3,4 @@ dist
 *.log
 *.swp
 package-lock.json
+docs
