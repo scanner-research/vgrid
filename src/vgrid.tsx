@@ -42,7 +42,7 @@ export class VGrid extends React.Component<VGridProps, {}> {
 
     // Set a default color for each interval set
     this.color_map = {};
-    _.keys(this.props.interval_blocks[0]).forEach((k, i) => {
+    _.keys(this.props.interval_blocks[0].interval_sets).forEach((k, i) => {
       this.color_map[k] = default_palette[i];
     });
 
