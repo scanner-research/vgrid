@@ -1,0 +1,9 @@
+node_modules
+dist
+*.log
+*.swp
+package-lock.json
+docs
+*.egg-info
+*/__pycache__
+*.pyc
