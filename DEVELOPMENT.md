@@ -14,7 +14,7 @@ For the build system, we use [Webpack](https://webpack.js.org/) to orchestrate t
 
 ## Design
 
-First you should read through the [README.md](https://github.com/scanner-research/vgrid/blob/master/README.md) to understand the API design. I'll comment on a few implementation design decisions here.
+First you should read through the [README](https://github.com/scanner-research/vgrid/blob/master/README.md) to understand the API design. I'll comment on a few implementation design decisions here.
 
 ### State management
 
@@ -34,4 +34,10 @@ Because we could potentially be rendering thousands or millions of objects onto 
 
 When you're iteratively developing changes to VGrid, I recommend using the `watch` feature to automatically recompile every time the source changes.
 
-```npm run watch```
+```
+npm run watch
+```
+
+## Contributing a change
+
+Please develop in a feature branch and open a pull request if you would like to contribute a feature.
