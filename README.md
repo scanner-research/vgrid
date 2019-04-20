@@ -6,9 +6,13 @@ VGrid is a Javascript library for visualization spatiotemporal metadata (e.g. bo
 
 VGrid is a standalone JS library so you can embed it any HTML page. See the [vgrid_jupyter](https://github.com/scanner-research/vgrid_jupyter) package for Jupyter integration.
 
+VGrid also has a Python library for building visualizations and exporting them to json.
+
 Documentation coming soon!
 
 ## Installation
+
+You must have Python3 already installed.
 
 You must have [npm](https://www.npmjs.com/get-npm) installed. VGrid has `react`, `react-dom`, `mobx`, and `mobx-react` as peer dependencies, so you must have those npm packages already installed, e.g.
 
@@ -16,21 +20,39 @@ You must have [npm](https://www.npmjs.com/get-npm) installed. VGrid has `react`,
 npm install --save react react-dom mobx mobx-react
 ```
 
-### From npm
+### Core Javascript API
+
+#### From npm
 
 ```
 npm install --save @wcrichto/vgrid
+```
+
+#### From source
+
+```
+git clone https://github.com/scanner-research/vgrid
+cd vgrid/vgridjs
+npm install
+npm link @wcrichto/rekall # only if you installed rekall from source
+npm run prepublishOnly
+npm link
+```
+
+### Python API
+
+#### Through pip
+
+```
+pip3 install vgridpy
 ```
 
 ### From source
 
 ```
 git clone https://github.com/scanner-research/vgrid
-cd vgrid
-npm install
-npm link @wcrichto/rekall # only if you installed rekall from source
-npm run prepublishOnly
-npm link
+cd vgrid/vgridpy
+pip3 install -e .
 ```
 
 ## Usage

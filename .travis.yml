@@ -1,11 +1,29 @@
-language: node_js
-node_js: 10
-install: npm install && npm run prepublishOnly
-deploy:
-  provider: npm
-  email: wcrichto@cs.stanford.edu
-  api_key:
-    secure: mJkcsEbnuJRGnZzrazm3dsI5VMIEsx9hQNfhB9wEiLhWDoTeWxPfuJkFEVTClFfZI3cMmI16QtmVQyPv4KsYu7K59faYQBN5E3Igi+B3UK1G0bn69erFeSoIJmMYZgtQK03NtNMKObC/PoFJSFDvEldIkT8KEAnj6HSkDeSfSWoGUcYW6x0aXU+FO1ynYhODJLhUm3JfppE0Yx9iMTdlbfkbSJ2IZBFuOCOdRHjGBQMMhXTONVsZ2YrTMhZpVKavgjfkuPoJNnsE+9h+F295HPnuuCVyGm9WUbPUYR4FxFYCqvGYmjjAb0MAfyPcnubgiucG2eQbn0xWfZJl2DSIjiNqdRnWX1H2tCm3pjrLWtLnws64yAqcVmEmn22iPUlpYXEkYL28/IFfgfa+RekaUKL4gHMTk9poSFnqwwNyZeoPTHKfafflbqvLpA0o+lzJHlani/6Ai227EvV+ayHJxzj3iPrx6U8LV/97bdikTCG7+KOirtv+AYsNG515tolq6UJ2/gXqtneQUxtxT14rLe3ptCUMpSwmFdoJ4Sa+R50ez+i+ceMry3DShHqHuglFgYEZKnUZ7MEMcFde1Dt6RDHjGd4P/MYj4tqLc8PpCThDf+NlC6lwuMgtTHD5NvtmtaiVusjkF/qXK28+8WWDOyUfwlO8saNqYotFAt45v+E=
-  skip_cleanup: true # Don't clean/reset working directory
-  on:
-    tags: true
+matrix:
+  include:
+
+  - language: python
+    python: 3.5
+    before_install: cd vgridpy
+    script: python3 setup.py test
+    deploy:
+      skip_cleanup: true
+      provider: pypi
+      user: wcrichto
+      password:
+        secure: GtufzS8JePMkz3kgBfk5jUlEZXHjpFWYs893jU33n2Qcnfvz4ikpPl6xjEv9QCa0XZY5r8h4079NBXPMC3jUnHkEJ5jV4+K1/JlbS4ffTZNs+AIty3fvbUD5URrKKOAP/MTZl//XVWLnWhwjfutEEaza+S7vV/nHnzjGJooEw9FEGBGetTnWOfQXP8jPEu3HmLpjQWYk1Fiqq8YB7sng3FPwEfLtt/zNRzq5wCV5PPbmpAdYtqkBvdiX05xlkya+RsT+O02xjDM97tx+6qGDaLmEd/Mlt2CF/vZ+7M//fT/PbAQHpa+mw7e5kBxFZ1mFQcOfaSqfFKc21iYw/g50MnzxRfTrrssfpGY3zs7xM+Q9JdG9SyVcygTXxKhCQ9NxWFEqjDrgxWB3K45iRqtg1girFsh8ujzNJRltrN3MFep0hQgP+FURnqD633co2Eagr2yLVlwDeD/UBSNpSOsS6wGQFNSmSs1Z1Q1/p3K/pnIRolQkTRMlGuE5FjyRYyXKCa6/5+aMyoh40eZPl1UZv4cKlTTk0SzewmZTM5NVx3i2iBKKFl4RxQyR6lIzV6J7B5r8MkaIm6h+GbF43q4Qct9YsCORL+dgu1FliiMXgV5vCwrv409ywLqHzZFR10WinvndY97YX9657Alpk+NhuTbdxpM787raAdiTYduywW8=
+      on:
+        tags: true
+        distributions: sdist bdist_wheel
+
+  - language: node_js
+    node_js: 10
+    before_install: cd vgridjs
+    install: npm install && npm run prepublishOnly
+    deploy:
+      provider: npm
+      email: wcrichto@cs.stanford.edu
+      api_key:
+        secure: mJkcsEbnuJRGnZzrazm3dsI5VMIEsx9hQNfhB9wEiLhWDoTeWxPfuJkFEVTClFfZI3cMmI16QtmVQyPv4KsYu7K59faYQBN5E3Igi+B3UK1G0bn69erFeSoIJmMYZgtQK03NtNMKObC/PoFJSFDvEldIkT8KEAnj6HSkDeSfSWoGUcYW6x0aXU+FO1ynYhODJLhUm3JfppE0Yx9iMTdlbfkbSJ2IZBFuOCOdRHjGBQMMhXTONVsZ2YrTMhZpVKavgjfkuPoJNnsE+9h+F295HPnuuCVyGm9WUbPUYR4FxFYCqvGYmjjAb0MAfyPcnubgiucG2eQbn0xWfZJl2DSIjiNqdRnWX1H2tCm3pjrLWtLnws64yAqcVmEmn22iPUlpYXEkYL28/IFfgfa+RekaUKL4gHMTk9poSFnqwwNyZeoPTHKfafflbqvLpA0o+lzJHlani/6Ai227EvV+ayHJxzj3iPrx6U8LV/97bdikTCG7+KOirtv+AYsNG515tolq6UJ2/gXqtneQUxtxT14rLe3ptCUMpSwmFdoJ4Sa+R50ez+i+ceMry3DShHqHuglFgYEZKnUZ7MEMcFde1Dt6RDHjGd4P/MYj4tqLc8PpCThDf+NlC6lwuMgtTHD5NvtmtaiVusjkF/qXK28+8WWDOyUfwlO8saNqYotFAt45v+E=
+      skip_cleanup: true # Don't clean/reset working directory
+      on:
+        tags: true
