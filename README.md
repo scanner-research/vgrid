@@ -52,7 +52,7 @@ npm link @wcrichto/vgrid
 
 VGrid requires Python 3.5 or greater.
 
-#### Through pip
+#### From pip
 
 ```
 pip3 install vgridpy
