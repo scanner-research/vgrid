@@ -29,7 +29,7 @@ matrix:
       before_deploy: npm run docs
       skip_cleanup: true
       keep_history: true
-      local: docs
+      local_dir: docs
       github_token:
         secure: IPikrZUelstJ3+vA7+mRXjAlKbT2ZKzDxAqcOO+Zjq1anBnGmahOiggkhM2tOmI3oYtfN2sr14d2S+UIoOMPYTp/pqOiiA/FJS1BfpueMxAj73Lh+N3AMJiK1yZDY2XR2wWfKLviYaJ2mv3MqTWdnAJgh9iEYv89hy4C/y4XcRikUtE4dzj4Ti0APrO0x/eFgIW6q/Qnyhdx2IlsAMOZJ5xOomk9gzGM+CTo9XrFRt6RzXP9oP2HspQpe55zVOQ3dKFmiwo5n//r78JjGPXd7nuU/pwq0uKvmiwGxw/aTNJV0fGabEFTVvxZnqKQuiCssmiUSfBlS/yvN1GZiTnRj7tZlMHE4SXj5zc09YrNFzlylbK+kEBKimd3k+CzWrDWserPOFidvgPiFITp+MmPfDovxpIhVUnsdYPoFTCNcuAKQdPo0+O5cvJNoZVpteXvORLlekt89EHtNfwDeMUWMSO7mrVUq7P0eVxRc72fBvvVbv0G1pwOFuDFI1+yKUbEXuHNAq+G/1pZ7lCQPyOrJmXQ6nReuI0hiSGESKROj4nR6g/H9axkDWC0M7LZ3l00A0sIDJZFpVBtCBDMB1s0nQCrxDl4axZyIP+kA7/Kkouk0I0KpNS06ihR2+PZIFgZxlWAx7kVVvOWpHxdR6Pvl0UGCkhsEifs8p5yBh51kkc=
       on:
