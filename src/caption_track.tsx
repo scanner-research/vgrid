@@ -1,6 +1,5 @@
 import * as React from "react";
 import * as _ from "lodash";
-import {observable, ObservableSet} from 'mobx';
 import {inject, observer} from 'mobx-react';
 import classNames from 'classnames';
 
@@ -14,12 +13,6 @@ import {key_dispatch, KeyMode} from './keyboard';
 import {Settings} from './settings';
 import {BlockLabelState} from './label_state';
 
-/* The caption track shows time-aligned captions in a vertically scrolling box and allows
- * labeling through text selection. The main concept in the caption track is the "caption group"
- * which is a set of captions that should be shown grouped together, i.e. on the same word-wrapped
- * line of text. Caption groups are separated by a provided delimiter, e.g. ">>" in TV news.
- */
-
 interface CaptionGroupProps {
   group_index: number,
   group: Interval[],
@@ -28,9 +21,12 @@ interface CaptionGroupProps {
   reverse_index: {[interval: number]: number}
 }
 
+/** Component for drawing an individual caption group */
 let CaptionGroup: React.SFC<CaptionGroupProps> = observer((props: CaptionGroupProps) => {
   let cur_time = new Bounds(props.time_state.time);
   let selected = props.label_state.captions_selected;
+
+  /* Find which caption groups contain a flagged caption */
   let flags: boolean[] =
     props.group.map((intvl, i) => (
       Object.keys(_.filter(intvl.data.metadata, (v) => v instanceof Metadata_Flag)).length > 0 ||
@@ -70,15 +66,31 @@ interface CaptionTrackProps {
   label_state?: BlockLabelState
 }
 
+/**
+ * The caption track shows time-aligned captions in a vertically scrolling box and allows
+ * labeling through text selection. The main concept in the caption track is the "caption group"
+ * which is a set of captions that should be shown grouped together, i.e. on the same word-wrapped
+ * line of text. Caption groups are separated by a provided delimiter, e.g. ">>" in TV news.
+ */
 @inject("settings", "label_state")
 @mouse_key_events
 @observer
 export default class CaptionTrack extends React.Component<CaptionTrackProps, {}> {
+  /** Groups of intervals to be displayed contiguously */
   caption_groups: Interval[][]
+
+  /** Mapping from index in original set to group set */
   flat_to_nested: {[index: number]: {group: number, interval: number}[]}
+
+  /** Mapping from index in group set to original set */
   nested_to_flat: {[group: number]: {[interval: number]: number}}
+
+  /** DOM references to each caption gropu */
   group_refs: any[]
+
+  /** DOM reference to caption container */
   canvas_ref: any
+
   settings: Settings | null = null;
 
   /* Handling text selections is tricky! The HTML selection API allows us to get a pointer to
@@ -165,6 +177,7 @@ export default class CaptionTrack extends React.Component<CaptionTrackProps, {}>
 
     let current_group: any = [];
 
+    /* Add interval to the current group and update indexes */
     let push_intvl = (intvl: Interval, index: number) => {
       current_group.push(intvl);
       let group = this.caption_groups.length;
@@ -204,6 +217,7 @@ export default class CaptionTrack extends React.Component<CaptionTrackProps, {}>
       push_intvl(current_group, intervals.length - 1);
     }
 
+    /* Create the mirror index for the nested_to_flat */
     _.map(this.nested_to_flat, (v, k: number) => {
       _.map(v, (index, k2: number) => {
         if (!(index in this.flat_to_nested)) {

@@ -7,9 +7,6 @@ import {Database, DbCategory} from './database';
 import {Interval, Domain, Bounds, IntervalSet} from './interval';
 import {ColorMap} from './color';
 
-/* The spatial overlay draws visual metadata (e.g. bounding boxes, poses) over the thumbnail or
- * video as it plays. See drawable.tsx for how each piece of metadata is individually drawn. */
-
 interface SpatialOverlayProps {
   intervals: {[key: string]: IntervalSet},
   width: number,
@@ -19,6 +16,10 @@ interface SpatialOverlayProps {
   database?: Database
 }
 
+/**
+ * The spatial overlay draws visual metadata (e.g. bounding boxes, poses) over the thumbnail or
+ * video as it plays. See drawable.tsx for how each piece of metadata is individually drawn.
+ */
 @inject("database")
 @inject("colors")
 @observer

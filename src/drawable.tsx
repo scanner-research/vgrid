@@ -1,3 +1,9 @@
+/**
+ * This module defines the various ways an interval can be spatially drawn (as opposed to on the
+ * timeline). By default, intervals are drawn as bounding boxes, but based on the payload draw type,
+ * we could draw arbitrary spatial data (keypoints, segmentations) or non-spatial data (captions).
+ */
+
 import * as React from "react";
 import {Interval} from './interval';
 

@@ -57,7 +57,6 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
   state = {expand: false}
 
   time_state: TimeState;
-  settings: any;
   captions: IntervalSet | null;
 
   constructor(props: VBlockProps) {

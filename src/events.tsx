@@ -1,8 +1,10 @@
 import * as React from "react";
 
-// React component decorator that adds event handlers for tracking mouse movement and key presses.
-// For key presses, the onKeyDown/onKeyUp are only listened to/fired when the mouse is inside the
-// component. For mouse movement, the callbacks are x/y mouse coordinates relative to the component.
+/**
+ * React component decorator that adds event handlers for tracking mouse movement and key presses.
+ * For key presses, the onKeyDown/onKeyUp are only listened to/fired when the mouse is inside the
+ * component. For mouse movement, the callbacks are x/y mouse coordinates relative to the component.
+ */
 export let mouse_key_events = <C extends object>(Component: C): C  =>
   (class WithMouseKeyEvents extends React.Component<any, {}> {
     last_x: number = 0

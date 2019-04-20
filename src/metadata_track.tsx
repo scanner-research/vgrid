@@ -18,16 +18,19 @@ interface MetadataTrackProps {
 }
 
 /**
- * Component that shows the interval metadata for all intervals at the current time.
+ * Component that shows the payloads for all intervals at the current time.
+ *
+ * Currently this just shows payloads containing Generic metadata.
  */
 export let MetadataTrack: React.SFC<MetadataTrackProps> = observer((props) => {
   // Collect all generic metadata from every current interval.
-  let generic_metadata: any = _.keys(props.intervals).reduce(
-    ((meta: {[key: string]: any}, k: string) =>
-      _.merge(meta, props.intervals[k].to_list().reduce(
-        ((meta: {[key: string]: any}, intvl: Interval) =>
-          _.merge(meta, _.filter(intvl.data.metadata, (v) => v instanceof Metadata_Generic))), {}))),
-    {});
+  let generic_metadata: {[key: string]: any} =
+    _.keys(props.intervals).reduce(
+      ((meta: {[key: string]: any}, k: string) =>
+        _.merge(meta, props.intervals[k].to_list().reduce(
+          ((meta: {[key: string]: any}, intvl: Interval) =>
+            _.merge(meta, _.filter(intvl.data.metadata, (v) => v instanceof Metadata_Generic))), {}))),
+      {});
 
   let style = {
     width: props.expand ? 100 : props.width,

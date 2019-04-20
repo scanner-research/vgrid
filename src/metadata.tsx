@@ -1,15 +1,24 @@
+/**
+ * Metadata classes are used to represent structured payloads for Rekall intervals. Each kind of
+ * metadata is drawn differently in the interface.
+ */
+
 export abstract class Metadata {}
 
-// Simple metadata for indicating that an interval should be visually flagged. Useful for
-// labeling or any kind of lightweight mark that isn't a categorical.
+/**
+ * Simple metadata for indicating that an interval should be visually flagged. Useful for
+ * labeling or any kind of lightweight mark that isn't a categorical.
+ */
 export class Metadata_Flag extends Metadata {
   static from_json(obj: any): Metadata_Flag {
     return new Metadata_Flag();
   }
 }
 
-// The most generic kind of metadata, i.e. it has no particular structure that can be
-// visualized. It will show up in the metadata sidebar.
+/**
+ * The most generic kind of metadata, i.e. it has no particular structure that can be
+ * visualized. It will show up in the metadata sidebar.
+ */
 export class Metadata_Generic extends Metadata {
   data: any
 
@@ -23,7 +32,7 @@ export class Metadata_Generic extends Metadata {
   }
 }
 
-// Categorical metadata, e.g. gender or shot type.
+/** Categorical metadata, e.g. gender or shot type. */
 export class Metadata_Categorical extends Metadata {
   category_type: string
   category: number
@@ -39,7 +48,7 @@ export class Metadata_Categorical extends Metadata {
   }
 }
 
-// Metadata specifically on a caption string that provides sub-string precision.
+/** Metadata on caption strings that provides sub-string precision. */
 export class Metadata_CaptionMeta extends Metadata {
   meta: Metadata
   char_start: number

@@ -1,3 +1,8 @@
+/**
+ * Jupyter has a number default keybindings that we don't want to conflict with, so we offer the
+ * ability to change the keybinding set.
+ */
+
 import {Settings} from './settings';
 
 export enum KeyMode {
@@ -5,7 +10,7 @@ export enum KeyMode {
   Jupyter = 2
 }
 
-// Calls the corresponding method for a key given the current key mode
+/** Calls the corresponding method for a key given the current key mode */
 export let key_dispatch = (
   settings: Settings,
   methods: {[mode: number]: {[key: string]: () => void}},

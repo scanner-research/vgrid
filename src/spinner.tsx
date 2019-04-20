@@ -9,8 +9,7 @@ interface SpinnerProps {
   settings?: Settings
 }
 
-/* A silly spinner. */
-
+/** A silly spinner. */
 @inject("settings")
 export default class Spinner extends React.Component<SpinnerProps, {}> {
   render() {

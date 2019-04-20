@@ -114,6 +114,12 @@ interface TimelineState {
   new_state: NewIntervalState
 }
 
+/**
+ * Box containing intervals time markers.
+ *
+ * Supports the ability to shift+click+drag to pan the timeline.
+ * Also allows user to create new intervals.
+ */
 @inject("settings", "label_state")
 @mouse_key_events
 @observer
@@ -154,7 +160,6 @@ class Timeline extends React.Component<TimelineProps, {}> {
       'i': this.create_interval
     }
   }
-
 
   onKeyDown = (char: string, x: number, y: number) => {
     if (char == 'Shift') {
@@ -289,7 +294,7 @@ interface TicksProps {
   num_ticks: number
 }
 
-// Ticks at the bottom of the timeline indicating video time at regular intervals
+/** Ticks at the bottom of the timeline indicating video time at regular intervals */
 let Ticks: React.SFC<TicksProps> = observer((props) => {
   let start = props.timeline_bounds.start;
   let end = props.timeline_bounds.end;
@@ -321,6 +326,7 @@ interface TimelineControlsProps {
   controller_size: number
 }
 
+/** Controls for panning and zooming the timeline. */
 class TimelineControls extends React.Component<TimelineControlsProps, {}> {
   zoom_in = () => {
     let cur_time = this.props.time_state.time;
@@ -422,9 +428,9 @@ class TimelineControls extends React.Component<TimelineControlsProps, {}> {
   }
 
   shouldComponentUpdate(new_props: TimelineControlsProps, new_state: {}) {
-    // Once the timeline controls are drawn, they should never update.
-    // This prevents the buttons from redrawing while the video is playing, causing buttons
-    // to miss mouse clicks.
+    /* Once the timeline controls are drawn, they should never update.
+     * This prevents the buttons from redrawing while the video is playing, causing buttons
+     * to miss mouse clicks. */
     return false;
   }
 
@@ -460,12 +466,22 @@ interface TimelineTrackProps {
   height: number
 }
 
+/**
+ * Component that shows the temporal extent of all intervals within a block.
+ * Each set of intervals is drawn in a different row.
+ */
 export default class TimelineTrack extends React.Component<TimelineTrackProps, {}> {
+
+  /**
+   * The timeline view shows all intervals between some bounds [t1, t2]. These bounds can
+   * be adjusted using timeline controls.
+   */
   timeline_bounds: TimelineBounds
 
   constructor(props: TimelineTrackProps) {
     super(props);
 
+    // Initialize default timeline bounds to [0, video duration].
     this.timeline_bounds = new TimelineBounds();
     this.timeline_bounds.set_bounds(0, props.video.num_frames / props.video.fps);
   }
