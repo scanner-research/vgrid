@@ -10,5 +10,5 @@ if __name__ == "__main__":
         author_email='yaodavid@stanford.edu',
         license='Apache 2.0',
         packages=['vgrid'],
-        install_requires=['rekallpy'],
+        install_requires=['rekallpy>=0.2.0'],
         zip_safe=False)
