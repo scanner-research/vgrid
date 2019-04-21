@@ -18,6 +18,7 @@ export * from './database';
 export * from './drawable';
 export * from './metadata';
 export * from './label_state';
+export {IntervalBlock, interval_blocks_from_json} from './vblock';
 
 /** Top-level interface to the VGrid widget. */
 export interface VGridProps {

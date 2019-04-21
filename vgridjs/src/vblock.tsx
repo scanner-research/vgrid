@@ -7,7 +7,7 @@ import TimeState from './time_state';
 import VideoTrack from './video_track';
 import TimelineTrack from './timeline_track';
 import {MetadataTrack} from './metadata_track';
-import {IntervalSet, Bounds} from './interval';
+import {IntervalSet, Bounds, vdata_from_json} from './interval';
 import {KeyMode, key_dispatch} from './keyboard';
 import {Database, DbVideo} from './database';
 import {Settings} from './settings';
@@ -24,6 +24,17 @@ export interface IntervalBlock {
   /** ID of the corresponding video */
   video_id: number
 }
+
+export let interval_blocks_from_json = (obj: any): IntervalBlock[] => {
+  return obj.map((intervals: any) => {
+    let {video_id, interval_dict} = intervals;
+    return {
+      video_id: video_id,
+      interval_sets: _.mapValues(interval_dict, (intervals, name) =>
+        (IntervalSet as any).from_json(intervals, vdata_from_json))
+    };
+  });
+};
 
 interface VBlockProps {
   /** Block to render */

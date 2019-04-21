@@ -2,3 +2,5 @@
 
 vblocks_builder: Building a JSON representation of rekall intervals for VGrid.
 """
+
+from .vblocks_builder import *

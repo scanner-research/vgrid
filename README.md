@@ -68,7 +68,15 @@ pip3 install -e .
 
 ## Usage
 
-This is an example that shows a block with a single interval from time 0s to 10s for a video `test.mp4`.
+Assume you have a video `test.mp4` in your current directory. This is an example that shows a block with a single interval from time 0s to 10s for the video. First, you need to launch a local file server that can serve the video file to a webpage. For example, you can launch a server in the same directory as `test.mp4` on port 8000 by running:
+
+```
+python3 -m http.server
+```
+
+### Javascript only
+
+If you're only running Javascript, then you will need to construct the video metadata and interval data using the Javascript API.
 
 ```jsx
 import ReactDOM from 'react-dom';
@@ -86,11 +94,12 @@ let interval_blocks = {
 let database = new Database(
   new Table(
     'videos',
-    [{id: 0, path: 'test.mp4', num_frames: 1000, width: 640, height: 480, fps: 29.97}]));
+    [{id: 0, path: 'http://localhost:8000/test.mp4', num_frames: 1000,
+      width: 640, height: 480, fps: 29.97}]));
 
-// Modify display settings
+// Global component settings
 let settings = {
-  show_timeline: false
+  show_timeline: true
 };
 
 // Run code when user provides labeling input
@@ -103,4 +112,57 @@ ReactDOM.render(
   <VGrid interval_blocks={interval_blocks} database={database}
          settings={settings} label_callback={label_callback} />,
   document.getElementById('vgrid'));
+```
+
+### Javascript and Python
+
+You can use the Python API to build the video metadata and interval data, then send the JSON string to the frontend. Python:
+
+```python
+from rekall import Interval, IntervalSet, IntervalSetMapping
+from rekall.bounds import Bounds3D
+from vgrid import VideoVBlocksBuilder, VideoTrackBuilder, VideoMetadat
+
+video_id = 1
+video = VideoMetadata(path='test.mp4', id=video_id)
+intervals = IntervalSet([Interval(Bounds3D(0, 10)), Interval(Bounds3D(20, 30))])
+interval_map = IntervalSetMapping({video_id: iset})
+
+interval_blocks_json = VideoVBlocksBuilder() \
+    .add_track(VideoTrackBuilder('test', interval_map)) \
+    .add_video_metadata('http://localhost:8000', [video]) \
+    .build()
+
+# Send interval_blocks_json to the frontend
+```
+
+And Javascript:
+
+```javascript
+import ReactDOM from 'react-dom';
+import {VGrid, Database, interval_blocks_from_json} from '@wcrichto/vgrid';
+
+// Fetch the JSON somehow
+get_json(function(json) {
+  // Convert JSON into corresponding Javascript objects
+  let {interval_blocks_json, database_json} = json;
+  let database = Database.from_json(database_json);
+  this.interval_blocks = interval_blocks_from_json(interval_blocks_json);
+
+  // Global component settings
+  let settings = {
+    show_timeline: true
+  };
+
+  // Run code when user provides labeling input
+  let label_callback = (label_state) => {
+    console.log(label_state.blocks_selected);
+  };
+
+  // Render React component into a <div id="#vgrid"></div>
+  ReactDOM.render(
+    <VGrid interval_blocks={interval_blocks} database={database}
+           settings={settings} label_callback={label_callback} />,
+    document.getElementById('vgrid'));
+});
 ```
