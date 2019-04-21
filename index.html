@@ -91,7 +91,9 @@ cd vgrid/vgridjs
 				<pre><code>git <span class="hljs-keyword">clone</span> <span class="hljs-title">https</span>://github.com/scanner-research/vgrid
 cd vgrid/vgridpy
 pip3 install -e .</code></pre><h2 id="usage">Usage</h2>
-				<p>This is an example that shows a block with a single interval from time 0s to 10s for a video <code>test.mp4</code>.</p>
+				<p>Assume you have a video <code>test.mp4</code> in your current directory. This is an example that shows a block with a single interval from time 0s to 10s for the video. First, you need to launch a local file server that can serve the video file to a webpage. For example, you can launch a server in the same directory as <code>test.mp4</code> on port 8000 by running:</p>
+				<pre><code>python3 -m http.<span class="hljs-keyword">server</span></code></pre><h3 id="javascript-only">Javascript only</h3>
+				<p>If you&#39;re only running Javascript, then you will need to construct the video metadata and interval data using the Javascript API.</p>
 				<pre><code class="language-jsx"><span class="hljs-keyword">import</span> ReactDOM <span class="hljs-keyword">from</span> <span class="hljs-string">'react-dom'</span>;
 <span class="hljs-keyword">import</span> {VGrid, Database, IntervalSet, Interval, Bounds} <span class="hljs-keyword">from</span> <span class="hljs-string">'@wcrichto/vgrid'</span>;
 
@@ -107,11 +109,12 @@ pip3 install -e .</code></pre><h2 id="usage">Usage</h2>
 <span class="hljs-keyword">let</span> database = <span class="hljs-keyword">new</span> Database(
   <span class="hljs-keyword">new</span> Table(
     <span class="hljs-string">'videos'</span>,
-    [{<span class="hljs-attr">id</span>: <span class="hljs-number">0</span>, <span class="hljs-attr">path</span>: <span class="hljs-string">'test.mp4'</span>, <span class="hljs-attr">num_frames</span>: <span class="hljs-number">1000</span>, <span class="hljs-attr">width</span>: <span class="hljs-number">640</span>, <span class="hljs-attr">height</span>: <span class="hljs-number">480</span>, <span class="hljs-attr">fps</span>: <span class="hljs-number">29.97</span>}]));
+    [{<span class="hljs-attr">id</span>: <span class="hljs-number">0</span>, <span class="hljs-attr">path</span>: <span class="hljs-string">'http://localhost:8000/test.mp4'</span>, <span class="hljs-attr">num_frames</span>: <span class="hljs-number">1000</span>,
+      <span class="hljs-attr">width</span>: <span class="hljs-number">640</span>, <span class="hljs-attr">height</span>: <span class="hljs-number">480</span>, <span class="hljs-attr">fps</span>: <span class="hljs-number">29.97</span>}]));
 
-<span class="hljs-comment">// Modify display settings</span>
+<span class="hljs-comment">// Global component settings</span>
 <span class="hljs-keyword">let</span> settings = {
-  <span class="hljs-attr">show_timeline</span>: <span class="hljs-literal">false</span>
+  <span class="hljs-attr">show_timeline</span>: <span class="hljs-literal">true</span>
 };
 
 <span class="hljs-comment">// Run code when user provides labeling input</span>
@@ -124,6 +127,50 @@ ReactDOM.render(
   <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">VGrid</span> <span class="hljs-attr">interval_blocks</span>=<span class="hljs-string">{interval_blocks}</span> <span class="hljs-attr">database</span>=<span class="hljs-string">{database}</span>
          <span class="hljs-attr">settings</span>=<span class="hljs-string">{settings}</span> <span class="hljs-attr">label_callback</span>=<span class="hljs-string">{label_callback}</span> /&gt;</span>,
   document.getElementById('vgrid'));</span></code></pre>
+				<h3 id="javascript-and-python">Javascript and Python</h3>
+				<p>You can use the Python API to build the video metadata and interval data, then send the JSON string to the frontend. Python:</p>
+				<pre><code class="language-python"><span class="hljs-keyword">from</span> rekall <span class="hljs-keyword">import</span> Interval, IntervalSet, IntervalSetMapping
+<span class="hljs-keyword">from</span> rekall.bounds <span class="hljs-keyword">import</span> Bounds3D
+<span class="hljs-keyword">from</span> vgrid <span class="hljs-keyword">import</span> VideoVBlocksBuilder, VideoTrackBuilder, VideoMetadat
+
+video_id = <span class="hljs-number">1</span>
+video = VideoMetadata(path=<span class="hljs-string">'test.mp4'</span>, id=video_id)
+intervals = IntervalSet([Interval(Bounds3D(<span class="hljs-number">0</span>, <span class="hljs-number">10</span>)), Interval(Bounds3D(<span class="hljs-number">20</span>, <span class="hljs-number">30</span>))])
+interval_map = IntervalSetMapping({video_id: iset})
+
+interval_blocks_json = VideoVBlocksBuilder() \
+    .add_track(VideoTrackBuilder(<span class="hljs-string">'test'</span>, interval_map)) \
+    .add_video_metadata(<span class="hljs-string">'http://localhost:8000'</span>, [video]) \
+    .build()
+
+<span class="hljs-comment"># Send interval_blocks_json to the frontend</span></code></pre>
+				<p>And Javascript:</p>
+				<pre><code class="language-javascript"><span class="hljs-keyword">import</span> ReactDOM <span class="hljs-keyword">from</span> <span class="hljs-string">'react-dom'</span>;
+<span class="hljs-keyword">import</span> {VGrid, Database, interval_blocks_from_json} <span class="hljs-keyword">from</span> <span class="hljs-string">'@wcrichto/vgrid'</span>;
+
+<span class="hljs-comment">// Fetch the JSON somehow</span>
+get_json(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">json</span>) </span>{
+  <span class="hljs-comment">// Convert JSON into corresponding Javascript objects</span>
+  <span class="hljs-keyword">let</span> {interval_blocks_json, database_json} = json;
+  <span class="hljs-keyword">let</span> database = Database.from_json(database_json);
+  <span class="hljs-keyword">this</span>.interval_blocks = interval_blocks_from_json(interval_blocks_json);
+
+  <span class="hljs-comment">// Global component settings</span>
+  <span class="hljs-keyword">let</span> settings = {
+    <span class="hljs-attr">show_timeline</span>: <span class="hljs-literal">true</span>
+  };
+
+  <span class="hljs-comment">// Run code when user provides labeling input</span>
+  <span class="hljs-keyword">let</span> label_callback = <span class="hljs-function">(<span class="hljs-params">label_state</span>) =&gt;</span> {
+    <span class="hljs-built_in">console</span>.log(label_state.blocks_selected);
+  };
+
+  <span class="hljs-comment">// Render React component into a &lt;div id="#vgrid"&gt;&lt;/div&gt;</span>
+  ReactDOM.render(
+    <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">VGrid</span> <span class="hljs-attr">interval_blocks</span>=<span class="hljs-string">{interval_blocks}</span> <span class="hljs-attr">database</span>=<span class="hljs-string">{database}</span>
+           <span class="hljs-attr">settings</span>=<span class="hljs-string">{settings}</span> <span class="hljs-attr">label_callback</span>=<span class="hljs-string">{label_callback}</span> /&gt;</span>,
+    document.getElementById('vgrid'));
+});</span></code></pre>
 			</div>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
