@@ -1,6 +1,6 @@
 # VGrid: video metadata visualization in Javascript
 
-[![Build Status](https://travis-ci.org/scanner-research/vgrid.svg?branch=master)](https://travis-ci.org/scanner-research/vgrid)
+[![Build Status](https://travis-ci.com/scanner-research/vgrid.svg?branch=master)](https://travis-ci.com/scanner-research/vgrid)
 
 VGrid is a Javascript library for visualizing spatiotemporal metadata (e.g. bounding boxes, pose keypoints) on video. For example, our group uses VGrid to inspect and debug computer vision models.
 
