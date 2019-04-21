@@ -30,5 +30,6 @@ matrix:
       skip_cleanup: true
       keep_history: true
       local_dir: vgridjs/docs
+      github_token: $GITHUB_TOKEN
       on:
         branch: master
