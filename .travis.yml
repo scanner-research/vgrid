@@ -9,7 +9,7 @@ matrix:
       provider: pypi
       user: wcrichto
       password:
-        secure: UrwGnrRHQBAGSkVuu4MVR27iaws3E5z/TdatQ5mBWS8wiOXKa2KCw3Rj1aDExbDcSDqvbvTul5YY0dmZ5iDgNRZ0GelRBEX32EvnoKTATuntTwpYXsAOv6kuH77ztsxHaQFirknizetWxpZ7ZfWCmz/eLrlTRqGjzKQ0DVWGnMDIlYDHOuZN15yI1DAXmaBeHTGQCaJqxZnhrDblXni9bP1hF/PeMBwkzN58QhD4zeLxa6NXZuEHOdM4JEVypPmLtpOaQqbz7cHwcl9LiLu4UbjFrBPgipzN9JfN4wiDYnj649IWILS4HNtrcLrCzh5RmJKQKGR2lnDkxt5PIV5owOqolDkKSnrXDl+cfFidrUp0x1uq20LEfIUqJMVeAPDfjxoteiCkBvEG54HQg2OTAS6qgKu4/tbBSKIhO5ZW3RgU+EnEfL+DsFx7JVAG5i6Jg5ds9p9DB6i5m9vCrx0U8Na8Xuw4PpLu0jZvRVxHYM6YKbxm++QxJuiOFe4PII7UBAXlamjWBV0zGGpspXeR6nd+vwCx7p0rtbjVYJW8d+9yCA8lAaIONwG92IrBa7F6xfxuOP8AbfPywpfpc3B/MKqVuaJnp45KizA8uFNVyYavgDzaiybVs4JkOR37pXK1xpdrdh6x6OSviBPsBxAd3BvwOcWbSvD4yUvXrJYqYqk=
+        secure: Jx2GR2f0vPbQfVpfbfsOx0dqgS5IW30iwSvDGZt3hhUJcLHJTa6VmUc5Ozv65vR6diQIgBNTnWwkeyQlCMJcyuNwzM50QjQ7rwm7uLEq2MkrqRGTgrMUYuNG8MexG4L5n/wV5oIQ98/V2rjlF1p+oXwDdXNtCETpOOPCOVNRleuuoC8E1WX/umD3bWtnuq7hIUcExSQ9vFvhdKWUiDsiN5PaPX9rYFLIbjxBrgKU8fg8egYxUjiROF/U8NV57oY+XgJMvaii9frkVxeFaOpsgcfQusknh5jsiL4PGiKo0fDyjZRW41lTH0uxeBEz52WxIGj15ktW/WsYbyE043QLbVHV3wRaRZM/VlBOnTQOkbW1OXCLOB10XHCdwlazyD7J4HDHA7QITDD5AZM3GQhvNTHt+LHEaX9H42tIFekSgoEvIiJS3K7D0NT2J3jRY7sc6lqicZ+qyRl3P4MKpBkh9RsoaFyJsUBHldGlOtjfrr24TAB8uooAP46zGcT1g1osbWaOJHiEy0P6UTA1gm60eIPx24Lpx86uz3HaLj5hnXhNSbXgcygItlH+wWKbprPM+rIrYFAxPmzSrrB6X2ZXEzEYAqGORgeO7JnwwQxowoKBDl6dbeLL+/VQi7VwOVBKMcfOHpZa9HWGVl0qYim9U7i921aO59arQ2M20USRa+o=
       on:
         tags: true
         distributions: sdist bdist_wheel
@@ -30,6 +30,7 @@ matrix:
       skip_cleanup: true
       keep_history: true
       local_dir: vgridjs/docs
-      github_token: $GITHUB_TOKEN
+      github_token: "$GITHUB_TOKEN"
       on:
         branch: master
+deploy:
