@@ -2,6 +2,13 @@
 
 This document describes the technologies and high-level design of VGrid to help you get started contributing features.
 
+* [Installation](#installation)
+* [Technologies](#technologies)
+* [Design](#design)
+* [Build infrastructure](#build-infrastructure)
+* [Contributing a change](#contributing-a-change)
+* [Making a release](#making-a-release)
+
 ## Installation
 
 You should install VGrid (and Rekall) from source.
