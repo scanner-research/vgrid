@@ -41,3 +41,7 @@ npm run watch
 ## Contributing a change
 
 Please develop in a feature branch and open a pull request if you would like to contribute a feature.
+
+## Making a release
+
+We use Git tags to mark new releases. Pushing a tag will tell Travis to automatically upload a new package to NPM and PyPi. Make sure to update the version number in both `vgridpy/setup.py` and `vgridjs/package.json`.
