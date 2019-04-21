@@ -20,7 +20,7 @@ VGrid is a standalone JS library, so you can embed it any web page. See the [vgr
 
 ## Installation
 
-VGrid has two API components: the main (required) Javascript API for rendering the visualizing component, and an (optional) Python API for creating VGrid inputs. The Python API is useful if you have a Jupyter notebook or a Python server with VGrid on the frontend.
+VGrid has two API components: the main (required) Javascript API for rendering the visualizing component, and an (optional) Python API for creating VGrid inputs. The Python API is useful if you have a Jupyter notebook or a Python server with VGrid on the frontend. We distribute prebuilt JS and Python packages, but you can also [build from source](https://github.com/scanner-research/vgrid/blob/master/DEVELOPMENT.md).
 
 ### Javascript API
 
@@ -30,50 +30,18 @@ VGrid must be installed in the context of a Javascript application using the [np
 npm install --save react react-dom mobx mobx-react
 ```
 
-You can install VGrid either through npm or from source.
-
-#### From npm
+Then you can install VGrid:
 
 ```
 npm install --save @wcrichto/vgrid
-```
-
-#### From source
-
-First, install `vgrid` to your system:
-
-```
-git clone https://github.com/scanner-research/vgrid
-cd vgrid/vgridjs
-npm install
-npm link @wcrichto/rekall # only if you installed rekall from source
-npm run prepublishOnly
-npm link
-```
-
-Then inside your JS application, link in `vgrid`:
-
-```
-cd your_app
-npm link @wcrichto/vgrid
 ```
 
 ### Python API
 
 VGrid requires Python 3.5 or greater.
 
-#### From pip
-
 ```
 pip3 install vgridpy
-```
-
-#### From source
-
-```
-git clone https://github.com/scanner-research/vgrid
-cd vgrid/vgridpy
-pip3 install -e .
 ```
 
 ## Example usage

@@ -2,6 +2,38 @@
 
 This document describes the technologies and high-level design of VGrid to help you get started contributing features.
 
+## Installation
+
+You should install VGrid (and Rekall) from source.
+
+### Javascript API
+
+See the [README](https://github.com/scanner-research/vgrid#javascript-api) for dependencies. Then run:
+
+```
+git clone https://github.com/scanner-research/vgrid
+cd vgrid/vgridjs
+npm install
+npm link @wcrichto/rekall # only if you installed rekall from source
+npm run prepublishOnly
+npm link
+```
+
+
+Then inside your JS application, link in `vgrid`:
+
+```
+cd your_app
+npm link @wcrichto/vgrid
+```
+
+### Python API
+
+```
+cd vgrid/vgridpy
+pip3 install -e .
+```
+
 ## Technologies
 
 VGrid is primarily a Javascript library that can be embedded in a webpage through Jupyter or other means. We use [Typescript](https://www.typescriptlang.org) to help structure the code base with a static type system.
