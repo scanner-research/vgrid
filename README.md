@@ -138,12 +138,12 @@ video = VideoMetadata(path='test.mp4', id=video_id)
 intervals = IntervalSet([Interval(Bounds3D(0, 10))])
 interval_map = IntervalSetMapping({video_id: iset})
 
-interval_blocks_json = VideoVBlocksBuilder() \
+vgrid_json = VideoVBlocksBuilder() \
     .add_track(VideoTrackBuilder('test', interval_map)) \
     .add_video_metadata('http://localhost:8000', [video]) \
     .build()
 
-# Send interval_blocks_json to the frontend
+# Send vgrid_json to the frontend somehow
 ```
 
 And Javascript:
@@ -153,9 +153,9 @@ import ReactDOM from 'react-dom';
 import {VGrid, Database, interval_blocks_from_json} from '@wcrichto/vgrid';
 
 // Fetch the JSON somehow
-fetch_json_somehow(function(json) {
+fetch_json_somehow(function(vgrid_json) {
   // Convert JSON into corresponding Javascript objects
-  let {interval_blocks_json, database_json} = json;
+  let {interval_blocks_json, database_json} = vgrid_json;
   let database = Database.from_json(database_json);
   this.interval_blocks = interval_blocks_from_json(interval_blocks_json);
 
