@@ -17,7 +17,7 @@ matrix:
     node_js: 10
     before_install: cd vgridjs
     install: npm install && npm run prepublishOnly
-    before_deploy: npm run docs
+    before_deploy: npm run docs && touch docs/.nojekyll
     deploy:
     - provider: npm
       email: wcrichto@cs.stanford.edu
