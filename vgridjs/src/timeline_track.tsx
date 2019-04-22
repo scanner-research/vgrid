@@ -100,20 +100,20 @@ class TimelineRow extends React.Component<TimelineRowProps, {}> {
   }
 }
 
-              class TimelineBounds {
-                  @observable start: number = 0
-                  @observable end: number = 0
+class TimelineBounds {
+    @observable start: number = 0
+    @observable end: number = 0
+    
+    span() {
+        return this.end - this.start;
+    }
 
-                  span() {
-                      return this.end - this.start;
-                  }
-
-                  @action.bound
-                  set_bounds(start: number, end: number) {
-                      this.start = start;
-                      this.end = end;
-                  }
-              }
+    @action.bound
+    set_bounds(start: number, end: number) {
+        this.start = start;
+        this.end = end;
+    }
+}
 
               interface TimelineProps {
                   intervals: {[key: string]: IntervalSet}
@@ -318,40 +318,49 @@ interface TicksProps {
     num_ticks: number
 }
 
-/** Ticks at the bottom of the timeline indicating video time at regular intervals */
-let Ticks: React.SFC<TicksProps> = observer((props) => {
-    let start = props.timeline_bounds.start;
-    let end = props.timeline_bounds.end;
-    let duration = end - start;
-    let ticks = _.range(start, end, duration / props.num_ticks);
-    let canvasRef : React.RefObject<HTMLCanvasElement> = React.createRef();
-    const canvas = canvasRef.current;
-    console.log("before!");
-    if (canvas) {
-        const ctx = canvas.getContext("2d");
-        console.log("canvas pass!");
-        if (ctx) {
-            console.log("ctx pass!");
-            ctx.beginPath();
-            ctx.font = '12px serif';
+@observer class Ticks extends React.Component<TicksProps, {}> {
+    private canvasRef : React.RefObject<HTMLCanvasElement>;
+    
+    constructor (props: TicksProps) {
+        super(props);
+        this.canvasRef = React.createRef();
+    }
 
-            {ticks.map((tick, i) => {
-                let hours = Math.floor(tick / 3600);
-                let minutes = Math.floor(60 * (tick / 3600 - hours));
-                let seconds = Math.floor(60 * (60 * (tick / 3600 - hours) - minutes));
-                let time_str = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-                let x = time_to_x(tick, props.timeline_bounds, props.timeline_width);
+    componentDidMount() {
+        let start = this.props.timeline_bounds.start;
+        let end = this.props.timeline_bounds.end;
+        let duration = end - start;
+        let ticks = _.range(start, end, duration / this.props.num_ticks);
+        const canvas = this.canvasRef.current;
+        console.log("before!");
+        if (canvas) {
+            const ctx = canvas.getContext("2d");
+            console.log("canvas pass!");
+            if (ctx) {
+                console.log("ctx pass!");
+                ctx.beginPath();
+                ctx.font = '12px sans-serif';
 
-                ctx.moveTo(x, 0);
-                ctx.lineTo(x, props.height / 2);
-                ctx.fillText(time_str, x, props.height);
-            })}
-            ctx.stroke();
+                {ticks.map((tick, i) => {
+                    let hours = Math.floor(tick / 3600);
+                    let minutes = Math.floor(60 * (tick / 3600 - hours));
+                    let seconds = Math.floor(60 * (60 * (tick / 3600 - hours) - minutes));
+                    let time_str = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                    let x = time_to_x(tick, this.props.timeline_bounds, this.props.timeline_width);
+
+                    ctx.moveTo(x, 0);
+                    ctx.lineTo(x, this.props.height / 2);
+                    ctx.fillText(time_str, x, this.props.height);
+                })}
+                ctx.stroke();
+            }
         }
     }
 
-    return <canvas ref = {canvasRef} width = {props.timeline_width} height = {props.height}/>;
-});
+    render() {
+        return <canvas ref = {this.canvasRef} width = {this.props.timeline_width} height = {this.props.height}/>;
+    }
+}
 
 interface TimelineControlsProps {
     time_state: TimeState
