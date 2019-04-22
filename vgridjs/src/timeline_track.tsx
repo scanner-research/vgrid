@@ -326,6 +326,7 @@ let Ticks: React.SFC<TicksProps> = observer((props) => {
     let ticks = _.range(start, end, duration / props.num_ticks);
     let canvasRef : React.RefObject<HTMLCanvasElement> = React.createRef();
     const canvas = canvasRef.current;
+    console.log("before!");
     if (canvas) {
         const ctx = canvas.getContext("2d");
         console.log("canvas pass!");
