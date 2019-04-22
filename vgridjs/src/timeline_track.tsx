@@ -509,7 +509,6 @@ export default class TimelineTrack extends React.Component<TimelineTrackProps, {
    * The timeline view shows all intervals between some bounds [t1, t2]. These bounds can
    * be adjusted using timeline controls.
    */
-  timeline_bounds: TimelineBounds
     timeline_bounds: TimelineBounds
 
     constructor(props: TimelineTrackProps) {
