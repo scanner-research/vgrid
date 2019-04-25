@@ -73,6 +73,7 @@
 						<section class="tsd-index-section ">
 							<h3>Classes</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-class tsd-parent-kind-external-module tsd-has-type-parameter tsd-is-not-exported"><a href="../classes/_timeline_track_.ticks.html" class="tsd-kind-icon">Ticks</a></li>
 								<li class="tsd-kind-class tsd-parent-kind-external-module tsd-has-type-parameter tsd-is-not-exported"><a href="../classes/_timeline_track_.timeline.html" class="tsd-kind-icon">Timeline</a></li>
 								<li class="tsd-kind-class tsd-parent-kind-external-module tsd-is-not-exported"><a href="../classes/_timeline_track_.timelinebounds.html" class="tsd-kind-icon">Timeline<wbr>Bounds</a></li>
 								<li class="tsd-kind-class tsd-parent-kind-external-module tsd-has-type-parameter tsd-is-not-exported"><a href="../classes/_timeline_track_.timelinecontrols.html" class="tsd-kind-icon">Timeline<wbr>Controls</a></li>
@@ -94,12 +95,6 @@
 							</ul>
 						</section>
 						<section class="tsd-index-section tsd-is-not-exported">
-							<h3>Variables</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported"><a href="_timeline_track_.html#ticks" class="tsd-kind-icon">Ticks</a></li>
-							</ul>
-						</section>
-						<section class="tsd-index-section tsd-is-not-exported">
 							<h3>Functions</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported"><a href="_timeline_track_.html#shallowcompare" class="tsd-kind-icon">shallow<wbr>Compare</a></li>
@@ -117,24 +112,6 @@
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group tsd-is-not-exported">
-				<h2>Variables</h2>
-				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-					<a name="ticks" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagLet">Let</span> Ticks</h3>
-					<div class="tsd-signature tsd-kind-icon">Ticks<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">React.SFC</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_timeline_track_.ticksprops.html" class="tsd-signature-type">TicksProps</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;observer((props) &#x3D;&gt; {let start &#x3D; props.timeline_bounds.start;let end &#x3D; props.timeline_bounds.end;let duration &#x3D; end - start;let ticks &#x3D; _.range(start, end, duration / props.num_ticks);return &lt;svg className&#x3D;&#x27;timeline-ticks&#x27; style&#x3D;{{width: props.timeline_width, height: props.height}}&gt;{ticks.map((tick, i) &#x3D;&gt; {let hours &#x3D; Math.floor(tick / 3600);let minutes &#x3D; Math.floor(60 * (tick / 3600 - hours));let seconds &#x3D; Math.floor(60 * (60 * (tick / 3600 - hours) - minutes));let time_str &#x3D; &#x60;${hours.toString().padStart(2, &#x27;0&#x27;)}:${minutes.toString().padStart(2, &#x27;0&#x27;)}:${seconds.toString().padStart(2, &#x27;0&#x27;)}&#x60;;let x &#x3D; time_to_x(tick, props.timeline_bounds, props.timeline_width);return &lt;g key&#x3D;{i}&gt;&lt;linex1&#x3D;{x} x2&#x3D;{x} y1&#x3D;{0} y2&#x3D;{props.height / 2}stroke&#x3D;&quot;black&quot; strokeWidth&#x3D;{1} /&gt;&lt;text x&#x3D;{x} y&#x3D;{props.height} textAnchor&#x3D;&quot;middle&quot;&gt;{time_str}&lt;/text&gt;&lt;/g&gt;;})}&lt;/svg&gt;;})</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/667b6b2/vgridjs/src/timeline_track.tsx#L298">timeline_track.tsx:298</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Ticks at the bottom of the timeline indicating video time at regular intervals</p>
-						</div>
-					</div>
-				</section>
-			</section>
-			<section class="tsd-panel-group tsd-member-group tsd-is-not-exported">
 				<h2>Functions</h2>
 				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
 					<a name="shallowcompare" class="tsd-anchor"></a>
@@ -146,7 +123,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/667b6b2/vgridjs/src/timeline_track.tsx#L37">timeline_track.tsx:37</a></li>
+									<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/efbfa4b/vgridjs/src/timeline_track.tsx#L37">timeline_track.tsx:37</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -172,7 +149,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/667b6b2/vgridjs/src/timeline_track.tsx#L43">timeline_track.tsx:43</a></li>
+									<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/efbfa4b/vgridjs/src/timeline_track.tsx#L43">timeline_track.tsx:43</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -201,7 +178,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/667b6b2/vgridjs/src/timeline_track.tsx#L47">timeline_track.tsx:47</a></li>
+									<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/efbfa4b/vgridjs/src/timeline_track.tsx#L47">timeline_track.tsx:47</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -229,7 +206,7 @@
 					<div class="tsd-signature tsd-kind-icon">Constants<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/667b6b2/vgridjs/src/timeline_track.tsx#L16">timeline_track.tsx:16</a></li>
+							<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/efbfa4b/vgridjs/src/timeline_track.tsx#L16">timeline_track.tsx:16</a></li>
 						</ul>
 					</aside>
 					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal tsd-is-not-exported">
@@ -238,7 +215,7 @@
 						<div class="tsd-signature tsd-kind-icon">num_<wbr>ticks<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;10</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/667b6b2/vgridjs/src/timeline_track.tsx#L25">timeline_track.tsx:25</a></li>
+								<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/efbfa4b/vgridjs/src/timeline_track.tsx#L25">timeline_track.tsx:25</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -253,7 +230,7 @@
 						<div class="tsd-signature tsd-kind-icon">tick_<wbr>height<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;20</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/667b6b2/vgridjs/src/timeline_track.tsx#L22">timeline_track.tsx:22</a></li>
+								<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/efbfa4b/vgridjs/src/timeline_track.tsx#L22">timeline_track.tsx:22</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -268,7 +245,7 @@
 						<div class="tsd-signature tsd-kind-icon">timeline_<wbr>expanded_<wbr>height<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;100</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/667b6b2/vgridjs/src/timeline_track.tsx#L19">timeline_track.tsx:19</a></li>
+								<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/efbfa4b/vgridjs/src/timeline_track.tsx#L19">timeline_track.tsx:19</a></li>
 							</ul>
 						</aside>
 					</section>
@@ -278,7 +255,7 @@
 						<div class="tsd-signature tsd-kind-icon">timeline_<wbr>unexpanded_<wbr>height<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;50</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/667b6b2/vgridjs/src/timeline_track.tsx#L18">timeline_track.tsx:18</a></li>
+								<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/efbfa4b/vgridjs/src/timeline_track.tsx#L18">timeline_track.tsx:18</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -364,6 +341,9 @@
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
 					<li class=" tsd-kind-class tsd-parent-kind-external-module tsd-has-type-parameter tsd-is-not-exported">
+						<a href="../classes/_timeline_track_.ticks.html" class="tsd-kind-icon">Ticks</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-external-module tsd-has-type-parameter tsd-is-not-exported">
 						<a href="../classes/_timeline_track_.timeline.html" class="tsd-kind-icon">Timeline</a>
 					</li>
 					<li class=" tsd-kind-class tsd-parent-kind-external-module tsd-is-not-exported">
@@ -401,9 +381,6 @@
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
 						<a href="../interfaces/_timeline_track_.timelinetrackprops.html" class="tsd-kind-icon">Timeline<wbr>Track<wbr>Props</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="_timeline_track_.html#ticks" class="tsd-kind-icon">Ticks</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
 						<a href="_timeline_track_.html#shallowcompare" class="tsd-kind-icon">shallow<wbr>Compare</a>
