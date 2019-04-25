@@ -50,19 +50,19 @@ function x_to_time(x: number, bounds: TimelineBounds, width: number): number {
 
 // Single row of the timeline corresponding to one interval set
 class TimelineRow extends React.Component<TimelineRowProps, {}> {
-  private canvasRef : React.RefObject<HTMLCanvasElement>;
+  private canvas_ref : React.RefObject<HTMLCanvasElement>;
 
   constructor(props : TimelineRowProps) {
     super(props);
-    this.canvasRef = React.createRef();
+    this.canvas_ref = React.createRef();
   }
   
   shouldComponentUpdate(next_props: TimelineRowProps, next_state: {}) {
     return !shallowCompare(this.props, next_props) || this.props.intervals.dirty;
   }
-  
-  componentDidMount() {
-    const canvas = this.canvasRef.current;
+
+  render_canvas() {
+    const canvas = this.canvas_ref.current;
     if (canvas) {
       const ctx = canvas.getContext("2d");
       if (ctx) {
@@ -77,25 +77,17 @@ class TimelineRow extends React.Component<TimelineRowProps, {}> {
     }
   }
   
+  componentDidMount() {
+    this.render_canvas();
+  }
+  
   componentDidUpdate() {
-    const canvas = this.canvasRef.current;
-    if (canvas) {
-      const ctx = canvas.getContext("2d");
-      if (ctx) {
-        ctx.fillStyle = this.props.color;
-        this.props.intervals.to_list().map((intvl, i) => {
-          let bounds = intvl.bounds;
-          let x = bounds.t1 / this.props.full_duration * this.props.full_width;
-          let width = (bounds.t2 - bounds.t1) / this.props.full_duration * this.props.full_width;
-          ctx.fillRect(x, 0, width, this.props.row_height);
-        });
-      }
-    }
+    this.render_canvas();
   }
 
   render() {
     this.props.intervals.dirty = false;
-    return <canvas ref = {this.canvasRef} width = {this.props.full_width} height = {this.props.row_height}/>
+    return <canvas ref = {this.canvas_ref} width = {this.props.full_width} height = {this.props.row_height}/>
   }
 }
 
@@ -321,11 +313,11 @@ interface TicksProps {
 
 /** Ticks at the bottom of the timeline indicating video time at regular intervals */
 @observer class Ticks extends React.Component<TicksProps, {}> {
-  private canvasRef : React.RefObject<HTMLCanvasElement>;
+  private canvas_ref : React.RefObject<HTMLCanvasElement>;
   
   constructor (props: TicksProps) {
     super(props);
-    this.canvasRef = React.createRef();
+    this.canvas_ref = React.createRef();
   }
 
   componentDidMount() {
@@ -333,7 +325,7 @@ interface TicksProps {
     let end = this.props.timeline_bounds.end;
     let duration = end - start;
     let ticks = _.range(start, end, duration / this.props.num_ticks);
-    const canvas = this.canvasRef.current;
+    const canvas = this.canvas_ref.current;
     if (canvas) {
       const ctx = canvas.getContext("2d");
       if (ctx) {
@@ -358,7 +350,7 @@ interface TicksProps {
   }
 
   render() {
-    return <canvas ref = {this.canvasRef} width = {this.props.timeline_width} height = {this.props.height}/>;
+    return <canvas ref = {this.canvas_ref} width = {this.props.timeline_width} height = {this.props.height}/>;
   }
 }
 
