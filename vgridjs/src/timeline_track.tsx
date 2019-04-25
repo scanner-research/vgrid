@@ -50,31 +50,55 @@ function x_to_time(x: number, bounds: TimelineBounds, width: number): number {
 
 // Single row of the timeline corresponding to one interval set
 class TimelineRow extends React.Component<TimelineRowProps, {}> {
+  private canvas_ref : React.RefObject<HTMLCanvasElement>;
+
+  constructor(props : TimelineRowProps) {
+    super(props);
+    this.canvas_ref = React.createRef();
+  }
+  
   shouldComponentUpdate(next_props: TimelineRowProps, next_state: {}) {
     return !shallowCompare(this.props, next_props) || this.props.intervals.dirty;
   }
 
+  render_canvas() {
+    const canvas = this.canvas_ref.current;
+    if (canvas) {
+      const ctx = canvas.getContext("2d");
+      if (ctx) {
+        ctx.fillStyle = this.props.color;
+        this.props.intervals.to_list().map((intvl, i) => {
+          let bounds = intvl.bounds;
+          let x = bounds.t1 / this.props.full_duration * this.props.full_width;
+          let width = (bounds.t2 - bounds.t1) / this.props.full_duration * this.props.full_width;
+          ctx.fillRect(x, 0, width, this.props.row_height);
+        });
+      }
+    }
+  }
+  
+  componentDidMount() {
+    this.render_canvas();
+  }
+  
+  componentDidUpdate() {
+    this.render_canvas();
+  }
+
   render() {
     this.props.intervals.dirty = false;
-    return <g>
-      {this.props.intervals.to_list().map((intvl, i) => {
-         let bounds = intvl.bounds;
-         let x = bounds.t1 / this.props.full_duration * this.props.full_width;
-         let width = (bounds.t2 - bounds.t1) / this.props.full_duration * this.props.full_width;
-         return <rect key={i} width={width} height={this.props.row_height} fill={this.props.color} x={x} y={0} />;
-      })}
-    </g>;
+    return <canvas ref = {this.canvas_ref} width = {this.props.full_width} height = {this.props.row_height}/>
   }
 }
 
 class TimelineBounds {
   @observable start: number = 0
   @observable end: number = 0
-
+  
   span() {
     return this.end - this.start;
   }
-
+  
   @action.bound
   set_bounds(start: number, end: number) {
     this.start = start;
@@ -160,6 +184,7 @@ class Timeline extends React.Component<TimelineProps, {}> {
       'i': this.create_interval
     }
   }
+
 
   onKeyDown = (char: string, x: number, y: number) => {
     if (char == 'Shift') {
@@ -256,22 +281,16 @@ class Timeline extends React.Component<TimelineProps, {}> {
     let window_span = this.props.timeline_bounds.span();
     let full_width = this.props.timeline_width * video_span / window_span;
 
-    let svg_position = {
-      left: -(this.props.timeline_bounds.start / video_span) * full_width
-    };
-
     return <div className='timeline-box' style={
-      {width: this.props.timeline_width, height: this.props.timeline_height}}>
-      <div className='timeline-cursor' style={{
-        width: this.props.expand ? 4 : 2,
-        height: this.props.timeline_height,
-        left: time_to_x(time, this.props.timeline_bounds, this.props.timeline_width)
-      }} />
+    {width: this.props.timeline_width, height: this.props.timeline_height}}>
+        <div className='timeline-cursor' style={{
+          width: this.props.expand ? 4 : 2,
+          height: this.props.timeline_height,
+          left: time_to_x(time, this.props.timeline_bounds, this.props.timeline_width)
+        }} />
 
-      <div className='timeline-window'>
-        <svg className='timeline-svg' width={full_width} height={this.props.timeline_height} style={svg_position}>
-          {keys.map((k, i) =>
-            <svg key={k} y={row_height * i} x={0}>
+        <div className='timeline-window'>
+            {keys.map((k, i) =>
               <TimelineRow
                 intervals={k == '__new_intervals' ? new_intervals : this.props.intervals[k]}
                 row_height={row_height}
@@ -279,10 +298,8 @@ class Timeline extends React.Component<TimelineProps, {}> {
                 full_duration={video_span}
                 color={default_palette[i]}
               />
-            </svg>
-          )}
-        </svg>
-      </div>
+            )}
+        </div>
     </div>;
   }
 }
@@ -295,29 +312,47 @@ interface TicksProps {
 }
 
 /** Ticks at the bottom of the timeline indicating video time at regular intervals */
-let Ticks: React.SFC<TicksProps> = observer((props) => {
-  let start = props.timeline_bounds.start;
-  let end = props.timeline_bounds.end;
-  let duration = end - start;
-  let ticks = _.range(start, end, duration / props.num_ticks);
+@observer class Ticks extends React.Component<TicksProps, {}> {
+  private canvas_ref : React.RefObject<HTMLCanvasElement>;
+  
+  constructor (props: TicksProps) {
+    super(props);
+    this.canvas_ref = React.createRef();
+  }
 
-  return <svg className='timeline-ticks' style={{width: props.timeline_width, height: props.height}}>
-    {ticks.map((tick, i) => {
-       let hours = Math.floor(tick / 3600);
-       let minutes = Math.floor(60 * (tick / 3600 - hours));
-       let seconds = Math.floor(60 * (60 * (tick / 3600 - hours) - minutes));
-       let time_str = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-       let x = time_to_x(tick, props.timeline_bounds, props.timeline_width);
+  componentDidMount() {
+    let start = this.props.timeline_bounds.start;
+    let end = this.props.timeline_bounds.end;
+    let duration = end - start;
+    let ticks = _.range(start, end, duration / this.props.num_ticks);
+    const canvas = this.canvas_ref.current;
+    if (canvas) {
+      const ctx = canvas.getContext("2d");
+      if (ctx) {
+        ctx.beginPath();
+        ctx.font = '12px sans-serif';
+        ctx.textAlign = "center";
 
-       return <g key={i}>
-         <line
-           x1={x} x2={x} y1={0} y2={props.height / 2}
-           stroke="black" strokeWidth={1} />
-         <text x={x} y={props.height} textAnchor="middle">{time_str}</text>
-       </g>;
-    })}
-  </svg>;
-});
+        {ticks.map((tick, i) => {
+          let hours = Math.floor(tick / 3600);
+          let minutes = Math.floor(60 * (tick / 3600 - hours));
+          let seconds = Math.floor(60 * (60 * (tick / 3600 - hours) - minutes));
+          let time_str = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+          let x = time_to_x(tick, this.props.timeline_bounds, this.props.timeline_width);
+
+          ctx.moveTo(x, 0);
+          ctx.lineTo(x, this.props.height / 2);
+          ctx.fillText(time_str, x, this.props.height);
+        })}
+        ctx.stroke();
+      }
+    }
+  }
+
+  render() {
+    return <canvas ref = {this.canvas_ref} width = {this.props.timeline_width} height = {this.props.height}/>;
+  }
+}
 
 interface TimelineControlsProps {
   time_state: TimeState
@@ -438,7 +473,7 @@ class TimelineControls extends React.Component<TimelineControlsProps, {}> {
     let ControllerButton = (props: {callback: () => void, cls: string}) =>
       (<button type="button" className="btn btn-outline-dark" onClick={props.callback}
                style={{width: this.props.controller_size/2, height: this.props.controller_size/2}}>
-        <span className={`oi oi-${props.cls}`} />
+          <span className={`oi oi-${props.cls}`} />
       </button>);
 
     let controls_style = {
@@ -447,12 +482,12 @@ class TimelineControls extends React.Component<TimelineControlsProps, {}> {
     };
 
     return <div className='timeline-controls' style={controls_style}>
-      <span className="btn-group">
-        <ControllerButton callback={this.zoom_in} cls="plus" />
-        <ControllerButton callback={this.zoom_out} cls="minus" />
-        <ControllerButton callback={this.shift_earlier} cls="caret-left" />
-        <ControllerButton callback={this.shift_later} cls="caret-right" />
-      </span>
+        <span className="btn-group">
+            <ControllerButton callback={this.zoom_in} cls="plus" />
+            <ControllerButton callback={this.zoom_out} cls="minus" />
+            <ControllerButton callback={this.shift_earlier} cls="caret-left" />
+            <ControllerButton callback={this.shift_later} cls="caret-right" />
+        </span>
     </div>;
   }
 }
@@ -471,7 +506,6 @@ interface TimelineTrackProps {
  * Each set of intervals is drawn in a different row.
  */
 export default class TimelineTrack extends React.Component<TimelineTrackProps, {}> {
-
   /**
    * The timeline view shows all intervals between some bounds [t1, t2]. These bounds can
    * be adjusted using timeline controls.
@@ -497,35 +531,36 @@ export default class TimelineTrack extends React.Component<TimelineTrackProps, {
     let track_width = this.props.expand ? timeline_width + controller_size : timeline_width;
 
     return <div className='timeline-track' style={{width: track_width}}>
-      <div className='timeline-row'>
-        <Timeline
-          timeline_bounds={this.timeline_bounds}
-          timeline_width={timeline_width}
-          timeline_height={timeline_height}
-          time_state={this.props.time_state}
-          intervals={this.props.intervals}
-          expand={this.props.expand}
-          video={this.props.video} />
+        <div className='timeline-row'>
 
-        {this.props.expand
-         ? (<TimelineControls
-              timeline_bounds={this.timeline_bounds} video={this.props.video}
-              time_state={this.props.time_state} controller_size={controller_size} />)
-         : null }
+            <Timeline
+              timeline_bounds={this.timeline_bounds}
+              timeline_width={timeline_width}
+              timeline_height={timeline_height}
+              time_state={this.props.time_state}
+              intervals={this.props.intervals}
+              expand={this.props.expand}
+              video={this.props.video} />
 
-        <div className='clearfix' />
-      </div>
+            {this.props.expand
+            ? (<TimelineControls
+                 timeline_bounds={this.timeline_bounds} video={this.props.video}
+                 time_state={this.props.time_state} controller_size={controller_size} />)
+            : null }
 
-      <div className='timeline-row'>
-        {this.props.expand
-         ? <Ticks
-             timeline_width={timeline_width}
-             timeline_bounds={this.timeline_bounds}
-             height={Constants.tick_height}
-             num_ticks={Constants.num_ticks} />
-         : null}
-        <div className='clearfix' />
-      </div>
+            <div className='clearfix' />
+        </div>
+
+        <div className='timeline-row'>
+            {this.props.expand
+            ? <Ticks
+                timeline_width={timeline_width}
+                timeline_bounds={this.timeline_bounds}
+                height={Constants.tick_height}
+                num_ticks={Constants.num_ticks} />
+            : null}
+            <div className='clearfix' />
+        </div>
     </div>;
   }
 }
