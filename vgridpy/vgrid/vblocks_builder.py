@@ -401,17 +401,22 @@ class Metadata_Categorical:
 class VideoMetadata:
     """Metadata about a video.
 
-    The basic metadata is the video path and ID. The ID can be any arbitrary
-    unique number, or a database ID if you have one. If the video path is on
-    your local machine (as opposed to, say, a cloud bucket), then this class
-    can fill in the remaining metadata (width, height, etc.) using ffprobe.
+    The basic metadata is the video path and ID. The ID can be any
+    arbitrary unique number, or a database ID if you have one.
+
+    Video metadata (width, height, fps, etc.) is either provided
+    explicitly by the caller, or extracted from the video file using
+    ffprobe.  (Since the implementation uses ffprobe, automatic
+    extraction is only supported for paths on the local machine.
+
     """
 
     def __init__(self, path, id=None, fps=None, num_frames=None, width=None, height=None):
-        if not os.path.isfile(path):
-            raise Exception("Error: path {} does not exist".format(path))
 
         if fps is None:
+            if not os.path.isfile(path):
+                raise Exception("Error: local video path {} does not exist and video metadata not explicitly specified".format(path))
+            
             cmd = 'ffprobe -v quiet -print_format json -show_streams "{}"' \
                 .format(path)
             outp = sp.check_output(shlex.split(cmd)).decode('utf-8')
