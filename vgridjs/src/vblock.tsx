@@ -75,14 +75,17 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
 
     // Compute earliest time in all interval blocks to determine where to start the timeline
     let first_time =
-      _.values(props.block.interval_sets).reduce((n, is) => Math.min(n, is.to_list()[0].bounds.t1), Infinity);
+      _.values(props.block.interval_sets).reduce(
+        (n, is) => (is.to_list().length > 0) ? Math.min(n, is.to_list()[0].bounds.t1) : n,
+        Infinity);
     this.time_state = new TimeState(first_time);
 
     // Find captions in interval sets if they exist
     this.captions = null;
     for (let k of _.keys(this.props.block.interval_sets)) {
       let is = this.props.block.interval_sets[k];
-      if (is.to_list()[0].data.draw_type instanceof DrawType_Caption) {
+      if (is.to_list().length > 0 &&
+            is.to_list()[0].data.draw_type instanceof DrawType_Caption) {
         this.captions = is;
       }
     }
