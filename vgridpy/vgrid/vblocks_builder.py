@@ -422,11 +422,11 @@ class VideoMetadata:
             outp = sp.check_output(shlex.split(cmd)).decode('utf-8')
             streams = json.loads(outp)['streams']
             video_stream = [s for s in streams if s['codec_type'] == 'video'][0]
-            width = video_stream['width']
-            height = video_stream['height']
+            width = int(video_stream['width'])
+            height = int(video_stream['height'])
             [num, denom] = map(int, video_stream['r_frame_rate'].split('/'))
             fps = float(num) / float(denom)
-            num_frames = video_stream['nb_frames']
+            num_frames = int(video_stream['nb_frames'])
 
         self.path = path
         self.id = id
