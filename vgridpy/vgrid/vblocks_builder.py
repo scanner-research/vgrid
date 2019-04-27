@@ -35,7 +35,7 @@ Example of using IntervalBlock:
     # sequences, where the payload on each conversation is an IntervalSet of
     # face bounding boxes with identity as payload.
 
-    # We want to see a list of VBlocks where each is a conversation 
+    # We want to see a list of VBlocks where each is a conversation
     # sequence in the collection. We want to see two tracks in each VBlock:
     # one showing the conversation sequence; another showing all the faces with
     # the bounding boxes drawn and generic metadata showing the identities.
@@ -80,17 +80,14 @@ import os
 
 
 class _BlockMetaMixin:
-    def add_video_metadata(self, video_baseurl, video_meta):
-        self._video_meta = [
-            {**v.to_json(), 'path': '{}/{}'.format(video_baseurl, v.path)} 
-            for v in video_meta
-        ]
-
+    def add_video_metadata(self, video_meta):
+        self._video_meta = [v.to_json() for v in video_meta]
         return self
 
 
 class VideoVBlocksBuilder(_BlockMetaMixin):
     """Builder of a list of VBlocks, one for each video."""
+
     def __init__(self):
         self._tracks = {}
         self._video_ids = set([])
@@ -98,7 +95,7 @@ class VideoVBlocksBuilder(_BlockMetaMixin):
 
     def add_track(self, track):
         """Adds a track to vblocks.
-        
+
         Args:
             track (VideoTrackBuilder): the track to add
 
@@ -117,16 +114,17 @@ class VideoVBlocksBuilder(_BlockMetaMixin):
                 'interval_dict': {
                     name: track.build_for_video(vid)
                     for name, track in self._tracks.items()
-                },            
+                },
             } for vid in self._video_ids],
             'database': {
                 'videos': self._video_meta
             }
         }
 
+
 class _CustomTrackMixin:
     """Mixin for a TrackBuilder that allows custom draw type and metadata"""
-    
+
     def set_draw_type(self, draw_type):
         """Set the type of visualization to draw for this track.
 
@@ -160,8 +158,9 @@ class _CustomTrackMixin:
 
     def _build_interval(self, video_id, interval):
         """Helper to build a JSON interval in this track."""
-        return build_interval(video_id, interval,
-                self._draw_type, self._metadatas)
+        return build_interval(video_id, interval, self._draw_type,
+                              self._metadatas)
+
 
 def build_interval(video_id, interval, draw_type, metadatas):
     """Returns a JSON interval with given draw_type and metadatas.
@@ -177,7 +176,7 @@ def build_interval(video_id, interval, draw_type, metadatas):
             display.
 
     Returns:
-        A JSON interval with video_id as domain and all the draw_types and 
+        A JSON interval with video_id as domain and all the draw_types and
         metadatas.
     """
     return {
@@ -194,13 +193,15 @@ def build_interval(video_id, interval, draw_type, metadatas):
         }
     }
 
+
 class VideoTrackBuilder(_CustomTrackMixin):
     """Builder of a track for some collection of videos from IntervalSet.
-    
+
     Attributes:
         name (string): Name of the track
         video_ids (Set[int]): Videos that should have this track.
     """
+
     def __init__(self, name, collection):
         """Initializer
 
@@ -219,11 +220,15 @@ class VideoTrackBuilder(_CustomTrackMixin):
     def build_for_video(self, video_id):
         """Builds list of JSON intervals for the track on one VBlock/Video."""
         intervalset = self._collection[video_id]
-        return [self._build_interval(video_id, interval)
-                for interval in intervalset.get_intervals()]
+        return [
+            self._build_interval(video_id, interval)
+            for interval in intervalset.get_intervals()
+        ]
+
 
 class IntervalVBlocksBuilder(_BlockMetaMixin):
     """Builder of a list of VBlocks, one for each interval."""
+
     def __init__(self):
         self._tracks = {}
 
@@ -258,12 +263,14 @@ class IntervalVBlocksBuilder(_BlockMetaMixin):
             }
         }
 
+
 class IntervalTrackBuilder(_CustomTrackMixin):
     """Builder of a track for single-interval vblocks.
-    
+
     Attributes:
         name (string): Name of the track
     """
+
     def __init__(self, name, intervalset_getter=lambda i: IntervalSet([i])):
         """Initializer
 
@@ -282,8 +289,11 @@ class IntervalTrackBuilder(_CustomTrackMixin):
     def build_for_interval(self, video_id, interval):
         """Builds list of JSON intervals for the track for one Interval."""
         intervalset = self._intervalset_getter(interval)
-        return [self._build_interval(video_id, interval)
-                for interval in intervalset.get_intervals()]
+        return [
+            self._build_interval(video_id, interval)
+            for interval in intervalset.get_intervals()
+        ]
+
 
 def _bounds_in_json(video_id, interval):
     """Returns a JSON object for interval bounds in VGrid."""
@@ -294,6 +304,7 @@ def _bounds_in_json(video_id, interval):
         "bbox": _bbox_in_json(interval),
     }
 
+
 def _video_domain_in_json(video_id):
     """Returns a JSON  Domain_Video object."""
     return {
@@ -302,6 +313,7 @@ def _video_domain_in_json(video_id):
             "video_id": video_id
         },
     }
+
 
 def _bbox_in_json(interval):
     """Returns a JSON BoundingBox object."""
@@ -312,11 +324,14 @@ def _bbox_in_json(interval):
         "y2": interval.y[1],
     }
 
+
 def _get_payload(i):
     return i.payload
 
+
 class DrawType_Caption:
     """A DrawType for displaying text in caption box"""
+
     def __init__(self, get_caption=_get_payload):
         """Initialize
 
@@ -330,18 +345,22 @@ class DrawType_Caption:
         return {
             "type": "DrawType_Caption",
             "args": {
-                "text": self._get_caption(interval)    
-            },                    
+                "text": self._get_caption(interval)
+            },
         }
+
 
 class DrawType_Bbox:
     """A DrawType for drawing bounding boxes around spatial extent"""
+
     def __call__(self, video_id, interval):
         return {"type": "DrawType_Bbox"}
 
+
 class Metadata_Flag:
     """A Metadata that flags the interval on the Timeline."""
-    def __init__(self, predicate=lambda _:True):
+
+    def __init__(self, predicate=lambda _: True):
         """Initialize
 
         Args:
@@ -356,8 +375,10 @@ class Metadata_Flag:
             return {"type": "Metadata_Flag"}
         return None
 
+
 class Metadata_Generic:
     """A Metadata that stores generic JSON"""
+
     def __init__(self, getter=_get_payload):
         """Initialize
 
@@ -372,12 +393,14 @@ class Metadata_Generic:
         return {
             "type": "Metadata_Generic",
             "args": {
-                "data": self._getter(interval)    
+                "data": self._getter(interval)
             }
         }
 
+
 class Metadata_Categorical:
     """A Metadata that stores categorical values"""
+
     def __init__(self, category_name, getter=_get_payload):
         """Initialize
 
@@ -398,6 +421,7 @@ class Metadata_Categorical:
             },
         }
 
+
 class VideoMetadata:
     """Metadata about a video.
 
@@ -411,17 +435,26 @@ class VideoMetadata:
 
     """
 
-    def __init__(self, path, id=None, fps=None, num_frames=None, width=None, height=None):
+    def __init__(self,
+                 path,
+                 id=None,
+                 fps=None,
+                 num_frames=None,
+                 width=None,
+                 height=None):
 
         if fps is None:
             if not os.path.isfile(path):
-                raise Exception("Error: local video path {} does not exist and video metadata not explicitly specified".format(path))
-            
+                raise Exception(
+                    "Error: local video path {} does not exist and video metadata not explicitly specified"
+                    .format(path))
+
             cmd = 'ffprobe -v quiet -print_format json -show_streams "{}"' \
                 .format(path)
             outp = sp.check_output(shlex.split(cmd)).decode('utf-8')
             streams = json.loads(outp)['streams']
-            video_stream = [s for s in streams if s['codec_type'] == 'video'][0]
+            video_stream = [s for s in streams
+                            if s['codec_type'] == 'video'][0]
             width = int(video_stream['width'])
             height = int(video_stream['height'])
             [num, denom] = map(int, video_stream['r_frame_rate'].split('/'))
@@ -445,10 +478,12 @@ class VideoMetadata:
             'height': self.height
         }
 
+
 class Category:
     def __init__(self):
         # TODO
         pass
+
 
 class DatabaseBuilder:
     """Builder for the VGrid metadata database."""
@@ -465,7 +500,4 @@ class DatabaseBuilder:
         for video in self._videos:
             video.path = '{}/{}'.format(self._video_baseurl, video.path)
 
-        return {
-            'videos': [v.to_json() for v in self._videos]
-        }
-
+        return {'videos': [v.to_json() for v in self._videos]}
