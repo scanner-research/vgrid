@@ -2,7 +2,6 @@ import * as React from "react";
 import * as _ from 'lodash';
 import {observer, inject} from 'mobx-react';
 
-import Spinner from './spinner';
 import TimeState from './time_state';
 import {IntervalSet, Domain_Video} from './interval';
 import ProgressiveImage from './progressive_image';
@@ -87,11 +86,13 @@ export default class VideoTrack extends React.Component<VideoTrackProps, VideoTr
     // Get assets paths
     let image_path =
       `${this.props.settings!.frameserver_endpoint}?path=${encodeURIComponent(video.path)}&frame=${frame}`;
+    let video_path =
+      `${this.props.settings!.video_endpoint}/${video.path}`;
 
     return <div className='video-track'>
 
       {!this.props.settings!.use_frameserver || this.state.video_active
-       ? <Video src={video.path} width={this.props.width} height={this.props.height}
+       ? <Video src={video_path} width={this.props.width} height={this.props.height}
                 time_state={this.props.time_state} expand={this.props.expand} ref={this.video} />
        : <ProgressiveImage
            src={image_path} width={video.width} height={video.height}
