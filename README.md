@@ -99,7 +99,7 @@ You can use the Python API to build the video metadata and interval data, then s
 ```python
 from rekall import Interval, IntervalSet, IntervalSetMapping
 from rekall.bounds import Bounds3D
-from vgrid import VideoVBlocksBuilder, VideoTrackBuilder, VideoMetadat
+from vgrid import VideoVBlocksBuilder, VideoTrackBuilder, VideoMetadata, VGridSettingsBuilder
 
 video_id = 1
 video = VideoMetadata(path='test.mp4', id=video_id)
@@ -111,7 +111,11 @@ vgrid_json = VideoVBlocksBuilder() \
     .add_video_metadata('http://localhost:8000', [video]) \
     .build()
 
-# Send vgrid_json to the frontend somehow
+settings = VGridSettingsBuilder() \
+    .show_timeline(False)
+    .build()
+
+# Send vgrid_json and settings to the frontend somehow
 ```
 
 And Javascript:
@@ -121,16 +125,11 @@ import ReactDOM from 'react-dom';
 import {VGrid, Database, interval_blocks_from_json} from '@wcrichto/vgrid';
 
 // Fetch the JSON somehow
-fetch_json_somehow(function(vgrid_json) {
+fetch_json_somehow(function(vgrid_json, settings) {
   // Convert JSON into corresponding Javascript objects
   let {interval_blocks_json, database_json} = vgrid_json;
   let database = Database.from_json(database_json);
   this.interval_blocks = interval_blocks_from_json(interval_blocks_json);
-
-  // Global component settings
-  let settings = {
-    show_timeline: true
-  };
 
   // Run code when user provides labeling input
   let label_callback = (label_state) => {
