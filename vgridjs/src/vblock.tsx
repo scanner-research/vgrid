@@ -48,6 +48,8 @@ interface VBlockProps {
 
   label_state: BlockLabelState
 
+  container_width: number
+
   /* Injected */
   settings?: Settings
   database?: Database
@@ -133,8 +135,8 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
       height = 100;
       width = video.width * (height / video.height);
     } else {
-      width = video.width;
-      height = video.height;
+      width = Math.min(video.width, this.props.container_width);
+      height = video.height * (width / video.width);
     }
 
     let args = {

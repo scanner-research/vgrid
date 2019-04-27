@@ -28,6 +28,9 @@ export interface VGridProps {
   /** Metadata about videos and categories */
   database: Database
 
+  /** Maximum width of the widget, defaults to parent container size */
+  max_width?: number
+
   /** Map of partial [[Settings]] */
   settings?: {[key: string]: any}
 
@@ -35,15 +38,23 @@ export interface VGridProps {
   label_callback?: (state: LabelState) => void
 }
 
+interface VGridState {
+  container_width: number
+}
+
 /**
  * VGrid top-level React component. See [[VGridProps]] for parameters.
  * @noInheritDoc
  */
 @observer
-export class VGrid extends React.Component<VGridProps, {}> {
+export class VGrid extends React.Component<VGridProps, VGridState> {
+  state = {container_width: 10000000}
+
   label_state: LabelState
   color_map: ColorMap
   settings: Settings
+  container: any
+  resize_observer: any
 
   constructor(props: VGridProps) {
     super(props);
@@ -76,6 +87,8 @@ export class VGrid extends React.Component<VGridProps, {}> {
         (this.settings as any)[k] = this.props.settings![k];
       });
     }
+
+    this.container = React.createRef();
   }
 
   // Handle block-level selection by updating LabelState.blocks_selected set
@@ -88,17 +101,33 @@ export class VGrid extends React.Component<VGridProps, {}> {
     }
   }
 
+  // Use Chrome ResizeObserver API to track container width
+  // https://googlechrome.github.io/samples/resizeobserver/
+  on_resize = (entries: any) => {
+    this.setState({container_width: entries[0].contentRect.width});
+  }
+
+  componentDidMount() {
+    this.resize_observer = new (window as any).ResizeObserver(this.on_resize);
+    this.resize_observer.observe(this.container.current);
+  }
+
+  componentWillUnmount() {
+    this.resize_observer.unobserve(this.container.current);
+  }
+
   render() {
     let selected = this.label_state.blocks_selected;
     return <Provider
              database={this.props.database} colors={this.color_map} settings={default_settings}>
-      <div className='vgrid'>
+      <div className='vgrid' ref={this.container}>
         {this.props.interval_blocks.map((block, i) =>
           <VBlock key={i}
                   block={block}
                   on_select={(type) => this.on_block_selected(i, type)}
                   selected={selected.has(i) ? selected.get(i)! : null}
-                  label_state={this.label_state.block_labels.get(i)!} />
+                  label_state={this.label_state.block_labels.get(i)!}
+                  container_width={this.props.max_width || this.state.container_width} />
         )}
         <div className='clearfix' />
       </div>
