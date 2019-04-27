@@ -88,7 +88,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="tsd-signature-type">Component</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_vgrid_.vgridprops.html" class="tsd-signature-type">VGridProps</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">__type</span><span class="tsd-signature-symbol">&gt;</span>
+						<span class="tsd-signature-type">Component</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_vgrid_.vgridprops.html" class="tsd-signature-type">VGridProps</a><span class="tsd-signature-symbol">, </span><a href="../interfaces/_vgrid_.vgridstate.html" class="tsd-signature-type">VGridState</a><span class="tsd-signature-symbol">&gt;</span>
 						<ul class="tsd-hierarchy">
 							<li>
 								<span class="target">VGrid</span>
@@ -111,15 +111,26 @@
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_vgrid_.vgrid.html#color_map" class="tsd-kind-icon">color_<wbr>map</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_vgrid_.vgrid.html#container" class="tsd-kind-icon">container</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_vgrid_.vgrid.html#label_state" class="tsd-kind-icon">label_<wbr>state</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_vgrid_.vgrid.html#resize_observer" class="tsd-kind-icon">resize_<wbr>observer</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_vgrid_.vgrid.html#settings" class="tsd-kind-icon">settings</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="_vgrid_.vgrid.html#componentdidmount" class="tsd-kind-icon">component<wbr>Did<wbr>Mount</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="_vgrid_.vgrid.html#componentwillunmount" class="tsd-kind-icon">component<wbr>Will<wbr>Unmount</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_vgrid_.vgrid.html#on_block_selected" class="tsd-kind-icon">on_<wbr>block_<wbr>selected</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_vgrid_.vgrid.html#on_resize" class="tsd-kind-icon">on_<wbr>resize</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="_vgrid_.vgrid.html#render" class="tsd-kind-icon">render</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Object literals</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-object-literal tsd-parent-kind-class tsd-is-overwrite"><a href="_vgrid_.vgrid.html#state" class="tsd-kind-icon">state</a></li>
 							</ul>
 						</section>
 					</div>
@@ -138,7 +149,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides Component.__constructor</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/69643b3/vgridjs/src/vgrid.tsx#L46">vgrid.tsx:46</a></li>
+									<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/78bb83b/vgridjs/src/vgrid.tsx#L57">vgrid.tsx:57</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -160,7 +171,17 @@
 					<div class="tsd-signature tsd-kind-icon">color_<wbr>map<span class="tsd-signature-symbol">:</span> <a href="../modules/_color_.html#colormap" class="tsd-signature-type">ColorMap</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/69643b3/vgridjs/src/vgrid.tsx#L45">vgrid.tsx:45</a></li>
+							<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/78bb83b/vgridjs/src/vgrid.tsx#L54">vgrid.tsx:54</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="container" class="tsd-anchor"></a>
+					<h3>container</h3>
+					<div class="tsd-signature tsd-kind-icon">container<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/78bb83b/vgridjs/src/vgrid.tsx#L56">vgrid.tsx:56</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -170,7 +191,17 @@
 					<div class="tsd-signature tsd-kind-icon">label_<wbr>state<span class="tsd-signature-symbol">:</span> <a href="_label_state_.labelstate.html" class="tsd-signature-type">LabelState</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/69643b3/vgridjs/src/vgrid.tsx#L44">vgrid.tsx:44</a></li>
+							<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/78bb83b/vgridjs/src/vgrid.tsx#L53">vgrid.tsx:53</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="resize_observer" class="tsd-anchor"></a>
+					<h3>resize_<wbr>observer</h3>
+					<div class="tsd-signature tsd-kind-icon">resize_<wbr>observer<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/78bb83b/vgridjs/src/vgrid.tsx#L57">vgrid.tsx:57</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -180,13 +211,49 @@
 					<div class="tsd-signature tsd-kind-icon">settings<span class="tsd-signature-symbol">:</span> <a href="../interfaces/_settings_.settings.html" class="tsd-signature-type">Settings</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/69643b3/vgridjs/src/vgrid.tsx#L46">vgrid.tsx:46</a></li>
+							<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/78bb83b/vgridjs/src/vgrid.tsx#L55">vgrid.tsx:55</a></li>
 						</ul>
 					</aside>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+					<a name="componentdidmount" class="tsd-anchor"></a>
+					<h3>component<wbr>Did<wbr>Mount</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+						<li class="tsd-signature tsd-kind-icon">component<wbr>Did<wbr>Mount<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Overrides ComponentLifecycle.componentDidMount</p>
+								<ul>
+									<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/78bb83b/vgridjs/src/vgrid.tsx#L110">vgrid.tsx:110</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+					<a name="componentwillunmount" class="tsd-anchor"></a>
+					<h3>component<wbr>Will<wbr>Unmount</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+						<li class="tsd-signature tsd-kind-icon">component<wbr>Will<wbr>Unmount<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Overrides ComponentLifecycle.componentWillUnmount</p>
+								<ul>
+									<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/78bb83b/vgridjs/src/vgrid.tsx#L115">vgrid.tsx:115</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
 					<a name="on_block_selected" class="tsd-anchor"></a>
 					<h3>on_<wbr>block_<wbr>selected</h3>
@@ -197,7 +264,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/69643b3/vgridjs/src/vgrid.tsx#L82">vgrid.tsx:82</a></li>
+									<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/78bb83b/vgridjs/src/vgrid.tsx#L95">vgrid.tsx:95</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -207,6 +274,29 @@
 								</li>
 								<li>
 									<h5>type: <a href="../enums/_label_state_.blockselecttype.html" class="tsd-signature-type">BlockSelectType</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="on_resize" class="tsd-anchor"></a>
+					<h3>on_<wbr>resize</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">on_<wbr>resize<span class="tsd-signature-symbol">(</span>entries<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/78bb83b/vgridjs/src/vgrid.tsx#L106">vgrid.tsx:106</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>entries: <span class="tsd-signature-type">any</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -224,12 +314,36 @@
 							<aside class="tsd-sources">
 								<p>Overrides Component.render</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/69643b3/vgridjs/src/vgrid.tsx#L91">vgrid.tsx:91</a></li>
+									<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/78bb83b/vgridjs/src/vgrid.tsx#L119">vgrid.tsx:119</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Element</span></h4>
 						</li>
 					</ul>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Object literals</h2>
+				<section class="tsd-panel tsd-member tsd-kind-object-literal tsd-parent-kind-class tsd-is-overwrite">
+					<a name="state" class="tsd-anchor"></a>
+					<h3>state</h3>
+					<div class="tsd-signature tsd-kind-icon">state<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
+					<aside class="tsd-sources">
+						<p>Overrides Component.state</p>
+						<ul>
+							<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/78bb83b/vgridjs/src/vgrid.tsx#L51">vgrid.tsx:51</a></li>
+						</ul>
+					</aside>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+						<a name="state.container_width" class="tsd-anchor"></a>
+						<h3>container_<wbr>width</h3>
+						<div class="tsd-signature tsd-kind-icon">container_<wbr>width<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;10000000</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/78bb83b/vgridjs/src/vgrid.tsx#L51">vgrid.tsx:51</a></li>
+							</ul>
+						</aside>
+					</section>
 				</section>
 			</section>
 		</div>
@@ -318,16 +432,34 @@
 								<a href="_vgrid_.vgrid.html#color_map" class="tsd-kind-icon">color_<wbr>map</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="_vgrid_.vgrid.html#container" class="tsd-kind-icon">container</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="_vgrid_.vgrid.html#label_state" class="tsd-kind-icon">label_<wbr>state</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="_vgrid_.vgrid.html#resize_observer" class="tsd-kind-icon">resize_<wbr>observer</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="_vgrid_.vgrid.html#settings" class="tsd-kind-icon">settings</a>
 							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+								<a href="_vgrid_.vgrid.html#componentdidmount" class="tsd-kind-icon">component<wbr>Did<wbr>Mount</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+								<a href="_vgrid_.vgrid.html#componentwillunmount" class="tsd-kind-icon">component<wbr>Will<wbr>Unmount</a>
+							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_vgrid_.vgrid.html#on_block_selected" class="tsd-kind-icon">on_<wbr>block_<wbr>selected</a>
 							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_vgrid_.vgrid.html#on_resize" class="tsd-kind-icon">on_<wbr>resize</a>
+							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
 								<a href="_vgrid_.vgrid.html#render" class="tsd-kind-icon">render</a>
+							</li>
+							<li class=" tsd-kind-object-literal tsd-parent-kind-class tsd-is-overwrite">
+								<a href="_vgrid_.vgrid.html#state" class="tsd-kind-icon">state</a>
 							</li>
 						</ul>
 					</li>
@@ -335,6 +467,9 @@
 				<ul class="after-current">
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
 						<a href="../interfaces/_vgrid_.vgridprops.html" class="tsd-kind-icon">VGrid<wbr>Props</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../interfaces/_vgrid_.vgridstate.html" class="tsd-kind-icon">VGrid<wbr>State</a>
 					</li>
 				</ul>
 			</nav>
