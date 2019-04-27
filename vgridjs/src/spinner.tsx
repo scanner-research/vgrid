@@ -27,12 +27,16 @@ export default class Spinner extends React.Component<SpinnerProps, {}> {
       ? faces[Math.floor(Math.random() * faces.length)]
       : 'spinner.gif';
 
+    // TODO: add back in silly spinners since we changed to base64
+
+    let style = {
+      width: this.props.width,
+      height: this.props.height,
+      backgroundSize: `auto ${this.props.height}px`
+    };
+
     return (
-      <div className='spinner' style={{width: this.props.width, height: this.props.height}}>
-        <img
-          src={`${window.location.protocol}//${window.location.hostname}/static/images/${spinner}`}
-          style={{height: this.props.height}} />
-      </div>
+      <div className='spinner' style={style} />
     );
   }
 }
