@@ -59,6 +59,9 @@ interface VBlockState {
   expand: boolean
 }
 
+// Hide interval sets with keys beginning with '_' from the timeline
+const show_in_timeline = (k: string) => k[0] != '_';
+
 /**
  * Component for an individual block in the grid.
  * @noInheritDoc
@@ -77,7 +80,10 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
 
     // Compute earliest time in all interval blocks to determine where to start the timeline
     let first_time =
-      _.values(props.block.interval_sets).reduce(
+      _.values(
+        _.pick(props.block.interval_sets,
+          _.keys(props.block.interval_sets).filter(show_in_timeline))
+      ).reduce(
         (n, is) => (is.to_list().length > 0) ? Math.min(n, is.to_list()[0].bounds.t1) : n,
         Infinity);
     this.time_state = new TimeState(first_time);
@@ -165,7 +171,9 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
             </div>
             {this.props.settings!.show_timeline
              ? <div className='vblock-row'>
-               <TimelineTrack intervals={this.props.block.interval_sets} {...args} />
+               <TimelineTrack intervals={_.pick(this.props.block.interval_sets,
+                 _.keys(this.props.block.interval_sets).filter(show_in_timeline)
+               )} {...args} />
              </div>
              : null}
             {this.captions !== null
