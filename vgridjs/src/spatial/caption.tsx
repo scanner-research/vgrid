@@ -11,7 +11,7 @@ export class SpatialType_Caption extends SpatialType {
   draw_view(): null { return null; }
   label_view(): null { return null; }
 
-  static from_json(args: any): DrawType_Caption {
+  static from_json(args: any): SpatialType_Caption {
     return new SpatialType_Caption(args.text);
   }
 }
