@@ -3,7 +3,7 @@ import * as _ from 'lodash';
 import {observable, computed, action} from 'mobx';
 import {observer, inject} from 'mobx-react';
 
-import {DrawType_Bbox} from './drawable';
+import {SpatialType_Bbox} from './spatial/bbox';
 import {IntervalSet, Interval, Bounds} from './interval';
 import TimeState from './time_state';
 import {DbVideo} from './database';
@@ -56,10 +56,12 @@ class TimelineRow extends React.Component<TimelineRowProps, {}> {
     super(props);
     this.canvas_ref = React.createRef();
   }
-  
-  shouldComponentUpdate(next_props: TimelineRowProps, next_state: {}) {
-    return !shallowCompare(this.props, next_props) || this.props.intervals.dirty;
-  }
+
+  /*
+   *   shouldComponentUpdate(next_props: TimelineRowProps, next_state: {}) {
+   *     return !shallowCompare(this.props, next_props) || this.props.intervals.dirty;
+   *   }
+   *  */
 
   render_canvas() {
     const canvas = this.canvas_ref.current;
@@ -70,35 +72,36 @@ class TimelineRow extends React.Component<TimelineRowProps, {}> {
         this.props.intervals.to_list().map((intvl, i) => {
           let bounds = intvl.bounds;
           let x = bounds.t1 / this.props.full_duration * this.props.full_width;
-          let width = (bounds.t2 - bounds.t1) / this.props.full_duration * this.props.full_width;
+          let width = Math.min(
+            (bounds.t2 - bounds.t1) / this.props.full_duration * this.props.full_width,
+            1);
           ctx.fillRect(x, 0, width, this.props.row_height);
         });
       }
     }
   }
-  
+
   componentDidMount() {
     this.render_canvas();
   }
-  
+
   componentDidUpdate() {
     this.render_canvas();
   }
 
   render() {
-    this.props.intervals.dirty = false;
-    return <canvas ref = {this.canvas_ref} width = {this.props.full_width} height = {this.props.row_height}/>
+    return <canvas ref={this.canvas_ref} width={this.props.full_width} height={this.props.row_height}/>
   }
 }
 
 class TimelineBounds {
   @observable start: number = 0
   @observable end: number = 0
-  
+
   span() {
     return this.end - this.start;
   }
-  
+
   @action.bound
   set_bounds(start: number, end: number) {
     this.start = start;
@@ -163,9 +166,8 @@ class Timeline extends React.Component<TimelineProps, {}> {
     if (!newstate.creating) {
       let time = this.props.time_state.time;
       let intvls = this.props.label_state!.new_intervals;
-      intvls.to_list().push(new Interval(
-        new Bounds(time), {draw_type: new DrawType_Bbox(), metadata: {}}));
-      intvls.dirty = true;
+      intvls.add(new Interval(
+        new Bounds(time), {spatial_type: new SpatialType_Bbox(), metadata: {}}));
 
       this.setState({new_state: {
         creating: true,
@@ -260,7 +262,6 @@ class Timeline extends React.Component<TimelineProps, {}> {
       let target = intvls.to_list()[intvls.to_list().length - 1];
       if (time > this.state.new_state.time_start && time != target.bounds.t2) {
         target.bounds.t2 = time;
-        intvls.dirty = true;
         this.forceUpdate();
       }
     }
@@ -270,7 +271,7 @@ class Timeline extends React.Component<TimelineProps, {}> {
     let keys = _.keys(this.props.intervals);
 
     let new_intervals = this.props.label_state!.new_intervals;
-    if (new_intervals.to_list().length > 0) {
+    if (new_intervals.length() > 0) {
       keys.push('__new_intervals');
     }
 
@@ -314,7 +315,7 @@ interface TicksProps {
 /** Ticks at the bottom of the timeline indicating video time at regular intervals */
 @observer class Ticks extends React.Component<TicksProps, {}> {
   private canvas_ref : React.RefObject<HTMLCanvasElement>;
-  
+
   constructor (props: TicksProps) {
     super(props);
     this.canvas_ref = React.createRef();

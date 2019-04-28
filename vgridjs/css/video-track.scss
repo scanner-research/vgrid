@@ -79,14 +79,29 @@
     video::-webkit-media-controls-panel {
         position: relative;
         z-index: 1001;
+        opacity: 1;
     }
 }
 
-.spatial-overlay {z-index: 1;}
+.spatial-overlay {
+    z-index: 1;
 
-.bounding-box {
-    position: absolute;
+    .spatial-intervals {
+        position: absolute;
+
+    }
+
+    .spatial-labeler {
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+
+    .bbox-draw {
+        position: absolute;
+    }
 }
+
 
 .timeline-track {
     background: white;

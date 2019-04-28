@@ -1,4 +1,6 @@
 import {observable, ObservableMap, ObservableSet, toJS} from 'mobx';
+import * as _ from 'lodash';
+
 import {VData, IntervalSet} from './interval';
 
 /** Indicates the kind of selection a block has */
@@ -21,6 +23,14 @@ export class LabelState {
   @observable block_labels: ObservableMap<number, BlockLabelState> = observable.map();
 
   to_json(): any {
-    return {blocks_selected: toJS(this.blocks_selected), block_labels: toJS(this.block_labels)};
+    return {
+      blocks_selected: toJS(this.blocks_selected),
+      block_labels: _.mapValues(this.block_labels.toJSON(), (block_label_state: BlockLabelState) => {
+        return {
+          captions_selected: toJS(block_label_state.captions_selected),
+          new_intervals: block_label_state.new_intervals.to_json()
+        }
+      })
+    };
   }
 }

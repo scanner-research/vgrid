@@ -1,6 +1,6 @@
 import * as React from "react";
 import * as _ from 'lodash';
-import {deepObserve} from 'mobx-utils';
+import {autorun} from 'mobx';
 import {Provider, observer} from 'mobx-react';
 
 import {VBlock, IntervalBlock} from'./vblock';
@@ -15,7 +15,7 @@ import 'main.scss';
 // Re-exports
 export * from './interval';
 export * from './database';
-export * from './drawable';
+export * from './spatial/mod';
 export * from './metadata';
 export * from './label_state';
 export {IntervalBlock, interval_blocks_from_json} from './vblock';
@@ -65,18 +65,20 @@ export class VGrid extends React.Component<VGridProps, VGridState> {
     });
 
     // Set a default color for each interval set
-    this.color_map = {};
+    this.color_map = {'__new_intervals': default_palette[default_palette.length - 1]};
     _.keys(this.props.interval_blocks[0].interval_sets).forEach((k, i) => {
       this.color_map[k] = default_palette[i];
     });
 
     if (this.props.label_callback) {
       // Watch changes to the label state to invoke the label_callback
-      _.keys(this.label_state).forEach((k) => {
-        // TODO: even deep observe doesn't seem to pick up on nested changes?
-        deepObserve((this.label_state as any)[k], () => {
-          this.props.label_callback!(this.label_state);
+      autorun(_ => {
+        console.log('Label callback');
+        this.label_state.block_labels.forEach((block_state) => {
+          block_state.new_intervals.length();
         });
+        console.log(this.label_state.to_json());
+        this.props.label_callback!(this.label_state);
       });
     }
 

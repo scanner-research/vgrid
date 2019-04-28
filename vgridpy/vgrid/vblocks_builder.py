@@ -25,7 +25,7 @@ Example of using VideoVBlock:
     json = VideoVBlocksBuilder()\\
         .add_track(
             VideoTrackBuilder('faces', face_collection)\\
-                .set_draw_type(DrawType_Bbox())\\
+                .set_spatial_type(SpatialType_Bbox())\\
                 .add_metadata('flag', Metadata_Flag()))\\
         .build()
 
@@ -45,7 +45,7 @@ Example of using IntervalBlock:
             IntervalTrackBuilder('conversation'))\\
         .add_track(
             IntervalTrackBuilder('faces', lambda i:i.payload)\\
-                    .set_draw_type(DrawType_Bbox())\\
+                    .set_spatial_type(SpatialType_Bbox())\\
                     .add_metadata('identity', Metadata_Generic()))\\
         .build(conversations_with_ids)
 
@@ -59,9 +59,9 @@ Tracks:
     VideoTrackBuilder: Build custom tracks for VideoVBlocks mode.
     IntervalTrackBuilder: Build custom tracks for IntervalVBlocks mode.
 
-DrawTypes:
-    DrawType_Bbox: Draw bounding boxes around the spatial dimension.
-    DrawType_Caption: Display text in the caption box.
+SpatialTypes:
+    SpatialType_Bbox: Draw bounding boxes around the spatial dimension.
+    SpatialType_Caption: Display text in the caption box.
 
 Metadatas:
     Metadata_Flag: Plant a flag marking the temporal interval.
@@ -125,19 +125,19 @@ class VideoVBlocksBuilder(_BlockMetaMixin):
 class _CustomTrackMixin:
     """Mixin for a TrackBuilder that allows custom draw type and metadata"""
 
-    def set_draw_type(self, draw_type):
+    def set_spatial_type(self, spatial_type):
         """Set the type of visualization to draw for this track.
 
         VGrid will draw the visualization for each interval in this track.
 
         Args:
-            draw_type: A function that takes video_id and Interval, and
+            spatial_type: A function that takes video_id and Interval, and
                 returns the JSON of the object to draw.
 
         Returns:
             self for chaining
         """
-        self._draw_type = draw_type
+        self._spatial_type = spatial_type
         return self
 
     def add_metadata(self, name, metadata):
@@ -158,25 +158,25 @@ class _CustomTrackMixin:
 
     def _build_interval(self, video_id, interval):
         """Helper to build a JSON interval in this track."""
-        return build_interval(video_id, interval, self._draw_type,
+        return build_interval(video_id, interval, self._spatial_type,
                               self._metadatas)
 
 
-def build_interval(video_id, interval, draw_type, metadatas):
-    """Returns a JSON interval with given draw_type and metadatas.
+def build_interval(video_id, interval, spatial_type, metadatas):
+    """Returns a JSON interval with given spatial_type and metadatas.
 
     Args:
         video_id (int): Video ID as interval domain.
         interval (Interval): The interval to JSONify. Assumes the bounds is a
             Bounds3D.
-        draw_type: A function that takes video_id and Interval, and
+        spatial_type: A function that takes video_id and Interval, and
             returns the JSON of the object to draw.
         metadatas: A dictionary from metadata name to function that takes
             video_id and Interval, and returns the JSON of the metadata to
             display.
 
     Returns:
-        A JSON interval with video_id as domain and all the draw_types and
+        A JSON interval with video_id as domain and all the spatial_types and
         metadatas.
     """
     return {
@@ -185,7 +185,7 @@ def build_interval(video_id, interval, draw_type, metadatas):
         "y": (interval['y1'], interval['y2']),
         "domain": _video_domain_in_json(video_id),
         "payload": {
-            "draw_type": draw_type(video_id, interval),
+            "spatial_type": spatial_type(video_id, interval),
             "metadata": {
                 name: metadata(video_id, interval)
                 for name, metadata in metadatas.items()
@@ -214,7 +214,7 @@ class VideoTrackBuilder(_CustomTrackMixin):
         self.video_ids = set(collection.keys())
 
         self._collection = collection
-        self._draw_type = DrawType_Bbox()
+        self._spatial_type = SpatialType_Bbox()
         self._metadatas = {}
 
     def build_for_video(self, video_id):
@@ -283,7 +283,7 @@ class IntervalTrackBuilder(_CustomTrackMixin):
         self.name = name
 
         self._intervalset_getter = intervalset_getter
-        self._draw_type = DrawType_Bbox()
+        self._spatial_type = SpatialType_Bbox()
         self._metadatas = {}
 
     def build_for_interval(self, video_id, interval):
@@ -329,8 +329,8 @@ def _get_payload(i):
     return i.payload
 
 
-class DrawType_Caption:
-    """A DrawType for displaying text in caption box"""
+class SpatialType_Caption:
+    """A SpatialType for displaying text in caption box"""
 
     def __init__(self, get_caption=_get_payload):
         """Initialize
@@ -343,18 +343,18 @@ class DrawType_Caption:
 
     def __call__(self, video_id, interval):
         return {
-            "type": "DrawType_Caption",
+            "type": "SpatialType_Caption",
             "args": {
                 "text": self._get_caption(interval)
             },
         }
 
 
-class DrawType_Bbox:
-    """A DrawType for drawing bounding boxes around spatial extent"""
+class SpatialType_Bbox:
+    """A SpatialType for drawing bounding boxes around spatial extent"""
 
     def __call__(self, video_id, interval):
-        return {"type": "DrawType_Bbox"}
+        return {"type": "SpatialType_Bbox"}
 
 
 class Metadata_Flag:

@@ -13,7 +13,7 @@ import {Database, DbVideo} from './database';
 import {Settings} from './settings';
 import {mouse_key_events} from './events';
 import CaptionTrack from './caption_track';
-import {DrawType_Caption} from './drawable';
+import {SpatialType_Caption} from './spatial/caption';
 import {BlockSelectType, BlockLabelState} from './label_state';
 
 /** Core unit of visualization in the grid for a single video */
@@ -84,7 +84,7 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
         _.pick(props.block.interval_sets,
           _.keys(props.block.interval_sets).filter(show_in_timeline))
       ).reduce(
-        (n, is) => (is.to_list().length > 0) ? Math.min(n, is.to_list()[0].bounds.t1) : n,
+        (n, is) => (is.length() > 0) ? Math.min(n, is.arbitrary_interval()!.bounds.t1) : n,
         Infinity);
     this.time_state = new TimeState(first_time);
 
@@ -92,8 +92,8 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
     this.captions = null;
     for (let k of _.keys(this.props.block.interval_sets)) {
       let is = this.props.block.interval_sets[k];
-      if (is.to_list().length > 0 &&
-            is.to_list()[0].data.draw_type instanceof DrawType_Caption) {
+      if (is.length() > 0 &&
+            is.arbitrary_interval()!.data.spatial_type instanceof SpatialType_Caption) {
         this.captions = is;
       }
     }
@@ -125,6 +125,12 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
     _.keys(this.props.block.interval_sets).forEach((k) => {
       current_intervals[k] = this.props.block.interval_sets[k].time_overlaps(bounds);
     });
+
+    let new_intervals = this.props.label_state.new_intervals.time_overlaps(bounds);
+    if (new_intervals.length() > 0) {
+      current_intervals['__new_intervals'] = new_intervals;
+    }
+
     return current_intervals;
   }
 
@@ -161,7 +167,7 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
       : '';
 
     return (
-      <Provider label_state={this.props.label_state}>
+      <Provider label_state={this.props.label_state} time_state={this.time_state}>
         <div className={classNames({vblock: true, expanded: this.state.expand})}>
           <div className={`vblock-highlight ${select_class}`}>
             <div className='vblock-row'>
