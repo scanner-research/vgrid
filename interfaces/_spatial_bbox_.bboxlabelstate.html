@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>IntervalBlock | @wcrichto/vgrid</title>
+	<title>BboxLabelState | @wcrichto/vgrid</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,31 +56,24 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_vblock_.html">&quot;vblock&quot;</a>
+					<a href="../modules/_spatial_bbox_.html">&quot;spatial/bbox&quot;</a>
 				</li>
 				<li>
-					<a href="_vblock_.intervalblock.html">IntervalBlock</a>
+					<a href="_spatial_bbox_.bboxlabelstate.html">BboxLabelState</a>
 				</li>
 			</ul>
-			<h1>Interface IntervalBlock</h1>
+			<h1>Interface BboxLabelState</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
-			<section class="tsd-panel tsd-comment">
-				<div class="tsd-comment tsd-typography">
-					<div class="lead">
-						<p>Core unit of visualization in the grid for a single video</p>
-					</div>
-				</div>
-			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">IntervalBlock</span>
+						<span class="target">BboxLabelState</span>
 					</li>
 				</ul>
 			</section>
@@ -88,55 +81,48 @@
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
-						<section class="tsd-index-section ">
+						<section class="tsd-index-section tsd-is-not-exported">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_vblock_.intervalblock.html#interval_sets" class="tsd-kind-icon">interval_<wbr>sets</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_vblock_.intervalblock.html#video_id" class="tsd-kind-icon">video_<wbr>id</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported"><a href="_spatial_bbox_.bboxlabelstate.html#mousedown_point" class="tsd-kind-icon">mousedown_<wbr>point</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported"><a href="_spatial_bbox_.bboxlabelstate.html#mousemove_point" class="tsd-kind-icon">mousemove_<wbr>point</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported"><a href="_spatial_bbox_.bboxlabelstate.html#shift_held" class="tsd-kind-icon">shift_<wbr>held</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
-			<section class="tsd-panel-group tsd-member-group ">
+			<section class="tsd-panel-group tsd-member-group tsd-is-not-exported">
 				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="interval_sets" class="tsd-anchor"></a>
-					<h3>interval_<wbr>sets</h3>
-					<div class="tsd-signature tsd-kind-icon">interval_<wbr>sets<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
+					<a name="mousedown_point" class="tsd-anchor"></a>
+					<h3>mousedown_<wbr>point</h3>
+					<div class="tsd-signature tsd-kind-icon">mousedown_<wbr>point<span class="tsd-signature-symbol">:</span> <a href="_spatial_bbox_.point.html" class="tsd-signature-type">Point</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/84dd1ff/vgridjs/src/vblock.tsx#L22">vblock.tsx:22</a></li>
+							<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/84dd1ff/vgridjs/src/spatial/bbox.tsx#L34">spatial/bbox.tsx:34</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Set of named interval sets within the same video</p>
-						</div>
-					</div>
-					<div class="tsd-type-declaration">
-						<h4>Type declaration</h4>
-						<ul class="tsd-parameters">
-							<li class="tsd-parameter-index-signature">
-								<h5><span class="tsd-signature-symbol">[</span>key: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]: </span><a href="../classes/_interval_.intervalset.html" class="tsd-signature-type">IntervalSet</a></h5>
-							</li>
-						</ul>
-					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="video_id" class="tsd-anchor"></a>
-					<h3>video_<wbr>id</h3>
-					<div class="tsd-signature tsd-kind-icon">video_<wbr>id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
+					<a name="mousemove_point" class="tsd-anchor"></a>
+					<h3>mousemove_<wbr>point</h3>
+					<div class="tsd-signature tsd-kind-icon">mousemove_<wbr>point<span class="tsd-signature-symbol">:</span> <a href="_spatial_bbox_.point.html" class="tsd-signature-type">Point</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/84dd1ff/vgridjs/src/vblock.tsx#L25">vblock.tsx:25</a></li>
+							<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/84dd1ff/vgridjs/src/spatial/bbox.tsx#L35">spatial/bbox.tsx:35</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>ID of the corresponding video</p>
-						</div>
-					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
+					<a name="shift_held" class="tsd-anchor"></a>
+					<h3>shift_<wbr>held</h3>
+					<div class="tsd-signature tsd-kind-icon">shift_<wbr>held<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/84dd1ff/vgridjs/src/spatial/bbox.tsx#L33">spatial/bbox.tsx:33</a></li>
+						</ul>
+					</aside>
 				</section>
 			</section>
 		</div>
@@ -179,7 +165,7 @@
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_settings_.html">"settings"</a>
 					</li>
-					<li class=" tsd-kind-external-module">
+					<li class="current tsd-kind-external-module">
 						<a href="../modules/_spatial_bbox_.html">"spatial/bbox"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
@@ -209,7 +195,7 @@
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_utils_.html">"utils"</a>
 					</li>
-					<li class="current tsd-kind-external-module">
+					<li class=" tsd-kind-external-module">
 						<a href="../modules/_vblock_.html">"vblock"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
@@ -225,35 +211,35 @@
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-class tsd-parent-kind-external-module tsd-has-type-parameter">
-						<a href="../classes/_vblock_.vblock.html" class="tsd-kind-icon">VBlock</a>
+					<li class=" tsd-kind-class tsd-parent-kind-external-module tsd-has-type-parameter tsd-is-not-exported">
+						<a href="../classes/_spatial_bbox_.bboxdrawview.html" class="tsd-kind-icon">Bbox<wbr>Draw<wbr>View</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-external-module tsd-has-type-parameter tsd-is-not-exported">
+						<a href="../classes/_spatial_bbox_.bboxlabelview.html" class="tsd-kind-icon">Bbox<wbr>Label<wbr>View</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-external-module">
+						<a href="../classes/_spatial_bbox_.spatialtype_bbox.html" class="tsd-kind-icon">Spatial<wbr>Type_<wbr><wbr>Bbox</a>
 					</li>
 				</ul>
 				<ul class="current">
-					<li class="current tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_vblock_.intervalblock.html" class="tsd-kind-icon">Interval<wbr>Block</a>
+					<li class="current tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="_spatial_bbox_.bboxlabelstate.html" class="tsd-kind-icon">Bbox<wbr>Label<wbr>State</a>
 						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_vblock_.intervalblock.html#interval_sets" class="tsd-kind-icon">interval_<wbr>sets</a>
+							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
+								<a href="_spatial_bbox_.bboxlabelstate.html#mousedown_point" class="tsd-kind-icon">mousedown_<wbr>point</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_vblock_.intervalblock.html#video_id" class="tsd-kind-icon">video_<wbr>id</a>
+							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
+								<a href="_spatial_bbox_.bboxlabelstate.html#mousemove_point" class="tsd-kind-icon">mousemove_<wbr>point</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
+								<a href="_spatial_bbox_.bboxlabelstate.html#shift_held" class="tsd-kind-icon">shift_<wbr>held</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="_vblock_.vblockprops.html" class="tsd-kind-icon">VBlock<wbr>Props</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="_vblock_.vblockstate.html" class="tsd-kind-icon">VBlock<wbr>State</a>
-					</li>
-					<li class=" tsd-kind-function tsd-parent-kind-external-module">
-						<a href="../modules/_vblock_.html#interval_blocks_from_json" class="tsd-kind-icon">interval_<wbr>blocks_<wbr>from_<wbr>json</a>
-					</li>
-					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_vblock_.html#show_in_timeline" class="tsd-kind-icon">show_<wbr>in_<wbr>timeline</a>
+						<a href="_spatial_bbox_.point.html" class="tsd-kind-icon">Point</a>
 					</li>
 				</ul>
 			</nav>

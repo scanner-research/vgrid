@@ -93,15 +93,13 @@
 							</ul>
 						</section>
 						<section class="tsd-index-section tsd-is-inherited">
-							<h3>Properties</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="_interval_.intervalset.html#dirty" class="tsd-kind-icon">dirty</a></li>
-							</ul>
-						</section>
-						<section class="tsd-index-section tsd-is-inherited">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_interval_.intervalset.html#add" class="tsd-kind-icon">add</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_interval_.intervalset.html#arbitrary_interval" class="tsd-kind-icon">arbitrary_<wbr>interval</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_interval_.intervalset.html#length" class="tsd-kind-icon">length</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_interval_.intervalset.html#time_overlaps" class="tsd-kind-icon">time_<wbr>overlaps</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_interval_.intervalset.html#to_json" class="tsd-kind-icon">to_<wbr>json</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_interval_.intervalset.html#to_list" class="tsd-kind-icon">to_<wbr>list</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_interval_.intervalset.html#union" class="tsd-kind-icon">union</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited tsd-is-static"><a href="_interval_.intervalset.html#from_json" class="tsd-kind-icon">from_<wbr>json</a></li>
@@ -123,7 +121,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from IntervalSet.__constructor</p>
 								<ul>
-									<li>Defined in /home/travis/build/scanner-research/vgrid/vgridjs/node_modules/@wcrichto/rekall/dist/rekall.d.ts:31</li>
+									<li>Defined in /home/travis/build/scanner-research/vgrid/vgridjs/node_modules/@wcrichto/rekall/dist/rekall.d.ts:30</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -138,21 +136,70 @@
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group tsd-is-inherited">
-				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-					<a name="dirty" class="tsd-anchor"></a>
-					<h3>dirty</h3>
-					<div class="tsd-signature tsd-kind-icon">dirty<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
-					<aside class="tsd-sources">
-						<p>Inherited from IntervalSet.dirty</p>
-						<ul>
-							<li>Defined in /home/travis/build/scanner-research/vgrid/vgridjs/node_modules/@wcrichto/rekall/dist/rekall.d.ts:31</li>
-						</ul>
-					</aside>
-				</section>
-			</section>
-			<section class="tsd-panel-group tsd-member-group tsd-is-inherited">
 				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<a name="add" class="tsd-anchor"></a>
+					<h3>add</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon">add<span class="tsd-signature-symbol">(</span>interval<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Interval</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_interval_.vdata.html" class="tsd-signature-type">VData</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from IntervalSet.add</p>
+								<ul>
+									<li>Defined in /home/travis/build/scanner-research/vgrid/vgridjs/node_modules/@wcrichto/rekall/dist/rekall.d.ts:37</li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>interval: <span class="tsd-signature-type">Interval</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_interval_.vdata.html" class="tsd-signature-type">VData</a><span class="tsd-signature-symbol">&gt;</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<a name="arbitrary_interval" class="tsd-anchor"></a>
+					<h3>arbitrary_<wbr>interval</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon">arbitrary_<wbr>interval<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Interval</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_interval_.vdata.html" class="tsd-signature-type">VData</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from IntervalSet.arbitrary_interval</p>
+								<ul>
+									<li>Defined in /home/travis/build/scanner-research/vgrid/vgridjs/node_modules/@wcrichto/rekall/dist/rekall.d.ts:36</li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Interval</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_interval_.vdata.html" class="tsd-signature-type">VData</a><span class="tsd-signature-symbol">&gt;</span>
+								<span class="tsd-signature-symbol"> | </span>
+								<span class="tsd-signature-type">null</span>
+							</h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<a name="length" class="tsd-anchor"></a>
+					<h3>length</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon">length<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from IntervalSet.length</p>
+								<ul>
+									<li>Defined in /home/travis/build/scanner-research/vgrid/vgridjs/node_modules/@wcrichto/rekall/dist/rekall.d.ts:35</li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
+						</li>
+					</ul>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 					<a name="time_overlaps" class="tsd-anchor"></a>
 					<h3>time_<wbr>overlaps</h3>
@@ -164,7 +211,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from IntervalSet.time_overlaps</p>
 								<ul>
-									<li>Defined in /home/travis/build/scanner-research/vgrid/vgridjs/node_modules/@wcrichto/rekall/dist/rekall.d.ts:33</li>
+									<li>Defined in /home/travis/build/scanner-research/vgrid/vgridjs/node_modules/@wcrichto/rekall/dist/rekall.d.ts:32</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -174,6 +221,24 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">IntervalSet</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_interval_.vdata.html" class="tsd-signature-type">VData</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<a name="to_json" class="tsd-anchor"></a>
+					<h3>to_<wbr>json</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon">to_<wbr>json<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from IntervalSet.to_json</p>
+								<ul>
+									<li>Defined in /home/travis/build/scanner-research/vgrid/vgridjs/node_modules/@wcrichto/rekall/dist/rekall.d.ts:39</li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -188,7 +253,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from IntervalSet.to_list</p>
 								<ul>
-									<li>Defined in /home/travis/build/scanner-research/vgrid/vgridjs/node_modules/@wcrichto/rekall/dist/rekall.d.ts:35</li>
+									<li>Defined in /home/travis/build/scanner-research/vgrid/vgridjs/node_modules/@wcrichto/rekall/dist/rekall.d.ts:34</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Interval</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_interval_.vdata.html" class="tsd-signature-type">VData</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">[]</span></h4>
@@ -206,7 +271,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from IntervalSet.union</p>
 								<ul>
-									<li>Defined in /home/travis/build/scanner-research/vgrid/vgridjs/node_modules/@wcrichto/rekall/dist/rekall.d.ts:34</li>
+									<li>Defined in /home/travis/build/scanner-research/vgrid/vgridjs/node_modules/@wcrichto/rekall/dist/rekall.d.ts:33</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -230,7 +295,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from IntervalSet.from_json</p>
 								<ul>
-									<li>Defined in /home/travis/build/scanner-research/vgrid/vgridjs/node_modules/@wcrichto/rekall/dist/rekall.d.ts:36</li>
+									<li>Defined in /home/travis/build/scanner-research/vgrid/vgridjs/node_modules/@wcrichto/rekall/dist/rekall.d.ts:38</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -288,9 +353,6 @@
 						<a href="../modules/_database_.html">"database"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="../modules/_drawable_.html">"drawable"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
 						<a href="../modules/_events_.html">"events"</a>
 					</li>
 					<li class="current tsd-kind-external-module">
@@ -313,6 +375,21 @@
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_settings_.html">"settings"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_spatial_bbox_.html">"spatial/bbox"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_spatial_caption_.html">"spatial/caption"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_spatial_keypoints_.html">"spatial/keypoints"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_spatial_mod_.html">"spatial/mod"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_spatial_spatial_type_.html">"spatial/spatial_<wbr>type"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_spatial_overlay_.html">"spatial_<wbr>overlay"</a>
@@ -356,11 +433,20 @@
 							<li class=" tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited">
 								<a href="_interval_.intervalset.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="_interval_.intervalset.html#dirty" class="tsd-kind-icon">dirty</a>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="_interval_.intervalset.html#add" class="tsd-kind-icon">add</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="_interval_.intervalset.html#arbitrary_interval" class="tsd-kind-icon">arbitrary_<wbr>interval</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="_interval_.intervalset.html#length" class="tsd-kind-icon">length</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="_interval_.intervalset.html#time_overlaps" class="tsd-kind-icon">time_<wbr>overlaps</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="_interval_.intervalset.html#to_json" class="tsd-kind-icon">to_<wbr>json</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="_interval_.intervalset.html#to_list" class="tsd-kind-icon">to_<wbr>list</a>

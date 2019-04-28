@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>DrawType_Bbox | @wcrichto/vgrid</title>
+	<title>SpatialType | @wcrichto/vgrid</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,13 +56,13 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_drawable_.html">&quot;drawable&quot;</a>
+					<a href="../modules/_spatial_spatial_type_.html">&quot;spatial/spatial_type&quot;</a>
 				</li>
 				<li>
-					<a href="_drawable_.drawtype_bbox.html">DrawType_Bbox</a>
+					<a href="_spatial_spatial_type_.spatialtype.html">SpatialType</a>
 				</li>
 			</ul>
-			<h1>Class DrawType_Bbox</h1>
+			<h1>Class SpatialType</h1>
 		</div>
 	</div>
 </header>
@@ -73,10 +73,16 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<a href="_drawable_.drawtype.html" class="tsd-signature-type">DrawType</a>
+						<span class="target">SpatialType</span>
 						<ul class="tsd-hierarchy">
 							<li>
-								<span class="target">DrawType_Bbox</span>
+								<a href="_spatial_bbox_.spatialtype_bbox.html" class="tsd-signature-type">SpatialType_Bbox</a>
+							</li>
+							<li>
+								<a href="_spatial_keypoints_.spatialtype_keypoints.html" class="tsd-signature-type">SpatialType_Keypoints</a>
+							</li>
+							<li>
+								<a href="_spatial_caption_.spatialtype_caption.html" class="tsd-signature-type">SpatialType_Caption</a>
 							</li>
 						</ul>
 					</li>
@@ -89,8 +95,8 @@
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="_drawable_.drawtype_bbox.html#view" class="tsd-kind-icon">view</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="_drawable_.drawtype_bbox.html#from_json" class="tsd-kind-icon">from_<wbr>json</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_spatial_spatial_type_.spatialtype.html#draw_view" class="tsd-kind-icon">draw_<wbr>view</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_spatial_spatial_type_.spatialtype.html#label_view" class="tsd-kind-icon">label_<wbr>view</a></li>
 							</ul>
 						</section>
 					</div>
@@ -98,44 +104,43 @@
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
-					<a name="view" class="tsd-anchor"></a>
-					<h3>view</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
-						<li class="tsd-signature tsd-kind-icon">view<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">React.ComponentType</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_drawable_.drawable.html" class="tsd-signature-type">Drawable</a><span class="tsd-signature-symbol">&gt;</span></li>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="draw_view" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagAbstract">Abstract</span> draw_<wbr>view</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">draw_<wbr>view<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">React.ComponentType</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_spatial_spatial_type_.drawprops.html" class="tsd-signature-type">DrawProps</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Overrides <a href="_drawable_.drawtype.html">DrawType</a>.<a href="_drawable_.drawtype.html#view">view</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/14d68ba/vgridjs/src/drawable.tsx#L40">drawable.tsx:40</a></li>
+									<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/84dd1ff/vgridjs/src/spatial/spatial_type.tsx#L20">spatial/spatial_type.tsx:20</a></li>
 								</ul>
 							</aside>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">React.ComponentType</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_drawable_.drawable.html" class="tsd-signature-type">Drawable</a><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">React.ComponentType</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_spatial_spatial_type_.drawprops.html" class="tsd-signature-type">DrawProps</a><span class="tsd-signature-symbol">&gt;</span>
+								<span class="tsd-signature-symbol"> | </span>
+								<span class="tsd-signature-type">null</span>
+							</h4>
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
-					<a name="from_json" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> from_<wbr>json</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">from_<wbr>json<span class="tsd-signature-symbol">(</span>args<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_drawable_.drawtype_bbox.html" class="tsd-signature-type">DrawType_Bbox</a></li>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="label_view" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagAbstract">Abstract</span> label_<wbr>view</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">label_<wbr>view<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">React.ComponentType</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_spatial_spatial_type_.labelprops.html" class="tsd-signature-type">LabelProps</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/14d68ba/vgridjs/src/drawable.tsx#L41">drawable.tsx:41</a></li>
+									<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/84dd1ff/vgridjs/src/spatial/spatial_type.tsx#L21">spatial/spatial_type.tsx:21</a></li>
 								</ul>
 							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>args: <span class="tsd-signature-type">any</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="_drawable_.drawtype_bbox.html" class="tsd-signature-type">DrawType_Bbox</a></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">React.ComponentType</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_spatial_spatial_type_.labelprops.html" class="tsd-signature-type">LabelProps</a><span class="tsd-signature-symbol">&gt;</span>
+								<span class="tsd-signature-symbol"> | </span>
+								<span class="tsd-signature-type">null</span>
+							</h4>
 						</li>
 					</ul>
 				</section>
@@ -155,9 +160,6 @@
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_database_.html">"database"</a>
-					</li>
-					<li class="current tsd-kind-external-module">
-						<a href="../modules/_drawable_.html">"drawable"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_events_.html">"events"</a>
@@ -182,6 +184,21 @@
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_settings_.html">"settings"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_spatial_bbox_.html">"spatial/bbox"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_spatial_caption_.html">"spatial/caption"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_spatial_keypoints_.html">"spatial/keypoints"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_spatial_mod_.html">"spatial/mod"</a>
+					</li>
+					<li class="current tsd-kind-external-module">
+						<a href="../modules/_spatial_spatial_type_.html">"spatial/spatial_<wbr>type"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_spatial_overlay_.html">"spatial_<wbr>overlay"</a>
@@ -214,38 +231,26 @@
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-class tsd-parent-kind-external-module tsd-has-type-parameter tsd-is-not-exported">
-						<a href="_drawable_.boundingboxview.html" class="tsd-kind-icon">Bounding<wbr>Box<wbr>View</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-external-module">
-						<a href="_drawable_.drawtype.html" class="tsd-kind-icon">Draw<wbr>Type</a>
-					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class tsd-parent-kind-external-module">
-						<a href="_drawable_.drawtype_bbox.html" class="tsd-kind-icon">Draw<wbr>Type_<wbr><wbr>Bbox</a>
+						<a href="_spatial_spatial_type_.spatialtype.html" class="tsd-kind-icon">Spatial<wbr>Type</a>
 						<ul>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
-								<a href="_drawable_.drawtype_bbox.html#view" class="tsd-kind-icon">view</a>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_spatial_spatial_type_.spatialtype.html#draw_view" class="tsd-kind-icon">draw_<wbr>view</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
-								<a href="_drawable_.drawtype_bbox.html#from_json" class="tsd-kind-icon">from_<wbr>json</a>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_spatial_spatial_type_.spatialtype.html#label_view" class="tsd-kind-icon">label_<wbr>view</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-class tsd-parent-kind-external-module">
-						<a href="_drawable_.drawtype_caption.html" class="tsd-kind-icon">Draw<wbr>Type_<wbr><wbr>Caption</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-external-module">
-						<a href="_drawable_.drawtype_keypoints.html" class="tsd-kind-icon">Draw<wbr>Type_<wbr><wbr>Keypoints</a>
+					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
+						<a href="../interfaces/_spatial_spatial_type_.drawprops.html" class="tsd-kind-icon">Draw<wbr>Props</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="../interfaces/_drawable_.drawable.html" class="tsd-kind-icon">Drawable</a>
-					</li>
-					<li class=" tsd-kind-function tsd-parent-kind-external-module">
-						<a href="../modules/_drawable_.html#drawtype_from_json" class="tsd-kind-icon">drawtype_<wbr>from_<wbr>json</a>
+						<a href="../interfaces/_spatial_spatial_type_.labelprops.html" class="tsd-kind-icon">Label<wbr>Props</a>
 					</li>
 				</ul>
 			</nav>
