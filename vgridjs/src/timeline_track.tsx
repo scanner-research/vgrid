@@ -1,6 +1,6 @@
 import * as React from "react";
 import * as _ from 'lodash';
-import {observable, computed, action} from 'mobx';
+import {autorun, observable, computed, action} from 'mobx';
 import {observer, inject} from 'mobx-react';
 
 import {SpatialType_Bbox} from './spatial/bbox';
@@ -12,6 +12,8 @@ import {mouse_key_events} from './events';
 import {key_dispatch, KeyMode} from './keyboard';
 import {Settings} from './settings';
 import {BlockLabelState} from './label_state';
+import {ActionStack} from './undo';
+import {ColorMap} from './color';
 
 let Constants = {
   /** How tall the timeline is when block is vs. isn't expanded */
@@ -33,13 +35,6 @@ interface TimelineRowProps {
   color: string
 }
 
-// https://stackoverflow.com/questions/22266826/how-can-i-do-a-shallow-comparison-of-the-properties-of-two-objects-with-javascri
-let shallowCompare = (obj1: any, obj2: any): boolean =>
-  Object.keys(obj1).length === Object.keys(obj2).length &&
-  Object.keys(obj1).every(key =>
-    obj2.hasOwnProperty(key) && obj1[key] === obj2[key]
-  );
-
 function time_to_x(t: number, bounds: TimelineBounds, width: number): number {
   return (t - bounds.start) / bounds.span() * width;
 }
@@ -51,34 +46,34 @@ function x_to_time(x: number, bounds: TimelineBounds, width: number): number {
 // Single row of the timeline corresponding to one interval set
 class TimelineRow extends React.Component<TimelineRowProps, {}> {
   private canvas_ref : React.RefObject<HTMLCanvasElement>;
+  private disposer : any;
 
   constructor(props : TimelineRowProps) {
     super(props);
     this.canvas_ref = React.createRef();
   }
 
-  /*
-   *   shouldComponentUpdate(next_props: TimelineRowProps, next_state: {}) {
-   *     return !shallowCompare(this.props, next_props) || this.props.intervals.dirty;
-   *   }
-   *  */
-
   render_canvas() {
-    const canvas = this.canvas_ref.current;
-    if (canvas) {
-      const ctx = canvas.getContext("2d");
-      if (ctx) {
-        ctx.fillStyle = this.props.color;
-        this.props.intervals.to_list().map((intvl, i) => {
-          let bounds = intvl.bounds;
-          let x = bounds.t1 / this.props.full_duration * this.props.full_width;
-          let width = Math.min(
-            (bounds.t2 - bounds.t1) / this.props.full_duration * this.props.full_width,
-            1);
-          ctx.fillRect(x, 0, width, this.props.row_height);
-        });
-      }
+    if (this.disposer) {
+      this.disposer();
     }
+
+    this.disposer = autorun(() => {
+      const canvas = this.canvas_ref.current;
+      if (canvas) {
+        const ctx = canvas.getContext("2d");
+        if (ctx) {
+          ctx.fillStyle = this.props.color;
+          this.props.intervals.to_list().map((intvl, i) => {
+            let bounds = intvl.bounds;
+            let x = bounds.t1 / this.props.full_duration * this.props.full_width;
+            let width = Math.max(
+              (bounds.t2 - bounds.t1) / this.props.full_duration * this.props.full_width, 1);
+            ctx.fillRect(x, 0, width, this.props.row_height);
+          });
+        }
+      }
+    });
   }
 
   componentDidMount() {
@@ -119,6 +114,8 @@ interface TimelineProps {
   video: DbVideo
   settings?: Settings
   label_state?: BlockLabelState
+  action_stack?: ActionStack
+  colors?: ColorMap
 }
 
 interface DragTimelineState {
@@ -130,15 +127,10 @@ interface DragTimelineState {
   click_end_time: number
 }
 
-interface NewIntervalState {
-  creating: boolean
-  time_start: number
-}
-
 interface TimelineState {
   shift_held: boolean
   drag_state: DragTimelineState
-  new_state: NewIntervalState
+  new_interval: Interval | null
 }
 
 /**
@@ -147,34 +139,35 @@ interface TimelineState {
  * Supports the ability to shift+click+drag to pan the timeline.
  * Also allows user to create new intervals.
  */
-@inject("settings", "label_state")
+@inject("settings", "label_state", "action_stack", "colors")
 @mouse_key_events
 @observer
-class Timeline extends React.Component<TimelineProps, {}> {
-  state = {
+class Timeline extends React.Component<TimelineProps, TimelineState> {
+  state: TimelineState = {
     shift_held: false,
     drag_state: {
       dragging: false, click_x: 0, click_y: 0, click_time: 0, click_start_time: 0, click_end_time: 0
     },
-    new_state: {
-      creating: false, time_start: 0
-    }
+    new_interval: null
   }
 
   create_interval = () => {
-    let newstate = this.state.new_state;
-    if (!newstate.creating) {
+    if (!this.state.new_interval) {
       let time = this.props.time_state.time;
       let intvls = this.props.label_state!.new_intervals;
-      intvls.add(new Interval(
-        new Bounds(time), {spatial_type: new SpatialType_Bbox(), metadata: {}}));
 
-      this.setState({new_state: {
-        creating: true,
-        time_start: time
-      }});
+      let new_interval = new Interval(
+        new Bounds(time), {spatial_type: new SpatialType_Bbox(), metadata: {}});
+
+      this.props.action_stack!.push({
+        name: "add time interval",
+        do_: () => { intvls.add(new_interval); },
+        undo: () => { intvls.remove(new_interval); }
+      });
+
+      this.setState({new_interval: new_interval});
     } else {
-      this.setState({new_state: {creating: false, time_start: 0}});
+      this.setState({new_interval: null});
     }
   }
 
@@ -257,12 +250,11 @@ class Timeline extends React.Component<TimelineProps, {}> {
       // TODO: automatically shift timeline bounds if the time changes and it's no longer visible
     }
 
-    if (this.state.new_state.creating) {
-      let intvls = this.props.label_state!.new_intervals;
-      let target = intvls.to_list()[intvls.to_list().length - 1];
-      if (time > this.state.new_state.time_start && time != target.bounds.t2) {
-        target.bounds.t2 = time;
-        this.forceUpdate();
+    if (this.state.new_interval) {
+      let new_interval = this.state.new_interval;
+      if (time > new_interval.bounds.t1 && time != new_interval.bounds.t2) {
+        console.log(`Setting new_interval bounds to ${time}`);
+        new_interval.bounds.t2 = time;
       }
     }
   }
@@ -281,26 +273,26 @@ class Timeline extends React.Component<TimelineProps, {}> {
     let video_span = this.props.video.num_frames / this.props.video.fps;
     let window_span = this.props.timeline_bounds.span();
     let full_width = this.props.timeline_width * video_span / window_span;
+    let box_style = {width: this.props.timeline_width, height: this.props.timeline_height};
 
-    return <div className='timeline-box' style={
-    {width: this.props.timeline_width, height: this.props.timeline_height}}>
-        <div className='timeline-cursor' style={{
-          width: this.props.expand ? 4 : 2,
-          height: this.props.timeline_height,
-          left: time_to_x(time, this.props.timeline_bounds, this.props.timeline_width)
-        }} />
+    return <div className='timeline-box' style={box_style}>
+      <div className='timeline-cursor' style={{
+        width: this.props.expand ? 4 : 2,
+        height: this.props.timeline_height,
+        left: time_to_x(time, this.props.timeline_bounds, this.props.timeline_width)
+      }} />
 
-        <div className='timeline-window'>
-            {keys.map((k, i) =>
-              <TimelineRow
-                intervals={k == '__new_intervals' ? new_intervals : this.props.intervals[k]}
-                row_height={row_height}
-                full_width={full_width}
-                full_duration={video_span}
-                color={default_palette[i]}
-              />
-            )}
-        </div>
+      <div className='timeline-window'>
+        {keys.map((k, i) =>
+          <TimelineRow
+            intervals={k == '__new_intervals' ? new_intervals : this.props.intervals[k]}
+            row_height={row_height}
+            full_width={full_width}
+            full_duration={video_span}
+            color={this.props.colors![k]}
+          />
+        )}
+      </div>
     </div>;
   }
 }

@@ -55,7 +55,7 @@ export default class VideoTrack extends React.Component<VideoTrackProps, VideoTr
 
   play_video = () => {
     this.setState({video_active: true});
-    this.video.current.play()
+    this.video.current.toggle();
   }
 
   key_bindings = {

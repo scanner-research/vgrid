@@ -9,6 +9,8 @@ import {Database} from './database';
 import {default_settings, Settings} from './settings';
 import {default_palette, ColorMap} from './color';
 import {BlockSelectType, BlockLabelState, LabelState} from './label_state';
+import {ActionStack} from './undo';
+import {mouse_key_events} from './events';
 
 import 'main.scss';
 
@@ -46,10 +48,12 @@ interface VGridState {
  * VGrid top-level React component. See [[VGridProps]] for parameters.
  * @noInheritDoc
  */
+@mouse_key_events
 @observer
 export class VGrid extends React.Component<VGridProps, VGridState> {
   state = {container_width: 10000000}
 
+  action_stack: ActionStack
   label_state: LabelState
   color_map: ColorMap
   settings: Settings
@@ -73,11 +77,9 @@ export class VGrid extends React.Component<VGridProps, VGridState> {
     if (this.props.label_callback) {
       // Watch changes to the label state to invoke the label_callback
       autorun(_ => {
-        console.log('Label callback');
         this.label_state.block_labels.forEach((block_state) => {
           block_state.new_intervals.length();
         });
-        console.log(this.label_state.to_json());
         this.props.label_callback!(this.label_state);
       });
     }
@@ -91,6 +93,8 @@ export class VGrid extends React.Component<VGridProps, VGridState> {
     }
 
     this.container = React.createRef();
+
+    this.action_stack = new ActionStack();
   }
 
   // Handle block-level selection by updating LabelState.blocks_selected set
@@ -118,10 +122,19 @@ export class VGrid extends React.Component<VGridProps, VGridState> {
     this.resize_observer.unobserve(this.container.current);
   }
 
+  onKeyUp = (key: string) => {
+    if (key == 'z') {
+      this.action_stack.undo();
+    } else if (key == 'y') {
+      this.action_stack.redo();
+    }
+  }
+
   render() {
     let selected = this.label_state.blocks_selected;
     return <Provider
-             database={this.props.database} colors={this.color_map} settings={default_settings}>
+             database={this.props.database} colors={this.color_map} settings={default_settings}
+             action_stack={this.action_stack} >
       <div className='vgrid' ref={this.container}>
         {this.props.interval_blocks.map((block, i) =>
           <VBlock key={i}

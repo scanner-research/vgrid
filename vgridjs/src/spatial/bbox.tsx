@@ -5,6 +5,7 @@ import {SpatialType, DrawProps, LabelProps} from './spatial_type';
 import {mouse_key_events} from '../events';
 import {Interval, Bounds, BoundingBox} from '../interval';
 import TimeState from '../time_state';
+import {ActionStack} from '../undo';
 
 class BboxDrawView extends React.Component<DrawProps, {}> {
   render() {
@@ -35,9 +36,14 @@ interface BboxLabelState {
   mousemove_point: Point | null
 }
 
-@inject("time_state", "label_state")
+interface BboxLabelProps {
+  time_state?: TimeState
+  action_stack?: ActionStack
+}
+
+@inject("time_state", "label_state", "action_stack")
 @mouse_key_events
-class BboxLabelView extends React.Component<LabelProps & {time_state?: TimeState}, BboxLabelState> {
+class BboxLabelView extends React.Component<LabelProps & BboxLabelProps, BboxLabelState> {
   // Note: explicit type annotation on state is required to avoid coercion of union types with
   // initial null values
   // https://stackoverflow.com/questions/51201315/why-does-null-react-component-state-initialization-get-never-type
@@ -101,7 +107,14 @@ class BboxLabelView extends React.Component<LabelProps & {time_state?: TimeState
   onMouseUp = (x: number, y: number) => {
     if (this.state.mousedown_point) {
       let label_state = this.props.label_state!;
-      label_state.new_intervals.add(this.make_interval());
+      let interval = this.make_interval();
+
+      this.props.action_stack!.push({
+        name: "add bbox",
+        do_: () => { label_state.new_intervals.add(interval); },
+        undo: () => { label_state.new_intervals.remove(interval); }
+      });
+
       this.reset_state();
     }
   }

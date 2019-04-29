@@ -44,6 +44,14 @@ export class Video extends React.Component<VideoProps, {loaded: boolean}> {
     this.video.current.play();
   }
 
+  toggle = () => {
+    if (this.video.current.paused) {
+      this.video.current.play();
+    } else {
+      this.video.current.pause();
+    }
+  }
+
   componentDidMount() {
     // Add DOM events once video element has loaded onto the page
     let delegate = (k: string, f: (video: any) => void) => {
@@ -83,7 +91,7 @@ export class Video extends React.Component<VideoProps, {loaded: boolean}> {
     };
 
     return <div>
-      <video controls={this.props.expand} style={video_style} ref={this.video}>
+      <video controls={false} style={video_style} ref={this.video}>
         <source src={`${this.props.src}#t=${this.props.time_state.time}`} />
       </video>
       {!this.state.loaded ? <Spinner width={this.props.width} height={this.props.height} /> : null}
