@@ -41,7 +41,7 @@ export let MetadataTrack: React.SFC<MetadataTrackProps> = observer((props) => {
   return <div className='metadata-track' style={style}>
     {_.keys(generic_metadata).map((k) => <div className='metadata-entry' key={k}>
       <span className='metadata-key'>{k}:</span> &nbsp;
-      <span className='metadata-value'>{generic_metadata[k].toString()}</span>
+      <span className='metadata-value'>{JSON.stringify(generic_metadata[k].data)}</span>
     </div>)}
   </div>;
 });

@@ -22,9 +22,9 @@ export class Metadata_Flag extends Metadata {
 export class Metadata_Generic extends Metadata {
   data: any
 
-  constructor(data: any) {
+  constructor(args: any) {
     super();
-    this.data = data;
+    this.data = args.data;
   }
 
   static from_json(obj: any): Metadata_Generic {
@@ -68,7 +68,8 @@ export class Metadata_CaptionMeta extends Metadata {
 
 export let metadata_from_json = (obj: any): Metadata => {
   let types: any = {
-    'Metadata_Categorical': Metadata_Categorical
+    'Metadata_Categorical': Metadata_Categorical,
+    'Metadata_Generic': Metadata_Generic
   };
 
   return types[obj.type].from_json(obj.args);
