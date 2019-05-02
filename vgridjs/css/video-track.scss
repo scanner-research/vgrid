@@ -1,3 +1,18 @@
+.page-buttons {
+    margin-top: 10px;
+
+    .page-count {
+        position: relative;
+        left: 12px;
+    }
+
+    input {
+        display: inline-block;
+        width: 40px;
+        margin-left: 13px;
+    }
+}
+
 .vblock {
     float: left;
 

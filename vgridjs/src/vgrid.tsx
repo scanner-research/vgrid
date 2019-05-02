@@ -11,6 +11,7 @@ import {default_palette, ColorMap} from './color';
 import {BlockSelectType, BlockLabelState, LabelState} from './label_state';
 import {ActionStack} from './undo';
 import {mouse_key_events} from './events';
+import {BlockPagination} from './pagination';
 
 import 'main.scss';
 
@@ -70,8 +71,8 @@ export class VGrid extends React.Component<VGridProps, VGridState> {
 
     // Set a default color for each interval set
     this.color_map = {'__new_intervals': default_palette[default_palette.length - 1]};
-    _.keys(this.props.interval_blocks[0].interval_sets).forEach((k, i) => {
-      this.color_map[k] = default_palette[i];
+    this.props.interval_blocks[0].interval_sets.forEach(({name}, i) => {
+      this.color_map[name] = default_palette[i];
     });
 
     if (this.props.label_callback) {
@@ -136,15 +137,14 @@ export class VGrid extends React.Component<VGridProps, VGridState> {
              database={this.props.database} colors={this.color_map} settings={default_settings}
              action_stack={this.action_stack} >
       <div className='vgrid' ref={this.container}>
-        {this.props.interval_blocks.map((block, i) =>
+        <BlockPagination blocks={this.props.interval_blocks.map((block, i) =>
           <VBlock key={i}
                   block={block}
                   on_select={(type) => this.on_block_selected(i, type)}
                   selected={selected.has(i) ? selected.get(i)! : null}
                   label_state={this.label_state.block_labels.get(i)!}
                   container_width={this.props.max_width || this.state.container_width} />
-        )}
-        <div className='clearfix' />
+        )} />
       </div>
     </Provider>;
   }

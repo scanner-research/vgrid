@@ -19,6 +19,11 @@ export class Interval extends rekall.Interval<VData> {}
 export class IntervalSet extends rekall.IntervalSet<VData> {}
 export {Bounds, BoundingBox, Domain, Domain_Video} from '@wcrichto/rekall';
 
+export interface NamedIntervalSet {
+  name: string
+  interval_set: IntervalSet
+}
+
 export let vdata_from_json = (obj: any): VData => {
   return {
     spatial_type: spatial_type_from_json(obj.spatial_type),

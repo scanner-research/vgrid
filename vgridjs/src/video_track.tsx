@@ -3,7 +3,7 @@ import * as _ from 'lodash';
 import {observer, inject} from 'mobx-react';
 
 import TimeState from './time_state';
-import {IntervalSet, Domain_Video} from './interval';
+import {NamedIntervalSet, Domain_Video} from './interval';
 import ProgressiveImage from './progressive_image';
 import {asset_url} from './utils';
 import {DbVideo} from './database';
@@ -15,7 +15,7 @@ import {SpatialOverlay} from './spatial_overlay';
 
 interface VideoTrackProps {
   /** Intervals to draw over the video */
-  intervals: {[key: string]: IntervalSet},
+  intervals: NamedIntervalSet[]
 
   /** Video metadata */
   video: DbVideo,
@@ -63,7 +63,7 @@ export default class VideoTrack extends React.Component<VideoTrackProps, VideoTr
       'p': this.play_video
     },
     [KeyMode.Jupyter]: {
-      'TODO': this.play_video
+      'p': this.play_video
     }
   }
 

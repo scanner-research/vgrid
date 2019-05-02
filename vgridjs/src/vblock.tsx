@@ -7,7 +7,7 @@ import TimeState from './time_state';
 import VideoTrack from './video_track';
 import TimelineTrack from './timeline_track';
 import {MetadataTrack} from './metadata_track';
-import {IntervalSet, Bounds, vdata_from_json} from './interval';
+import {NamedIntervalSet, Interval, IntervalSet, Bounds, vdata_from_json} from './interval';
 import {KeyMode, key_dispatch} from './keyboard';
 import {Database, DbVideo} from './database';
 import {Settings} from './settings';
@@ -19,19 +19,19 @@ import {BlockSelectType, BlockLabelState} from './label_state';
 /** Core unit of visualization in the grid for a single video */
 export interface IntervalBlock {
   /** Set of named interval sets within the same video **/
-  interval_sets: {[key: string]: IntervalSet}
+  interval_sets: NamedIntervalSet[]
 
   /** ID of the corresponding video */
   video_id: number
 }
 
 export let interval_blocks_from_json = (obj: any): IntervalBlock[] => {
-  return obj.map((intervals: any) => {
-    let {video_id, interval_dict} = intervals;
+  return obj.map(({video_id, interval_sets}: any) => {
     return {
       video_id: video_id,
-      interval_sets: _.mapValues(interval_dict, (intervals, name) =>
-        (IntervalSet as any).from_json(intervals, vdata_from_json))
+      interval_sets: interval_sets.map(({interval_set, name}: any) =>
+        ({name: name,
+         interval_set: (IntervalSet as any).from_json(interval_set, vdata_from_json)}))
     };
   });
 };
@@ -74,29 +74,39 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
 
   time_state: TimeState;
   captions: IntervalSet | null;
+  show_timeline: boolean;
 
   constructor(props: VBlockProps) {
     super(props);
 
+    let interval_sets = props.block.interval_sets;
+
     // Compute earliest time in all interval blocks to determine where to start the timeline
     let first_time =
-      _.values(
-        _.pick(props.block.interval_sets,
-          _.keys(props.block.interval_sets).filter(show_in_timeline))
-      ).reduce(
-        (n, is) => (is.length() > 0) ? Math.min(n, is.arbitrary_interval()!.bounds.t1) : n,
-        Infinity);
+      interval_sets
+           .filter(({name}) => name[0] != '_')
+           .reduce(
+             ((n, {interval_set}) =>
+               (interval_set.length() > 0)
+               ? Math.min(n, interval_set.arbitrary_interval()!.bounds.t1)
+               : n),
+             Infinity);
     this.time_state = new TimeState(first_time);
 
     // Find captions in interval sets if they exist
     this.captions = null;
-    for (let k of _.keys(this.props.block.interval_sets)) {
-      let is = this.props.block.interval_sets[k];
-      if (is.length() > 0 &&
-            is.arbitrary_interval()!.data.spatial_type instanceof SpatialType_Caption) {
-        this.captions = is;
+    interval_sets.forEach(({interval_set}) => {
+      if (interval_set.length() > 0 &&
+          interval_set.arbitrary_interval()!.data.spatial_type instanceof SpatialType_Caption) {
+        this.captions = interval_set;
       }
-    }
+    });
+
+    let example_interval = interval_sets[0].interval_set.arbitrary_interval()!;
+    this.show_timeline = !(
+      interval_sets.length == 1 &&
+      interval_sets[0].interval_set.to_list().filter((intvl) =>
+        intvl.bounds.t1 != example_interval.bounds.t1 && intvl.bounds.t2 != example_interval.bounds.t2).length == 0);
   }
 
   toggle_expand = () => {this.setState({expand: !this.state.expand});}
@@ -111,6 +121,8 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
     },
     [KeyMode.Jupyter]: {
       '=': this.toggle_expand,
+      '[': this.select(BlockSelectType.Positive),
+      ']': this.select(BlockSelectType.Negative),
     }
   }
 
@@ -119,16 +131,17 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
   }
 
   /** Get the intervals from all sets that overlap with the current time. */
-  current_intervals = (): {[key: string]: IntervalSet} => {
+  current_intervals = (): NamedIntervalSet[] => {
     let bounds = new Bounds(this.time_state.time);
-    let current_intervals: {[key: string]: IntervalSet} = {};
-    _.keys(this.props.block.interval_sets).forEach((k) => {
-      current_intervals[k] = this.props.block.interval_sets[k].time_overlaps(bounds);
-    });
+    let current_intervals = this.props.block.interval_sets.map(({name, interval_set}) =>
+      ({name: name, interval_set: interval_set.time_overlaps(bounds)}));
 
     let new_intervals = this.props.label_state.new_intervals.time_overlaps(bounds);
     if (new_intervals.length() > 0) {
-      current_intervals['__new_intervals'] = new_intervals;
+      current_intervals.push({
+        name: '__new_intervals',
+        interval_set: new_intervals
+      });
     }
 
     return current_intervals;
@@ -175,11 +188,10 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
               <MetadataTrack intervals={current_intervals} {...args} />
               <div className='clearfix' />
             </div>
-            {this.props.settings!.show_timeline
+            {this.props.settings!.show_timeline && this.show_timeline
              ? <div className='vblock-row'>
-               <TimelineTrack intervals={_.pick(this.props.block.interval_sets,
-                 _.keys(this.props.block.interval_sets).filter(show_in_timeline)
-               )} {...args} />
+               <TimelineTrack intervals={this.props.block.interval_sets.filter(({name}) =>
+                 name[0] != "_")} {...args} />
              </div>
              : null}
             {this.captions !== null

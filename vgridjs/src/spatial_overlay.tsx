@@ -4,13 +4,13 @@ import {inject, observer} from 'mobx-react';
 import {Metadata_Categorical} from './metadata';
 
 import {Database, DbCategory} from './database';
-import {Interval, Domain, Bounds, IntervalSet} from './interval';
+import {Interval, Domain, Bounds, NamedIntervalSet} from './interval';
 import {ColorMap} from './color';
 import {SpatialType_Bbox} from './spatial/bbox';
 import {LabelProps} from './spatial/spatial_type';
 
 interface SpatialOverlayProps {
-  intervals: {[key: string]: IntervalSet},
+  intervals: NamedIntervalSet[],
   width: number,
   height: number,
   time: number, // just here to trigger re-render when time changes
@@ -31,10 +31,10 @@ export class SpatialOverlay extends React.Component<SpatialOverlayProps, {}> {
     let label_color = this.props.colors!['__new_intervals'];
     return <div className='spatial-overlay'>
       <div className='spatial-intervals'>
-        {_.keys(this.props.intervals).map((k) =>
-          this.props.intervals[k].to_list().map((intvl, i) => {
+        {this.props.intervals.map(({name, interval_set}) =>
+          interval_set.to_list().map((intvl, i) => {
             let View = intvl.data.spatial_type.draw_view();
-            let color = this.props.colors![k];
+            let color = this.props.colors![name];
             _.forEach(intvl.data.metadata, (meta, name) => {
               if (meta instanceof Metadata_Categorical) {
                 color = this.props.database!

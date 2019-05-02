@@ -158,6 +158,9 @@ export default class CaptionTrack extends React.Component<CaptionTrackProps, {}>
   key_bindings = {
     [KeyMode.Standalone]: {
       'l': this.select_text
+    },
+    [KeyMode.Jupyter]: {
+      'l': this.select_text
     }
   }
 

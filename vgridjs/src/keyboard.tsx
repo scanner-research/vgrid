@@ -6,14 +6,14 @@
 import {Settings} from './settings';
 
 export enum KeyMode {
-  Standalone = 1,
-  Jupyter = 2
+  Standalone = 'Standalone',
+  Jupyter = 'Jupyter'
 }
 
 /** Calls the corresponding method for a key given the current key mode */
 export let key_dispatch = (
   settings: Settings,
-  methods: {[mode: number]: {[key: string]: () => void}},
+  methods: {[mode: string]: {[key: string]: () => void}},
   key: string) => {
   let mode_methods = methods[settings.key_mode];
   let key_lower = key.toLowerCase();

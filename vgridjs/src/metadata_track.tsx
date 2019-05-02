@@ -2,14 +2,14 @@ import * as React from "react";
 import * as _ from 'lodash';
 import {observer} from 'mobx-react';
 
-import {IntervalSet, Interval} from './interval';
+import {NamedIntervalSet, Interval} from './interval';
 import TimeState from './time_state';
 import {DbVideo} from './database';
 import {Metadata_Generic} from './metadata';
 
 interface MetadataTrackProps {
   /** Intervals at the current time. */
-  intervals: {[key: string]: IntervalSet},
+  intervals: NamedIntervalSet[],
   time_state: TimeState,
   video: DbVideo,
   expand: boolean,
@@ -25,9 +25,9 @@ interface MetadataTrackProps {
 export let MetadataTrack: React.SFC<MetadataTrackProps> = observer((props) => {
   // Collect all generic metadata from every current interval.
   let generic_metadata: {[key: string]: any} =
-    _.keys(props.intervals).reduce(
-      ((meta: {[key: string]: any}, k: string) =>
-        _.merge(meta, props.intervals[k].to_list().reduce(
+    props.intervals.reduce(
+      ((meta: {[key: string]: any}, {interval_set}) =>
+        _.merge(meta, interval_set.to_list().reduce(
           ((meta: {[key: string]: any}, intvl: Interval) =>
             _.merge(meta, _.filter(intvl.data.metadata, (v) => v instanceof Metadata_Generic))), {}))),
       {});

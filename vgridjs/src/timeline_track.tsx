@@ -4,7 +4,7 @@ import {autorun, observable, computed, action} from 'mobx';
 import {observer, inject} from 'mobx-react';
 
 import {SpatialType_Bbox} from './spatial/bbox';
-import {IntervalSet, Interval, Bounds} from './interval';
+import {IntervalSet, NamedIntervalSet, Interval, Bounds} from './interval';
 import TimeState from './time_state';
 import {DbVideo} from './database';
 import {default_palette} from './color';
@@ -105,7 +105,7 @@ class TimelineBounds {
 }
 
 interface TimelineProps {
-  intervals: {[key: string]: IntervalSet}
+  intervals: NamedIntervalSet[]
   time_state: TimeState
   timeline_bounds: TimelineBounds
   timeline_width: number
@@ -260,7 +260,7 @@ class Timeline extends React.Component<TimelineProps, TimelineState> {
   }
 
   render() {
-    let keys = _.keys(this.props.intervals);
+    let keys = this.props.intervals.map(({name}) => name);
 
     let new_intervals = this.props.label_state!.new_intervals;
     if (new_intervals.length() > 0) {
@@ -285,7 +285,8 @@ class Timeline extends React.Component<TimelineProps, TimelineState> {
       <div className='timeline-window'>
         {keys.map((k, i) =>
           <TimelineRow
-            intervals={k == '__new_intervals' ? new_intervals : this.props.intervals[k]}
+            key={k}
+            intervals={k == '__new_intervals' ? new_intervals : this.props.intervals[i].interval_set}
             row_height={row_height}
             full_width={full_width}
             full_duration={video_span}
@@ -486,7 +487,7 @@ class TimelineControls extends React.Component<TimelineControlsProps, {}> {
 }
 
 interface TimelineTrackProps {
-  intervals: {[key: string]: IntervalSet}
+  intervals: NamedIntervalSet[]
   time_state: TimeState,
   video: DbVideo,
   expand: boolean,

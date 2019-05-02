@@ -6,7 +6,8 @@ export interface Settings {
   frameserver_endpoint: string,
   video_endpoint: string,
   use_frameserver: boolean,
-  show_timeline: boolean
+  show_timeline: boolean,
+  blocks_per_page: number
 }
 
 export let default_settings = {
@@ -15,5 +16,6 @@ export let default_settings = {
   frameserver_endpoint: '/frameserver/fetch',
   video_endpoint: '/videos',
   use_frameserver: false,
-  show_timeline: true
+  show_timeline: true,
+  blocks_per_page: 50
 };
