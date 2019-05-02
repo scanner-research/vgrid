@@ -20,10 +20,12 @@ interface VideoProps {
 export class Video extends React.Component<VideoProps, {loaded: boolean}> {
   state = {loaded: false}
   video: any
+  unmount_callbacks: (() => void)[]
 
   constructor(props: VideoProps) {
     super(props);
     this.video = React.createRef();
+    this.unmount_callbacks = [];
   }
 
   onTimeUpdate = (video: any) => {
@@ -55,7 +57,9 @@ export class Video extends React.Component<VideoProps, {loaded: boolean}> {
   componentDidMount() {
     // Add DOM events once video element has loaded onto the page
     let delegate = (k: string, f: (video: any) => void) => {
-      this.video.current.addEventListener(k, () => f(this.video.current));
+      let callback = () => f(this.video.current);
+      this.video.current.addEventListener(k, callback);
+      this.unmount_callbacks.push(() => this.video.current.removeEventListener(k, callback));
     };
 
     delegate('loadeddata', this.onLoaded);
@@ -81,6 +85,8 @@ export class Video extends React.Component<VideoProps, {loaded: boolean}> {
     // Make sure video is paused when the component unmounts. Have observed audio continuing to play
     // after unmounting.
     this.video.current.pause();
+
+    this.unmount_callbacks.forEach((c) => c());
   }
 
   render() {
