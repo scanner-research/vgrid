@@ -64,13 +64,13 @@ class TimelineRow extends React.Component<TimelineRowProps, {}> {
         const ctx = canvas.getContext("2d");
         if (ctx) {
           ctx.fillStyle = this.props.color;
-          this.props.intervals.to_list().map((intvl, i) => {
+          for (let intvl of this.props.intervals.to_list()) {
             let bounds = intvl.bounds;
             let x = bounds.t1 / this.props.full_duration * this.props.full_width;
             let width = Math.max(
               (bounds.t2 - bounds.t1) / this.props.full_duration * this.props.full_width, 1);
             ctx.fillRect(x, 0, width, this.props.row_height);
-          });
+          }
         }
       }
     });
@@ -82,6 +82,14 @@ class TimelineRow extends React.Component<TimelineRowProps, {}> {
 
   componentDidUpdate() {
     this.render_canvas();
+  }
+
+  shouldComponentUpdate(next_props: TimelineRowProps) {
+    return this.props.intervals != next_props.intervals ||
+           this.props.row_height != next_props.row_height ||
+           this.props.full_width != next_props.full_width ||
+           this.props.full_duration != next_props.full_duration ||
+           this.props.color != next_props.color;
   }
 
   render() {
