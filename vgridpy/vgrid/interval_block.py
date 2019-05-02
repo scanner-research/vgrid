@@ -39,24 +39,26 @@ class NamedIntervalSet:
         self.interval_set = interval_set
 
     def _payload_to_json(self, payload):
-        if (payload is None
-                or not isinstance(payload, dict)
-                or not 'spatial_type' in payload
-                or not isinstance(payload['spatial_type'], SpatialType)):
-            payload = {'spatial_type': SpatialType_Bbox(), 'metadata': {}}
+        if payload is None or not isinstance(payload, dict):
+            spatial_type = SpatialType_Bbox()
+            metadata = {}
 
-        if 'metadata' not in payload:
-            payload['metadata'] = {}
+        spatial_type = SpatialType_Bbox() \
+                       if 'spatial_type' not in payload else payload['spatial_type']
+        metadata = {} if 'metadata' not in payload else payload['metadata']
+
+        if not isinstance(spatial_type, SpatialType):
+            raise Exception("Payload spatial_type must be of type vgrid.SpatialType")
+
+        for k, v in metadata.items():
+            if not isinstance(v, Metadata):
+                raise Exception("Payload metadata key {} must be of type vgrid.Metadata".format(k))
 
         return {
-            'spatial_type': payload['spatial_type'].to_json(),
-            'metadata':
-            {k: v.to_json()
-             for k, v in payload['metadata'].items()}
+            'spatial_type': spatial_type.to_json(),
+            'metadata': {k: v.to_json()
+                         for k, v in metadata.items()}
         }
 
     def to_json(self):
-        return {
-            'name': self.name,
-            'interval_set': self.interval_set.to_json(self._payload_to_json)
-        }
+        return {'name': self.name, 'interval_set': self.interval_set.to_json(self._payload_to_json)}

@@ -51,6 +51,9 @@ class VideoMetadata:
         self.width = width
         self.height = height
 
+    def duration(self):
+        return self.num_frames / self.fps
+
     def to_json(self):
         return {
             'id': self.id,

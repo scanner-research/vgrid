@@ -1,6 +1,6 @@
 from abc import ABC
 from .interval_block import IntervalBlock, NamedIntervalSet
-from rekall import IntervalSet
+from rekall import IntervalSet, Interval, Bounds3D
 
 
 class VisFormat(ABC):
@@ -11,24 +11,42 @@ class VisFormat(ABC):
 class VideoBlockFormat(VisFormat):
     """Format where each interval block contains all the labels for a given video."""
 
-    def __init__(self, imaps):
+    def __init__(self, imaps=None, video_meta=None):
         """
+        You must either provide the IntervalSetMappings to draw, or just a list of video_meta
+        to show only the video.
+
         Args:
             imaps: List of (name, IntervalSetMapping) pairs
+            video_meta: List of VideoMetadata objects
         """
+        assert (imaps is not None) ^ (video_meta is not None)
         self._imaps = imaps
+        self._video_meta = video_meta
 
     def interval_blocks(self):
-        _, example_imap = self._imaps[0]
-        return [
-            IntervalBlock(
-                video_id=video_key,
-                interval_sets=[
-                    NamedIntervalSet(name=name, interval_set=imap[video_key])
-                    for (name, imap) in self._imaps
-                ])
-            for video_key in example_imap
-        ] # yapf: disable
+        if self._imaps is not None:
+            _, example_imap = self._imaps[0]
+            return [
+                IntervalBlock(
+                    video_id=video_key,
+                    interval_sets=[
+                        NamedIntervalSet(name=name, interval_set=imap[video_key])
+                        for (name, imap) in self._imaps
+                    ])
+                for video_key in example_imap
+            ] # yapf: disable
+        else:
+            return [
+                IntervalBlock(
+                    video_id=meta.id,
+                    interval_sets=[
+                        NamedIntervalSet(
+                            name='default',
+                            interval_set=IntervalSet(
+                                [Interval(Bounds3D(0, meta.duration()))]))
+                    ]) for meta in self._video_meta
+            ]
 
 
 class FlatFormat(VisFormat):

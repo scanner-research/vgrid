@@ -63,7 +63,7 @@ export default class VideoTrack extends React.Component<VideoTrackProps, VideoTr
       'p': this.play_video
     },
     [KeyMode.Jupyter]: {
-      'p': this.play_video
+      ';': this.play_video
     }
   }
 

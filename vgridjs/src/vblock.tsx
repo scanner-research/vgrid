@@ -84,7 +84,7 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
     // Compute earliest time in all interval blocks to determine where to start the timeline
     let first_time =
       interval_sets
-           .filter(({name}) => name[0] != '_')
+           .filter(({name}) => show_in_timeline(name))
            .reduce(
              ((n, {interval_set}) =>
                (interval_set.length() > 0)
@@ -188,10 +188,10 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
               <MetadataTrack intervals={current_intervals} {...args} />
               <div className='clearfix' />
             </div>
-            {this.props.settings!.show_timeline && this.show_timeline
+            {this.props.settings!.show_timeline && (this.show_timeline || this.state.expand)
              ? <div className='vblock-row'>
                <TimelineTrack intervals={this.props.block.interval_sets.filter(({name}) =>
-                 name[0] != "_")} {...args} />
+                 show_in_timeline(name))} {...args} />
              </div>
              : null}
             {this.captions !== null
