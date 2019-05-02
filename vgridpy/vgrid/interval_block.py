@@ -21,13 +21,17 @@ class IntervalBlock:
 
 class NamedIntervalSet:
     """
-    NamedIntervalSet is a Rekall interval set with a name. The interval set must have
-    the following payload structure:
+    NamedIntervalSet is a Rekall interval set with a name. If the interval set
+    has the following payload structure, the spatial type and metadata will be
+    propagated to Vgrid for visualization:
 
     {
       "spatial_type": SpatialType,
       "metadata": {any_key: Metadata}
     }
+
+    Otherwise, the interval set will default to SpatialType_Bbox with no
+    metadata.
     """
 
     def __init__(self, name, interval_set):
@@ -35,19 +39,11 @@ class NamedIntervalSet:
         self.interval_set = interval_set
 
     def _payload_to_json(self, payload):
-        if payload is None:
+        if (payload is None
+                or not isinstance(payload, dict)
+                or not 'spatial_type' in payload
+                or not isinstance(payload['spatial_type'], SpatialType)):
             payload = {'spatial_type': SpatialType_Bbox(), 'metadata': {}}
-
-        if not isinstance(payload, dict):
-            raise Exception(
-                "VGrid interval payload must be a dictionary {'spatial_type': SpatialType, 'metadata': {any key: Metadata}}"
-            )
-
-        if not 'spatial_type' in payload or not isinstance(
-                payload['spatial_type'], SpatialType):
-            raise Exception(
-                "Payload must contain key `spatial_type` with a value of type SpatialType"
-            )
 
         if 'metadata' not in payload:
             payload['metadata'] = {}
