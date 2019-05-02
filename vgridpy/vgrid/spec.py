@@ -85,8 +85,8 @@ class VGridSpec:
                  vis_format=None,
                  spinner_dev_mode=False,
                  key_mode=KeyMode.Jupyter,
-                 frameserver_endpoint='/frameserver/fetch',
-                 video_endpoint='/videos',
+                 frameserver_endpoint='http://localhost:7500/fetch',
+                 video_endpoint='http://localhost:8000/',
                  use_frameserver=False,
                  show_timeline=True,
                  blocks_per_page=50):
