@@ -106,6 +106,7 @@
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="_video_.video.html#context" class="tsd-kind-icon">context</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="_video_.video.html#props" class="tsd-kind-icon">props</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="_video_.video.html#refs" class="tsd-kind-icon">refs</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_video_.video.html#unmount_callbacks" class="tsd-kind-icon">unmount_<wbr>callbacks</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_video_.video.html#video" class="tsd-kind-icon">video</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-static"><a href="_video_.video.html#contexttype" class="tsd-kind-icon">context<wbr>Type</a></li>
 							</ul>
@@ -126,6 +127,7 @@
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_video_.video.html#forceupdate" class="tsd-kind-icon">force<wbr>Update</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_video_.video.html#getsnapshotbeforeupdate" class="tsd-kind-icon">get<wbr>Snapshot<wbr>Before<wbr>Update</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_video_.video.html#onloaded" class="tsd-kind-icon">on<wbr>Loaded</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_video_.video.html#onloadedmetadata" class="tsd-kind-icon">on<wbr>Loaded<wbr>Metadata</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_video_.video.html#ontimeupdate" class="tsd-kind-icon">on<wbr>Time<wbr>Update</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_video_.video.html#pause" class="tsd-kind-icon">pause</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_video_.video.html#play" class="tsd-kind-icon">play</a></li>
@@ -157,7 +159,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides Component.__constructor</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/f4adb4a/vgridjs/src/video.tsx#L22">video.tsx:22</a></li>
+									<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/2162627/vgridjs/src/video.tsx#L26">video.tsx:26</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -238,12 +240,22 @@ context!: React.ContextType&lt;<span class="hljs-keyword">typeof</span> MyContex
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="unmount_callbacks" class="tsd-anchor"></a>
+					<h3>unmount_<wbr>callbacks</h3>
+					<div class="tsd-signature tsd-kind-icon">unmount_<wbr>callbacks<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span><span class="tsd-signature-symbol">[]</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/2162627/vgridjs/src/video.tsx#L26">video.tsx:26</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="video" class="tsd-anchor"></a>
 					<h3>video</h3>
 					<div class="tsd-signature tsd-kind-icon">video<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/f4adb4a/vgridjs/src/video.tsx#L22">video.tsx:22</a></li>
+							<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/2162627/vgridjs/src/video.tsx#L25">video.tsx:25</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -463,7 +475,7 @@ class Foo extends React.Component {
 							<aside class="tsd-sources">
 								<p>Overrides ComponentLifecycle.componentDidMount</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/f4adb4a/vgridjs/src/video.tsx#L55">video.tsx:55</a></li>
+									<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/2162627/vgridjs/src/video.tsx#L68">video.tsx:68</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -481,7 +493,7 @@ class Foo extends React.Component {
 							<aside class="tsd-sources">
 								<p>Overrides NewLifecycle.componentDidUpdate</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/f4adb4a/vgridjs/src/video.tsx#L65">video.tsx:65</a></li>
+									<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/2162627/vgridjs/src/video.tsx#L81">video.tsx:81</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -584,7 +596,7 @@ class Foo extends React.Component {
 							<aside class="tsd-sources">
 								<p>Overrides ComponentLifecycle.componentWillUnmount</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/f4adb4a/vgridjs/src/video.tsx#L80">video.tsx:80</a></li>
+									<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/2162627/vgridjs/src/video.tsx#L96">video.tsx:96</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -713,7 +725,30 @@ class Foo extends React.Component {
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/f4adb4a/vgridjs/src/video.tsx#L35">video.tsx:35</a></li>
+									<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/2162627/vgridjs/src/video.tsx#L40">video.tsx:40</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>video: <span class="tsd-signature-type">any</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="onloadedmetadata" class="tsd-anchor"></a>
+					<h3>on<wbr>Loaded<wbr>Metadata</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">on<wbr>Loaded<wbr>Metadata<span class="tsd-signature-symbol">(</span>video<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/2162627/vgridjs/src/video.tsx#L44">video.tsx:44</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -736,7 +771,7 @@ class Foo extends React.Component {
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/f4adb4a/vgridjs/src/video.tsx#L29">video.tsx:29</a></li>
+									<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/2162627/vgridjs/src/video.tsx#L34">video.tsx:34</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -759,7 +794,7 @@ class Foo extends React.Component {
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/f4adb4a/vgridjs/src/video.tsx#L43">video.tsx:43</a></li>
+									<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/2162627/vgridjs/src/video.tsx#L56">video.tsx:56</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -776,7 +811,7 @@ class Foo extends React.Component {
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/f4adb4a/vgridjs/src/video.tsx#L39">video.tsx:39</a></li>
+									<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/2162627/vgridjs/src/video.tsx#L52">video.tsx:52</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -794,7 +829,7 @@ class Foo extends React.Component {
 							<aside class="tsd-sources">
 								<p>Overrides Component.render</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/f4adb4a/vgridjs/src/video.tsx#L86">video.tsx:86</a></li>
+									<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/2162627/vgridjs/src/video.tsx#L104">video.tsx:104</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Element</span></h4>
@@ -884,7 +919,7 @@ class Foo extends React.Component {
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/f4adb4a/vgridjs/src/video.tsx#L47">video.tsx:47</a></li>
+									<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/2162627/vgridjs/src/video.tsx#L60">video.tsx:60</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -901,7 +936,7 @@ class Foo extends React.Component {
 					<aside class="tsd-sources">
 						<p>Overrides Component.state</p>
 						<ul>
-							<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/f4adb4a/vgridjs/src/video.tsx#L21">video.tsx:21</a></li>
+							<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/2162627/vgridjs/src/video.tsx#L24">video.tsx:24</a></li>
 						</ul>
 					</aside>
 					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
@@ -910,7 +945,7 @@ class Foo extends React.Component {
 						<div class="tsd-signature tsd-kind-icon">loaded<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;false</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/f4adb4a/vgridjs/src/video.tsx#L21">video.tsx:21</a></li>
+								<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/2162627/vgridjs/src/video.tsx#L24">video.tsx:24</a></li>
 							</ul>
 						</aside>
 					</section>
@@ -946,6 +981,9 @@ class Foo extends React.Component {
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 								<a href="_video_.video.html#refs" class="tsd-kind-icon">refs</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="_video_.video.html#unmount_callbacks" class="tsd-kind-icon">unmount_<wbr>callbacks</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="_video_.video.html#video" class="tsd-kind-icon">video</a>
@@ -991,6 +1029,9 @@ class Foo extends React.Component {
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_video_.video.html#onloaded" class="tsd-kind-icon">on<wbr>Loaded</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_video_.video.html#onloadedmetadata" class="tsd-kind-icon">on<wbr>Loaded<wbr>Metadata</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_video_.video.html#ontimeupdate" class="tsd-kind-icon">on<wbr>Time<wbr>Update</a>
