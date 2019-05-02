@@ -93,7 +93,8 @@ export default class VideoTrack extends React.Component<VideoTrackProps, VideoTr
 
       {!this.props.settings!.use_frameserver || this.state.video_active
        ? <Video src={video_path} width={this.props.width} height={this.props.height}
-                time_state={this.props.time_state} expand={this.props.expand} ref={this.video} />
+                time_state={this.props.time_state} expand={this.props.expand}
+                video={this.props.video} ref={this.video} />
        : <ProgressiveImage
            src={image_path} width={video.width} height={video.height}
            target_width={this.props.width} target_height={this.props.height} />}

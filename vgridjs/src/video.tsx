@@ -1,7 +1,9 @@
 import * as React from "react";
+import {inject} from 'mobx-react';
 
 import Spinner from './spinner';
 import TimeState from './time_state';
+import {DbVideo} from './database';
 
 interface VideoProps {
   /** Path to the video */
@@ -13,6 +15,7 @@ interface VideoProps {
   /** Height in pixels */
   height: number,
 
+  video: DbVideo,
   time_state: TimeState,
   expand: boolean,
 }
@@ -36,6 +39,14 @@ export class Video extends React.Component<VideoProps, {loaded: boolean}> {
 
   onLoaded = (video: any) => {
     this.setState({loaded: true});
+  }
+
+  onLoadedMetadata = (video: any) => {
+    // If not using the frameserver, then we need to get the video to load at the same frame as
+    // the interval. However, what seems to happen is that in some cases, the video loads a frame
+    // early, which then causes the time_state to get set to the wrong frame in onTimeUpdate.
+    // For now, we'll hack around that by adding 1 frame to the desired load time.
+    video.currentTime = this.props.time_state.time + 1 / this.props.video.fps;
   }
 
   play = () => {
@@ -64,6 +75,7 @@ export class Video extends React.Component<VideoProps, {loaded: boolean}> {
 
     delegate('loadeddata', this.onLoaded);
     delegate('timeupdate', this.onTimeUpdate);
+    delegate('loadedmetadata', this.onLoadedMetadata);
   }
 
   componentDidUpdate() {
@@ -98,7 +110,7 @@ export class Video extends React.Component<VideoProps, {loaded: boolean}> {
 
     return <div>
       <video controls={false} style={video_style} ref={this.video}>
-        <source src={`${this.props.src}#t=${this.props.time_state.time}`} />
+        <source src={`${this.props.src}`} />
       </video>
       {!this.state.loaded ? <Spinner width={this.props.width} height={this.props.height} /> : null}
     </div>

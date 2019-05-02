@@ -91,6 +91,7 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
                ? Math.min(n, interval_set.arbitrary_interval()!.bounds.t1)
                : n),
              Infinity);
+
     this.time_state = new TimeState(first_time);
 
     // Find captions in interval sets if they exist
