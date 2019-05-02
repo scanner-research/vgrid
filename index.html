@@ -66,7 +66,7 @@
 			<div class="tsd-panel tsd-typography">
 				<h1 id="vgrid-video-metadata-visualization-in-javascript">VGrid: video metadata visualization in Javascript</h1>
 				<p><a href="https://travis-ci.com/scanner-research/vgrid"><img src="https://travis-ci.com/scanner-research/vgrid.svg?branch=master" alt="Build Status"></a></p>
-				<p>VGrid is a Javascript library for visualizing spatiotemporal metadata (e.g. bounding boxes, pose keypoints) on video. For example, our group uses VGrid to inspect and debug computer vision models.</p>
+				<p>VGrid is a Javascript library for visualizing spatiotemporal metadata (e.g. bounding boxes, pose keypoints) on video using <a href="https://github.com/scanner-research/rekall">spatiotemporal intervals</a>. For example, our group uses VGrid to inspect and debug computer vision models.</p>
 				<p>VGrid is a standalone JS library, so you can embed it any web page. See the <a href="https://github.com/scanner-research/vgrid_jupyter">vgrid_jupyter</a> package for Jupyter integration. VGrid also has a Python library for building visualizations and exporteing them to JSON.</p>
 				<ul>
 					<li><a href="#installation">Installation</a><ul>
@@ -102,19 +102,20 @@
 <span class="hljs-keyword">import</span> {VGrid, Database, IntervalSet, Interval, Bounds} <span class="hljs-keyword">from</span> <span class="hljs-string">'@wcrichto/vgrid'</span>;
 
 <span class="hljs-comment">// Setup intervals</span>
-<span class="hljs-keyword">let</span> interval_blocks = {
+<span class="hljs-keyword">let</span> interval_blocks = [{
   <span class="hljs-attr">video_id</span>: <span class="hljs-number">0</span>,
-  <span class="hljs-attr">interval_sets</span>: {
-    <span class="hljs-attr">test</span>: <span class="hljs-keyword">new</span> IntervalSet([<span class="hljs-keyword">new</span> Interval(<span class="hljs-keyword">new</span> Bounds(<span class="hljs-number">0</span>, <span class="hljs-number">10</span>))])
-  }
-};
+  <span class="hljs-attr">interval_sets</span>: [{
+    <span class="hljs-attr">name</span>: <span class="hljs-string">'test'</span>,
+    <span class="hljs-attr">interval_set</span>: <span class="hljs-keyword">new</span> IntervalSet([<span class="hljs-keyword">new</span> Interval(<span class="hljs-keyword">new</span> Bounds(<span class="hljs-number">0</span>, <span class="hljs-number">10</span>))])
+  }]
+}];
 
 <span class="hljs-comment">// Associate video IDs with metadata</span>
 <span class="hljs-keyword">let</span> database = <span class="hljs-keyword">new</span> Database(
-  <span class="hljs-keyword">new</span> Table(
+  [<span class="hljs-keyword">new</span> Table(
     <span class="hljs-string">'videos'</span>,
     [{<span class="hljs-attr">id</span>: <span class="hljs-number">0</span>, <span class="hljs-attr">path</span>: <span class="hljs-string">'http://localhost:8000/test.mp4'</span>, <span class="hljs-attr">num_frames</span>: <span class="hljs-number">1000</span>,
-      <span class="hljs-attr">width</span>: <span class="hljs-number">640</span>, <span class="hljs-attr">height</span>: <span class="hljs-number">480</span>, <span class="hljs-attr">fps</span>: <span class="hljs-number">29.97</span>}]));
+      <span class="hljs-attr">width</span>: <span class="hljs-number">640</span>, <span class="hljs-attr">height</span>: <span class="hljs-number">480</span>, <span class="hljs-attr">fps</span>: <span class="hljs-number">29.97</span>}])]);
 
 <span class="hljs-comment">// Global component settings</span>
 <span class="hljs-keyword">let</span> settings = {
@@ -133,35 +134,36 @@ ReactDOM.render(
   document.getElementById('vgrid'));</span></code></pre>
 				<h3 id="javascript-and-python">Javascript and Python</h3>
 				<p>You can use the Python API to build the video metadata and interval data, then send the JSON string to the frontend. Python:</p>
-				<pre><code class="language-python"><span class="hljs-keyword">from</span> rekall <span class="hljs-keyword">import</span> Interval, IntervalSet, IntervalSetMapping
-<span class="hljs-keyword">from</span> rekall.bounds <span class="hljs-keyword">import</span> Bounds3D
-<span class="hljs-keyword">from</span> vgrid <span class="hljs-keyword">import</span> VideoVBlocksBuilder, VideoTrackBuilder, VideoMetadata, VGridSettingsBuilder
+				<pre><code class="language-python"><span class="hljs-keyword">from</span> rekall <span class="hljs-keyword">import</span> Interval, IntervalSet, Bounds3D
+<span class="hljs-keyword">from</span> vgrid <span class="hljs-keyword">import</span> VGridSpec, IntervalBlock, NamedIntervalSet, VideoMetadata
 
 video_id = <span class="hljs-number">1</span>
 video = VideoMetadata(path=<span class="hljs-string">'test.mp4'</span>, id=video_id)
 intervals = IntervalSet([Interval(Bounds3D(<span class="hljs-number">0</span>, <span class="hljs-number">10</span>))])
-interval_map = IntervalSetMapping({video_id: iset})
+interval_blocks = [
+  IntervalBlock(
+    video_id=<span class="hljs-number">1</span>,
+    interval_sets=[
+      NamedIntervalSet(name=<span class="hljs-string">'test'</span>, interval_set=intervals)
+    ])
+]
 
-vgrid_json = VideoVBlocksBuilder() \
-    .add_track(VideoTrackBuilder(<span class="hljs-string">'test'</span>, interval_map)) \
-    .add_video_metadata(<span class="hljs-string">'http://localhost:8000'</span>, [video]) \
-    .build()
+vgrid_spec = VGridSpec(
+  video_meta=[video],
+  interval_blocks=interval_blocks,
+  show_timeline=<span class="hljs-literal">False</span>)
 
-settings = VGridSettingsBuilder() \
-    .show_timeline(<span class="hljs-literal">False</span>)
-    .build()
-
-<span class="hljs-comment"># Send vgrid_json and settings to the frontend somehow</span></code></pre>
+<span class="hljs-comment"># Send vgrid_spec.to_json() and settings to the frontend somehow</span></code></pre>
 				<p>And Javascript:</p>
 				<pre><code class="language-jsx"><span class="hljs-keyword">import</span> ReactDOM <span class="hljs-keyword">from</span> <span class="hljs-string">'react-dom'</span>;
 <span class="hljs-keyword">import</span> {VGrid, Database, interval_blocks_from_json} <span class="hljs-keyword">from</span> <span class="hljs-string">'@wcrichto/vgrid'</span>;
 
 <span class="hljs-comment">// Fetch the JSON somehow</span>
-fetch_json_somehow(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">vgrid_json, settings</span>) </span>{
+fetch_json_somehow(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">vgrid_spec</span>) </span>{
   <span class="hljs-comment">// Convert JSON into corresponding Javascript objects</span>
-  <span class="hljs-keyword">let</span> {interval_blocks_json, database_json} = vgrid_json;
-  <span class="hljs-keyword">let</span> database = Database.from_json(database_json);
-  <span class="hljs-keyword">this</span>.interval_blocks = interval_blocks_from_json(interval_blocks_json);
+  <span class="hljs-keyword">let</span> {interval_blocks, database, settings} = vgrid_spec;
+  <span class="hljs-keyword">let</span> database = Database.from_json(database);
+  <span class="hljs-keyword">this</span>.interval_blocks = interval_blocks_from_json(interval_blocks);
 
   <span class="hljs-comment">// Run code when user provides labeling input</span>
   <span class="hljs-keyword">let</span> label_callback = <span class="hljs-function">(<span class="hljs-params">label_state</span>) =&gt;</span> {
@@ -177,42 +179,42 @@ fetch_json_somehow(<span class="hljs-function"><span class="hljs-keyword">functi
 				<h2 id="api">API</h2>
 				<p>VGrid provides a means of visualizing spatiotemporal data on video. We represent spatiotemporal data using <em>intervals</em> and <em>interval sets</em> as defined in the <a href="https://github.com/scanner-research/rekall">Rekall</a> library.</p>
 				<h3 id="interval-blocks">Interval blocks</h3>
-				<p>VGrid is a grid of <em>interval blocks</em>, where one block contains multiple sets of related intervals within a single video. For example, let&#39;s say I have four videos, and each video has three sequences, and each sequence has three interval sets (face bounding boxes, pose keypoints, and captions). That would be represented as a grid of twelve interval blocks with each block containing three interval sets.</p>
+				<p>VGrid is a grid of <em>interval blocks</em>, where each block contains multiple sets of related intervals within a single video. For example, let&#39;s say I have four videos, and each video has three sequences, and each sequence has three interval sets (face bounding boxes, pose keypoints, and captions). That can be represented as a grid of twelve interval blocks with each block containing three interval sets.</p>
 				<p>VGrid provides a <a href="https://scanner-research.github.io/vgrid/classes/_vgrid_.vgrid.html">React component</a> as shown in the examples above. The parameters are documented in the <a href="https://scanner-research.github.io/vgrid/interfaces/_vblock_.intervalblock.html">VGridProps</a> type.</p>
-				<p>The first required parameter is a list of <a href="interfaces/_vblock_.intervalblock.html">IntervalBlock</a> specifying the spatiotemporal metadata. Each block contains a video ID and a dictionary of <a href="/classes/_interval_.intervalset.html">IntervalSet</a>.</p>
-				<p>The video ID matches up with the second parameter, a <a href="/classes/_database_.database.html">Database</a> containing metadata about videos and other entities referenced in the intervals. The <a href="/modules/_database_.html">database module</a> documents the required fields for different tables, e.g. for <a href="/interfaces/_database_.dbvideo.html">videos</a> and for <a href="/interfaces/_database_.dbcategory.html">categories</a>.</p>
-				<h3 id="draw-types">Draw types</h3>
+				<p>The first required parameter is a list of <a href="interfaces/_vblock_.intervalblock.html">IntervalBlock</a> specifying the spatiotemporal metadata. Each block contains a video ID and a dictionary of <a href="https://github.com/scanner-research/vgrid/classes/_interval_.intervalset.html">IntervalSet</a>.</p>
+				<p>The video ID matches up with the second parameter, a <a href="https://github.com/scanner-research/vgrid/classes/_database_.database.html">Database</a> containing metadata about videos and other entities referenced in the intervals. The <a href="https://github.com/scanner-research/vgrid/modules/_database_.html">database module</a> documents the required fields for different tables, e.g. for <a href="https://github.com/scanner-research/vgrid/interfaces/_database_.dbvideo.html">videos</a> and for <a href="https://github.com/scanner-research/vgrid/interfaces/_database_.dbcategory.html">categories</a>.</p>
+				<h3 id="spatial-types">Spatial types</h3>
 				<p>A spatiotemporal interval is a 3-dimensional rectangular prism in time and x/y of the video. See the <a href="https://github.com/scanner-research/rekall">Rekall documentation</a> for an extended discussion of how to think about this data representation.</p>
-				<p>To know how to draw an interval on a video, VGrid uses intervals annotated with a <a href="/classes/_drawable_.drawtype.html">DrawType</a>. The default way to draw a spatiotemporal interval is with a box (<a href="/classes/_drawable_.drawtype_bbox.html">DrawType_Bbox</a>) which corresponds to a rendering function for that draw type (<a href="/classes/_drawable_.boundingboxview.html">BoundingBoxView</a>).</p>
-				<p>Interval annotations like draw type are contained within an interval&#39;s payload. Specifically, intervals must have a <a href="/interfaces/_interval_.vdata.html">VData</a> payload type containing a draw type and a dictionary of <a href="/classes/_metadata_.metadata.html">Metadata</a>. For example, in Javascript, we can explicitly create such an interval like this:</p>
-				<pre><code class="language-jsx"><span class="hljs-keyword">import</span> {Interval, Bounds, DrawType_Bbox} <span class="hljs-keyword">from</span> <span class="hljs-string">'@wcrichto/vgrid'</span>;
+				<p>To know how to draw an interval on a video, VGrid uses intervals annotated with a <a href="">SpatialType</a>. The default way to draw a spatiotemporal interval is with a box (<a href="">SpatialType_Bbox</a>) which corresponds to a rendering function for that draw type (<a href="https://scanner-research.github.io/vgrid/classes/_drawable_.boundingboxview.html">BoundingBoxView</a>).</p>
+				<p>Interval annotations like spatial type are contained within an interval&#39;s payload. Specifically, intervals must have a <a href="https://github.com/scanner-research/vgrid/interfaces/_interval_.vdata.html">VData</a> payload type containing a spatial type and a dictionary of <a href="https://github.com/scanner-research/vgrid/classes/_metadata_.metadata.html">Metadata</a>. For example, in Javascript, we can explicitly create such an interval like this:</p>
+				<pre><code class="language-jsx"><span class="hljs-keyword">import</span> {Interval, Bounds, SpatialType_Bbox} <span class="hljs-keyword">from</span> <span class="hljs-string">'@wcrichto/vgrid'</span>;
 
 <span class="hljs-keyword">let</span> itvl = <span class="hljs-keyword">new</span> Interval(
   <span class="hljs-keyword">new</span> Bounds(<span class="hljs-number">0</span>, <span class="hljs-number">1</span>), <span class="hljs-comment">// from time 0s to time 1s</span>
   {
-    <span class="hljs-attr">draw_type</span>: <span class="hljs-keyword">new</span> DrawType_Bbox(),
+    <span class="hljs-attr">spatial_type</span>: <span class="hljs-keyword">new</span> SpatialType_Bbox(),
     <span class="hljs-attr">metadata</span>: {}
   });</code></pre>
 				<p>Similarly in the Python API:</p>
 				<pre><code class="language-python"><span class="hljs-keyword">from</span> rekall <span class="hljs-keyword">import</span> Interval, Bounds3D
-<span class="hljs-keyword">from</span> vgrid <span class="hljs-keyword">import</span> DrawType_Bbox
+<span class="hljs-keyword">from</span> vgrid <span class="hljs-keyword">import</span> SpatialType_Bbox
 
 intvl = Interval(
     Bounds3D(<span class="hljs-number">0</span>, <span class="hljs-number">1</span>),
     {
-        <span class="hljs-string">'draw_type'</span>: DrawType_Bbox(),
+        <span class="hljs-string">'spatial_type'</span>: SpatialType_Bbox(),
         <span class="hljs-string">'metadata'</span>: {}
     }
 )</code></pre>
 				<p>VGrid also provides a &quot;builder&quot; interface in the Python API to simplify the creation of intervals. See the module comments <a href="https://github.com/scanner-research/vgrid/tree/master/vgridpy/vblocks_builder.py">vblocks_builder.py</a> for documentation and examples. Currently, VGrid supports the following draw types:</p>
 				<h4 id="bounding-box">Bounding box</h4>
-				<p><a href="/classes/_drawable_.drawtype_bbox.html">Bounding box</a>: draws a rectangle over a video, default for all intervals.</p>
+				<p><a href="https://github.com/scanner-research/vgrid/classes/_drawable_.drawtype_bbox.html">Bounding box</a>: draws a rectangle over a video, default for all intervals.</p>
 				<h4 id="keypoints">Keypoints</h4>
-				<p><a href="/classes/_drawable_.drawtype_keypoints.html">Keypoints</a>: draws a graph of nodes and edges over a video, useful e.g. for face or pose keypoints.</p>
+				<p><a href="https://github.com/scanner-research/vgrid/classes/_drawable_.drawtype_keypoints.html">Keypoints</a>: draws a graph of nodes and edges over a video, useful e.g. for face or pose keypoints.</p>
 				<h4 id="captions">Captions</h4>
-				<p><a href="/classes/_drawable_.drawtype_caption.html">Captions</a>: shows a box of captions beneath the video, does not draw on the video.</p>
+				<p><a href="https://github.com/scanner-research/vgrid/classes/_drawable_.drawtype_caption.html">Captions</a>: shows a box of captions beneath the video, does not draw on the video.</p>
 				<h3 id="metadata">Metadata</h3>
-				<p>Draw type describes the &quot;core&quot; of how an interval should be displayed, but it&#39;s also useful to have ancillary metadata about an interval. For example, an interval could be part of some category (e.g. comes from a video of type X, is an object of type Y). VGrid requires intervals to be annotated with a dictionary of <a href="/classes/_metadata_.metadata.html">Metadata</a>. For example:</p>
+				<p>Draw type describes the &quot;core&quot; of how an interval should be displayed, but it&#39;s also useful to have ancillary metadata about an interval. For example, an interval could be part of some category (e.g. comes from a video of type X, is an object of type Y). VGrid requires intervals to be annotated with a dictionary of <a href="https://github.com/scanner-research/vgrid/classes/_metadata_.metadata.html">Metadata</a>. For example:</p>
 				<pre><code class="language-jsx"><span class="hljs-keyword">import</span> {Interval, Bounds, Metadata_Generic} <span class="hljs-keyword">from</span> <span class="hljs-string">'@wcrichto/vgrid'</span>;
 
 <span class="hljs-keyword">let</span> itvl = <span class="hljs-keyword">new</span> Interval(
@@ -222,11 +224,11 @@ intvl = Interval(
   });</code></pre>
 				<p>When this interval is drawn, the the &quot;hello: world&quot; metadata will appear adjacent to the video. Currently, VGrid supports the following metadata types:</p>
 				<h4 id="generic">Generic</h4>
-				<p><a href="/classes/_metadata_.metadata_generic.html">Generic</a>: most basic kind of metadata. Will be shown just as a string.</p>
+				<p><a href="https://github.com/scanner-research/vgrid/classes/_metadata_.metadata_generic.html">Generic</a>: most basic kind of metadata. Will be shown just as a string.</p>
 				<h4 id="categorical">Categorical</h4>
-				<p><a href="/classes/_metadata_.metadata_categorical.html">Categorical</a>: metadata that is one value of a category, e.g. object type. Category name and type must be associated with a corresponding <a href="/interfaces/_database_.dbcategory.html">category table</a> in the database.</p>
+				<p><a href="https://github.com/scanner-research/vgrid/classes/_metadata_.metadata_categorical.html">Categorical</a>: metadata that is one value of a category, e.g. object type. Category name and type must be associated with a corresponding <a href="https://github.com/scanner-research/vgrid/interfaces/_database_.dbcategory.html">category table</a> in the database.</p>
 				<h3 id="labeling">Labeling</h3>
-				<p>VGrid provides some capabilities for users to modify or create intervals. All modifications are tracked in the <a href="/modules/_label_state_.html">LabelState</a>, which is passed to the top-level <code>label_callback</code> whenever the label state changes. Currently, VGrid supports the following label operations:</p>
+				<p>VGrid provides some capabilities for users to modify or create intervals. All modifications are tracked in the <a href="https://github.com/scanner-research/vgrid/modules/_label_state_.html">LabelState</a>, which is passed to the top-level <code>label_callback</code> whenever the label state changes. Currently, VGrid supports the following label operations:</p>
 				<h4 id="categorizing-blocks">Categorizing blocks</h4>
 				<p>Individual interval blocks can be categorized, currently as &quot;Positive&quot; or &quot;Negative&quot; (see <a href="https://scanner-research.github.io/vgrid/classes/_label_state_.labelstate.html#blocks_selected">LabelState.blocks_selected</a> and <a href="https://scanner-research.github.io/vgrid/enums/_label_state_.blockselecttype.html">BlockSelectType</a>). The user labels blocks by clicking &quot;s&quot; or &quot;x&quot; while hovering over a block.</p>
 				<h4 id="creating-temporal-intervals">Creating temporal intervals</h4>
@@ -265,6 +267,9 @@ intvl = Interval(
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_metadata_track_.html">"metadata_<wbr>track"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_pagination_.html">"pagination"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_progressive_image_.html">"progressive_<wbr>image"</a>
