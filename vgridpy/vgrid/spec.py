@@ -88,7 +88,8 @@ class VGridSpec:
                  frameserver_endpoint='/frameserver/fetch',
                  video_endpoint='/videos',
                  use_frameserver=False,
-                 show_timeline=True):
+                 show_timeline=True,
+                 blocks_per_page=50):
         """
         Args:
             video_meta: List of VideoMetadata objects describing all videos in the interval blocks
@@ -99,6 +100,7 @@ class VGridSpec:
             video_endpoint: Base URL path to access the videos
             use_frameserver: Whether to use frameserver or HTMl5 video element for thumbnails
             show_timeline: If false, disables the timeline
+            blocks_per_page: Number of interval blocks to show at one time
         """
         self._interval_blocks = interval_blocks
         self._vis_format = vis_format
@@ -112,7 +114,8 @@ class VGridSpec:
             'frameserver_endpoint': frameserver_endpoint,
             'video_endpoint': video_endpoint,
             'use_frameserver': use_frameserver,
-            'show_timeline': show_timeline
+            'show_timeline': show_timeline,
+            'blocks_per_page': blocks_per_page
         }
 
         self._video_meta = video_meta
