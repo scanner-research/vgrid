@@ -5,6 +5,7 @@ import subprocess as sp
 import json
 import os
 import shlex
+import zlib
 
 
 class VideoMetadata:
@@ -18,13 +19,7 @@ class VideoMetadata:
     extraction is only supported for paths on the local machine.
     """
 
-    def __init__(self,
-                 path,
-                 id=None,
-                 fps=None,
-                 num_frames=None,
-                 width=None,
-                 height=None):
+    def __init__(self, path, id=None, fps=None, num_frames=None, width=None, height=None):
 
         if fps is None:
             if not os.path.isfile(path):
@@ -36,8 +31,7 @@ class VideoMetadata:
                 .format(path)
             outp = sp.check_output(shlex.split(cmd)).decode('utf-8')
             streams = json.loads(outp)['streams']
-            video_stream = [s for s in streams
-                            if s['codec_type'] == 'video'][0]
+            video_stream = [s for s in streams if s['codec_type'] == 'video'][0]
             width = int(video_stream['width'])
             height = int(video_stream['height'])
             [num, denom] = map(int, video_stream['r_frame_rate'].split('/'))
@@ -110,9 +104,7 @@ class VGridSpec:
         self._vis_format = vis_format
 
         if not ((self._interval_blocks is None) ^ (self._vis_format is None)):
-            raise Exception(
-                "One of interval_blocks or vis_format should be set (but not both)."
-            )
+            raise Exception("One of interval_blocks or vis_format should be set (but not both).")
 
         self._settings = {
             'spinner_dev_mode': spinner_dev_mode,
@@ -138,3 +130,7 @@ class VGridSpec:
                 'videos': [meta.to_json() for meta in self._video_meta]
             }
         }
+
+    def to_json_compressed(self):
+        obj = self.to_json()
+        return {'compressed': True, 'data': zlib.compress(json.dumps(obj).encode('utf-8'))}

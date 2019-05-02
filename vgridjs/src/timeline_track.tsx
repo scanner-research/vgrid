@@ -255,6 +255,12 @@ class Timeline extends React.Component<TimelineProps, TimelineState> {
       if (time > new_interval.bounds.t1 && time != new_interval.bounds.t2) {
         console.log(`Setting new_interval bounds to ${time}`);
         new_interval.bounds.t2 = time;
+
+        // Cycling the interval in/out of the set causes mobx to trigger updates to any renderers of the intervals.
+        // We do this in lieu of observing interval fields since that gets too expensive with 10k+ intervals.
+        let new_intervals = this.props.label_state!.new_intervals;
+        new_intervals.remove(new_interval);
+        new_intervals.add(new_interval);
       }
     }
   }

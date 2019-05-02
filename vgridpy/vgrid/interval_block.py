@@ -42,10 +42,10 @@ class NamedIntervalSet:
         if payload is None or not isinstance(payload, dict):
             spatial_type = SpatialType_Bbox()
             metadata = {}
-
-        spatial_type = SpatialType_Bbox() \
-                       if 'spatial_type' not in payload else payload['spatial_type']
-        metadata = {} if 'metadata' not in payload else payload['metadata']
+        else:
+            spatial_type = SpatialType_Bbox() \
+                           if 'spatial_type' not in payload else payload['spatial_type']
+            metadata = {} if 'metadata' not in payload else payload['metadata']
 
         if not isinstance(spatial_type, SpatialType):
             raise Exception("Payload spatial_type must be of type vgrid.SpatialType")
