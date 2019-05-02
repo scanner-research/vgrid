@@ -154,17 +154,34 @@ VGrid provides a means of visualizing spatiotemporal data on video. We represent
 
 VGrid is a grid of _interval blocks_, where each block contains multiple sets of related intervals within a single video. For example, let's say I have four videos, and each video has three sequences, and each sequence has three interval sets (face bounding boxes, pose keypoints, and captions). That can be represented as a grid of twelve interval blocks with each block containing three interval sets.
 
-VGrid provides a [React component](https://scanner-research.github.io/vgrid/classes/_vgrid_.vgrid.html) as shown in the examples above. The parameters are documented in the [VGridProps](https://scanner-research.github.io/vgrid/interfaces/_vblock_.intervalblock.html) type.
+VGrid provides a [React component](https://scanner-research.github.io/vgrid/classes/_vgrid_.vgrid.html) as shown in the examples above. The parameters are documented in the [VGridProps](https://scanner-research.github.io/vgrid/interfaces/_vgrid_.vgridprops.html) type.
 
-The first required parameter is a list of [IntervalBlock](interfaces/_vblock_.intervalblock.html) specifying the spatiotemporal metadata. Each block contains a video ID and a dictionary of [IntervalSet](https://github.com/scanner-research/vgrid/classes/_interval_.intervalset.html).
+The first required parameter is a list of [IntervalBlock](interfaces/_vblock_.intervalblock.html) specifying the spatiotemporal metadata. Each block contains a video ID and a list of [NamedIntervalSet](https://scanner-research.github.io/vgrid/interfaces/_interval_.namedintervalset.html).
 
 The video ID matches up with the second parameter, a [Database](https://github.com/scanner-research/vgrid/classes/_database_.database.html) containing metadata about videos and other entities referenced in the intervals. The [database module](https://github.com/scanner-research/vgrid/modules/_database_.html) documents the required fields for different tables, e.g. for [videos](https://github.com/scanner-research/vgrid/interfaces/_database_.dbvideo.html) and for [categories](https://github.com/scanner-research/vgrid/interfaces/_database_.dbcategory.html).
+
+The Python API provides an [equivalent interface](https://github.com/scanner-research/vgrid/blob/master/vgridpy/vgrid/interval_block.py). It also provides a number of higher-level [visualization formats](https://github.com/scanner-research/vgrid/blob/master/vgridpy/vgrid/vis_format.py) that generate interval blocks from `IntervalSetMapping` objects. For example, the `VideoBlockFormat` shows one interval block per video:
+
+```python
+from rekall import Interval, IntervalSet, Bounds3D, IntervalSetMapping
+from vgrid import VGridSpec, VideoMetadata, VideoBlockFormat
+
+video_id = 1
+video = VideoMetadata(path='test.mp4', id=video_id)
+intervals = IntervalSet([Interval(Bounds3D(0, 10))])
+interval_map = IntervalSetMapping({video_id: intervals})
+
+vgrid_spec = VGridSpec(
+  video_meta=[video],
+  vis_format=VideoBlockFormat([('test', interval_map)]),
+  show_timeline=False)
+```
 
 ### Spatial types
 
 A spatiotemporal interval is a 3-dimensional rectangular prism in time and x/y of the video. See the [Rekall documentation](https://github.com/scanner-research/rekall) for an extended discussion of how to think about this data representation.
 
-To know how to draw an interval on a video, VGrid uses intervals annotated with a [SpatialType](). The default way to draw a spatiotemporal interval is with a box ([SpatialType_Bbox]()) which corresponds to a rendering function for that draw type ([BoundingBoxView](https://scanner-research.github.io/vgrid/classes/_drawable_.boundingboxview.html)).
+To know how to draw an interval on a video, VGrid uses intervals annotated with a [SpatialType](https://scanner-research.github.io/vgrid/classes/_spatial_spatial_type_.spatialtype.html). The default way to draw a spatiotemporal interval is with a box ([SpatialType_Bbox](https://scanner-research.github.io/vgrid/classes/_spatial_bbox_.spatialtype_bbox.html)) which corresponds to a rendering function for that draw type ([BoundingBoxView](https://scanner-research.github.io/vgrid/classes/_drawable_.boundingboxview.html)).
 
 Interval annotations like spatial type are contained within an interval's payload. Specifically, intervals must have a [VData](https://github.com/scanner-research/vgrid/interfaces/_interval_.vdata.html) payload type containing a spatial type and a dictionary of [Metadata](https://github.com/scanner-research/vgrid/classes/_metadata_.metadata.html). For example, in Javascript, we can explicitly create such an interval like this:
 
