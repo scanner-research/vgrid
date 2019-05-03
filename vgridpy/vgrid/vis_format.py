@@ -46,7 +46,7 @@ class VideoBlockFormat(VisFormat):
                             interval_set=IntervalSet(
                                 [Interval(Bounds3D(0, meta.duration()))]))
                     ]) for meta in self._video_meta
-            ]
+            ] # yapf: disable
 
 
 class FlatFormat(VisFormat):
