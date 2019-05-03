@@ -54,14 +54,14 @@ export class Video extends React.Component<VideoProps, {loaded: boolean}> {
   }
 
   pause = () => {
-    this.video.current.play();
+    this.video.current.pause();
   }
 
   toggle = () => {
     if (this.video.current.paused) {
-      this.video.current.play();
+      this.play();
     } else {
-      this.video.current.pause();
+      this.pause();
     }
   }
 
@@ -88,7 +88,7 @@ export class Video extends React.Component<VideoProps, {loaded: boolean}> {
 
       // Stop playing video if block is no longer expanded
       if (!this.props.expand) {
-        this.video.current.pause();
+        this.pause();
       }
     }
   }
@@ -96,7 +96,7 @@ export class Video extends React.Component<VideoProps, {loaded: boolean}> {
   componentWillUnmount() {
     // Make sure video is paused when the component unmounts. Have observed audio continuing to play
     // after unmounting.
-    this.video.current.pause();
+    this.pause();
 
     this.unmount_callbacks.forEach((c) => c());
   }
