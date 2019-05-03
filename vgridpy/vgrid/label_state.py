@@ -42,19 +42,30 @@ class BlockLabelState:
 
 
 class LabelState:
-    def __init__(self, label_state):
-        self._label_state = label_state
+    """
+    Represents all user input into the VGrid widget.
+    """
+
+    def __init__(self, label_state_getter):
+        """
+        Args:
+            label_state_getter: Function with no arguments that returns the JSON label state object.
+
+        Getter needs to be a lambda (as opposed to a direct reference to the object) because that's the
+        only way we can observe changes from Jupyter.
+        """
+        self._label_state_getter = label_state_getter
 
     def block_labels(self):
         """Returns the BlockLabelState for each interval block."""
         return {
             int(k): BlockLabelState(block)
-            for k, block in self._label_state['block_labels'].items()
+            for k, block in self._label_state_getter()['block_labels'].items()
         }
 
     def blocks_selected(self):
         """Returns a SelectType for each selected block."""
         return {
             int(k): SelectType.from_string(v)
-            for k, v in self._label_state['blocks_selected'].items()
+            for k, v in self._label_state_getter()['blocks_selected'].items()
         }
