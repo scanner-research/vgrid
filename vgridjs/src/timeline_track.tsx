@@ -54,42 +54,33 @@ class TimelineRow extends React.Component<TimelineRowProps, {}> {
   }
 
   render_canvas() {
-    if (this.disposer) {
-      this.disposer();
-    }
-
-    this.disposer = autorun(() => {
-      const canvas = this.canvas_ref.current;
-      if (canvas) {
-        const ctx = canvas.getContext("2d");
-        if (ctx) {
-          ctx.fillStyle = this.props.color;
-          for (let intvl of this.props.intervals.to_list()) {
-            let bounds = intvl.bounds;
-            let x = bounds.t1 / this.props.full_duration * this.props.full_width;
-            let width = Math.max(
-              (bounds.t2 - bounds.t1) / this.props.full_duration * this.props.full_width, 1);
-            ctx.fillRect(x, 0, width, this.props.row_height);
-          }
-        }
+    const canvas = this.canvas_ref.current;
+    if (canvas) {
+      const ctx = canvas.getContext("2d");
+      if (ctx) {
+        ctx.fillStyle = this.props.color;
+        this.props.intervals.to_list().map((intvl, i) => {
+          let bounds = intvl.bounds;
+          let x = bounds.t1 / this.props.full_duration * this.props.full_width;
+          let width = Math.max(
+            (bounds.t2 - bounds.t1) / this.props.full_duration * this.props.full_width, 1);
+          ctx.fillRect(x, 0, width, this.props.row_height);
+        });
       }
-    });
+    }
   }
 
   componentDidMount() {
     this.render_canvas();
+    this.disposer = autorun(() => this.render_canvas());
   }
 
   componentDidUpdate() {
     this.render_canvas();
   }
 
-  shouldComponentUpdate(next_props: TimelineRowProps) {
-    return this.props.intervals != next_props.intervals ||
-           this.props.row_height != next_props.row_height ||
-           this.props.full_width != next_props.full_width ||
-           this.props.full_duration != next_props.full_duration ||
-           this.props.color != next_props.color;
+  componentWillUnmount() {
+    this.disposer();
   }
 
   render() {
@@ -322,13 +313,14 @@ interface TicksProps {
 /** Ticks at the bottom of the timeline indicating video time at regular intervals */
 @observer class Ticks extends React.Component<TicksProps, {}> {
   private canvas_ref : React.RefObject<HTMLCanvasElement>;
+  private disposer : any;
 
   constructor (props: TicksProps) {
     super(props);
     this.canvas_ref = React.createRef();
   }
-
-  componentDidMount() {
+  
+  render_canvas() {
     let start = this.props.timeline_bounds.start;
     let end = this.props.timeline_bounds.end;
     let duration = end - start;
@@ -337,6 +329,7 @@ interface TicksProps {
     if (canvas) {
       const ctx = canvas.getContext("2d");
       if (ctx) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.beginPath();
         ctx.font = '12px sans-serif';
         ctx.textAlign = "center";
@@ -355,6 +348,19 @@ interface TicksProps {
         ctx.stroke();
       }
     }
+  }
+
+  componentDidMount() {
+    this.render_canvas();
+    this.disposer = autorun(() => this.render_canvas());
+  }
+
+  componentDidUpdate() {
+    this.render_canvas();
+  }
+
+  componentWillUnmount() {
+    this.disposer();
   }
 
   render() {
