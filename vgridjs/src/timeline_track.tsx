@@ -55,7 +55,6 @@ class TimelineRow extends React.Component<TimelineRowProps, {}> {
   }
 
   render_canvas() {
-    console.log(this.props.bounds.start, this.props.bounds.end);
     const canvas = this.canvas_ref.current;
     if (canvas) {
       const ctx = canvas.getContext("2d");
