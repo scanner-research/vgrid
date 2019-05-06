@@ -62,7 +62,7 @@ class TimelineRow extends React.Component<TimelineRowProps, {}> {
       if (ctx) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = this.props.color;
-        this.props.intervals.to_list().map((intvl, i) => {
+        this.props.intervals.to_list().forEach(intvl => {
           let bounds = intvl.bounds;
           if (bounds.t2 > this.props.bounds.start && bounds.t1 < this.props.bounds.end) { 
             let x1 = Math.max((bounds.t1 - this.props.bounds.start) / this.props.bounds.span() * this.props.full_width, 0);
@@ -242,7 +242,6 @@ class Timeline extends React.Component<TimelineProps, TimelineState> {
       this.props.time_state.time = x_to_time(
         x, this.props.timeline_bounds, this.props.timeline_width);
     } else {
-      console.log(this.props.timeline_bounds.start, this.props.timeline_bounds.end);
       this.state.drag_state.dragging = false;
       this.forceUpdate();
     }
