@@ -182,26 +182,26 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
 
     return (
       <Provider label_state={this.props.label_state} time_state={this.time_state}>
-          <div className={classNames({vblock: true, expanded: this.state.expand})}>
-              <div className={`vblock-highlight ${select_class}`}>
-                  <div className='vblock-row'>
-                      <VideoTrack intervals={current_intervals} {...args} />
-                      <MetadataTrack intervals={current_intervals} {...args} />
-                      <div className='clearfix' />
-                  </div>
-                  {this.props.settings!.show_timeline && (this.show_timeline || this.state.expand)
-                  ? <div className='vblock-row'>
-                      <TimelineTrack intervals={this.props.block.interval_sets.filter(({name}) =>
-                        show_in_timeline(name))} {...args} />
-                  </div>
-                  : null}
-                  {this.captions !== null
-                  ? <div className='vblock-row'>
-                      <CaptionTrack intervals={this.captions} delimiter={"> > "} {...args} />
-                  </div>
-                  : null}
-              </div>
+        <div className={classNames({vblock: true, expanded: this.state.expand})}>
+          <div className={`vblock-highlight ${select_class}`}>
+            <div className='vblock-row'>
+              <VideoTrack intervals={current_intervals} {...args} />
+              <MetadataTrack intervals={current_intervals} {...args} />
+              <div className='clearfix' />
+            </div>
+            {this.props.settings!.show_timeline && (this.show_timeline || this.state.expand)
+             ? <div className='vblock-row'>
+               <TimelineTrack intervals={this.props.block.interval_sets.filter(({name}) =>
+                 show_in_timeline(name))} {...args} />
+             </div>
+             : null}
+            {this.captions !== null
+             ? <div className='vblock-row'>
+               <CaptionTrack intervals={this.captions} delimiter={"> > "} {...args} />
+             </div>
+             : null}
           </div>
+        </div>
       </Provider>
     );
   }
