@@ -55,6 +55,7 @@ class TimelineRow extends React.Component<TimelineRowProps, {}> {
   }
 
   render_canvas() {
+    console.log(this.props.bounds.start, this.props.bounds.end);
     const canvas = this.canvas_ref.current;
     if (canvas) {
       const ctx = canvas.getContext("2d");
@@ -241,6 +242,7 @@ class Timeline extends React.Component<TimelineProps, TimelineState> {
       this.props.time_state.time = x_to_time(
         x, this.props.timeline_bounds, this.props.timeline_width);
     } else {
+      console.log(this.props.timeline_bounds.start, this.props.timeline_bounds.end);
       this.state.drag_state.dragging = false;
       this.forceUpdate();
     }
