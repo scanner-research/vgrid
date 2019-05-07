@@ -145,7 +145,7 @@ interface TimelineNavigatorProps {
 class TimelineNavigator extends React.Component<TimelineNavigatorProps, {}> {
   private canvas_ref : React.RefObject<HTMLCanvasElement>;
   private disposer : any;
-  
+
   constructor (props: TimelineNavigatorProps) {
     super(props);
     this.canvas_ref = React.createRef();
@@ -157,19 +157,6 @@ class TimelineNavigator extends React.Component<TimelineNavigatorProps, {}> {
       let max = parseInt(event.target.max);
       let start = (this.props.full_duration * (value / this.props.timeline_width)) - (this.props.timeline_bounds.span()/2);
       let end = (this.props.full_duration * (value / this.props.timeline_width)) + (this.props.timeline_bounds.span()/2);
-
-      if (start < 0) {
-        end -= start;
-        start = 0;
-      }
-      else if (end > this.props.full_duration) {
-        start -= end - this.props.full_duration;
-        end = this.props.full_duration
-      }
-      this.props.timeline_bounds.set_bounds(start, end);
-      this.forceUpdate();
-    }
-  }
   
   render_canvas() {
     const canvas = this.canvas_ref.current;
