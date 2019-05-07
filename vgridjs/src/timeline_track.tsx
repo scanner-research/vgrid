@@ -158,6 +158,7 @@ class TimelineNavigator extends React.Component<TimelineNavigatorProps, {}> {
       let start = (this.props.full_duration * (value / this.props.timeline_width)) - (this.props.timeline_bounds.span()/2);
       let end = (this.props.full_duration * (value / this.props.timeline_width)) + (this.props.timeline_bounds.span()/2);
 
+      //make sure bounds is within duration
       if (start < 0) {
         end -= start;
         start = 0;
@@ -625,7 +626,7 @@ export default class TimelineTrack extends React.Component<TimelineTrackProps, {
         <TimelineNavigator
           timeline_bounds={this.timeline_bounds}
           timeline_width={timeline_width}
-          full_duration={this.props.video.num_frames / this.props.video.fps} />
+          full_duration={this.props.video.num_frames / this.props.video.fps}/>
         <div className='timeline-row'>
 
             <Timeline
