@@ -135,6 +135,125 @@ interface TimelineState {
   new_interval: Interval | null
 }
 
+interface NavigatorState {
+  drag_state: DragTimelineState
+}
+
+interface TimelineNavigatorProps {
+  timeline_bounds: TimelineBounds,
+  timeline_width: number,
+  full_duration: number
+}
+
+@mouse_key_events
+@observer
+class TimelineNavigator extends React.Component<TimelineNavigatorProps, NavigatorState> {
+  private canvas_ref : React.RefObject<HTMLCanvasElement>;
+  private disposer : any;
+  state: NavigatorState = {
+    drag_state: {
+      dragging: false, click_x: 0, click_y: 0, click_time: 0, click_start_time: 0, click_end_time: 0
+    }
+  }
+
+  constructor (props: TimelineNavigatorProps) {
+    super(props);
+    this.canvas_ref = React.createRef();
+  }
+
+  onMouseLeave = (x: number, y: number) => {
+    // Make sure to reset all state so we don't get into a weird situation on re-entering the timeline
+    this.state.drag_state.dragging = false;
+  }
+
+  onMouseDown = (x: number, y: number) => {
+    // Record all current state so we can compute deltas relative to state at initial click
+    if (this.props.full_duration * (x / this.props.timeline_width) > this.props.timeline_bounds.start &&
+        this.props.full_duration * (x / this.props.timeline_width) < this.props.timeline_bounds.end) {
+      let click_time = x_to_time(x, this.props.timeline_bounds, this.props.timeline_width);
+      this.setState({
+        drag_state: {
+          dragging: true,
+          click_x: x,
+          click_y: y,
+          click_time: click_time,
+          click_start_time: this.props.timeline_bounds.start,
+          click_end_time: this.props.timeline_bounds.end
+        }
+      });
+    }
+  }
+
+  onMouseMove = (x: number, y: number) => {
+    let drag = this.state.drag_state;
+    if (drag.dragging) {
+      // Compute new timeline state relative to initial click
+      let diff_x = drag.click_x - x;
+      let delta = diff_x / this.props.timeline_width * (this.props.full_duration);
+      let duration = this.props.full_duration;
+      let new_start = drag.click_start_time - delta;
+      let new_end = drag.click_end_time - delta;
+      if (0 <= new_start && new_end < duration) {
+        this.props.timeline_bounds.set_bounds(new_start, new_end);
+      }
+    }
+  }
+
+  onMouseUp = (x: number, y: number) => {
+    if (!this.state.drag_state.dragging) {
+      // If the user just normally clicks on the timeline, shift the cursor to that point
+      let start = (this.props.full_duration * (x / this.props.timeline_width)) - (this.props.timeline_bounds.span()/2);
+      let end = (this.props.full_duration * (x / this.props.timeline_width)) + (this.props.timeline_bounds.span()/2);
+      if (start < 0) {
+        end -= start;
+        start = 0;
+      }
+      else if (end > this.props.full_duration) {
+        start -= end - this.props.full_duration;
+        end = this.props.full_duration
+      }
+      this.props.timeline_bounds.set_bounds(start, end);
+      this.forceUpdate();
+    } else {
+      this.state.drag_state.dragging = false;
+      this.forceUpdate();
+    }
+  }
+  
+  render_canvas() {
+    const canvas = this.canvas_ref.current;
+    console.log(this.props.timeline_bounds.start, this.props.timeline_bounds.end);
+    if (canvas) {
+      canvas.style.display = 'block';
+      const ctx = canvas.getContext("2d");
+      if (ctx) {
+        ctx.fillStyle = "blue";
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        let x = this.props.timeline_bounds.start * (canvas.width / this.props.full_duration);
+        let width = this.props.timeline_bounds.span() * (canvas.width / this.props.full_duration);
+        ctx.fillRect(x, 0, width, canvas.height);
+        ctx.strokeRect(0, 0, canvas.width, canvas.height);
+      }
+    }
+  }
+
+  componentDidMount() {
+    this.disposer = autorun(() => this.render_canvas());
+  }
+
+  componentDidUpdate() {
+    this.render_canvas();
+  }
+
+  componentWillUnmount() {
+    this.disposer();
+  }
+
+  render () {
+    return <canvas ref = {this.canvas_ref} width = {this.props.timeline_width} height ={10} />;
+  }
+}
+
 /**
  * Box containing intervals time markers.
  *
@@ -367,7 +486,7 @@ interface TicksProps {
   }
 
   render() {
-    return <canvas ref = {this.canvas_ref} width = {this.props.timeline_width} height = {this.props.height}/>;
+    return <canvas ref = {this.canvas_ref} width = {this.props.timeline_width} height = {this.props.height} />;
   }
 }
 
@@ -548,6 +667,10 @@ export default class TimelineTrack extends React.Component<TimelineTrackProps, {
     let track_width = this.props.expand ? timeline_width + controller_size : timeline_width;
 
     return <div className='timeline-track' style={{width: track_width}}>
+        <TimelineNavigator
+          timeline_bounds={this.timeline_bounds}
+          timeline_width={timeline_width}
+          full_duration={this.props.video.num_frames / this.props.video.fps}/>
         <div className='timeline-row'>
 
             <Timeline
