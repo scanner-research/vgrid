@@ -32,6 +32,7 @@ interface TimelineRowProps {
   row_height: number
   full_width: number
   full_duration: number
+  bounds: TimelineBounds
   color: string
 }
 
@@ -54,42 +55,35 @@ class TimelineRow extends React.Component<TimelineRowProps, {}> {
   }
 
   render_canvas() {
-    if (this.disposer) {
-      this.disposer();
-    }
-
-    this.disposer = autorun(() => {
-      const canvas = this.canvas_ref.current;
-      if (canvas) {
-        const ctx = canvas.getContext("2d");
-        if (ctx) {
-          ctx.fillStyle = this.props.color;
-          for (let intvl of this.props.intervals.to_list()) {
-            let bounds = intvl.bounds;
-            let x = bounds.t1 / this.props.full_duration * this.props.full_width;
+    const canvas = this.canvas_ref.current;
+    if (canvas) {
+      const ctx = canvas.getContext("2d");
+      if (ctx) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = this.props.color;
+        this.props.intervals.to_list().forEach(intvl => {
+          let bounds = intvl.bounds;
+          if (bounds.t2 > this.props.bounds.start && bounds.t1 < this.props.bounds.end) { 
+            let x1 = Math.max((bounds.t1 - this.props.bounds.start) / this.props.bounds.span() * this.props.full_width, 0);
             let width = Math.max(
-              (bounds.t2 - bounds.t1) / this.props.full_duration * this.props.full_width, 1);
-            ctx.fillRect(x, 0, width, this.props.row_height);
+              ((bounds.t2 - this.props.bounds.start) / this.props.bounds.span() * this.props.full_width) - x1, 1);
+            ctx.fillRect(x1, 0, width, this.props.row_height);
           }
-        }
+        });
       }
-    });
+    }
   }
 
   componentDidMount() {
-    this.render_canvas();
+    this.disposer = autorun(() => this.render_canvas());
   }
 
   componentDidUpdate() {
     this.render_canvas();
   }
 
-  shouldComponentUpdate(next_props: TimelineRowProps) {
-    return this.props.intervals != next_props.intervals ||
-           this.props.row_height != next_props.row_height ||
-           this.props.full_width != next_props.full_width ||
-           this.props.full_duration != next_props.full_duration ||
-           this.props.color != next_props.color;
+  componentWillUnmount() {
+    this.disposer();
   }
 
   render() {
@@ -286,28 +280,29 @@ class Timeline extends React.Component<TimelineProps, TimelineState> {
 
     let video_span = this.props.video.num_frames / this.props.video.fps;
     let window_span = this.props.timeline_bounds.span();
-    let full_width = this.props.timeline_width * video_span / window_span;
+    let full_width = this.props.timeline_width;
     let box_style = {width: this.props.timeline_width, height: this.props.timeline_height};
 
     return <div className='timeline-box' style={box_style}>
-      <div className='timeline-cursor' style={{
-        width: this.props.expand ? 4 : 2,
-        height: this.props.timeline_height,
-        left: time_to_x(time, this.props.timeline_bounds, this.props.timeline_width)
-      }} />
+        <div className='timeline-cursor' style={{
+          width: this.props.expand ? 4 : 2,
+          height: this.props.timeline_height,
+          left: time_to_x(time, this.props.timeline_bounds, this.props.timeline_width)
+        }} />
 
-      <div className='timeline-window'>
-        {keys.map((k, i) =>
-          <TimelineRow
-            key={k}
-            intervals={k == '__new_intervals' ? new_intervals : this.props.intervals[i].interval_set}
-            row_height={row_height}
-            full_width={full_width}
-            full_duration={video_span}
-            color={this.props.colors![k]}
-          />
-        )}
-      </div>
+        <div className='timeline-window'>
+            {keys.map((k, i) =>
+              <TimelineRow
+                key={k}
+                intervals={k == '__new_intervals' ? new_intervals : this.props.intervals[i].interval_set}
+                row_height={row_height}
+                full_width={full_width}
+                full_duration={video_span}
+                bounds={this.props.timeline_bounds}
+                color={this.props.colors![k]}
+              />
+            )}
+        </div>
     </div>;
   }
 }
@@ -322,13 +317,14 @@ interface TicksProps {
 /** Ticks at the bottom of the timeline indicating video time at regular intervals */
 @observer class Ticks extends React.Component<TicksProps, {}> {
   private canvas_ref : React.RefObject<HTMLCanvasElement>;
+  private disposer : any;
 
   constructor (props: TicksProps) {
     super(props);
     this.canvas_ref = React.createRef();
   }
-
-  componentDidMount() {
+  
+  render_canvas() {
     let start = this.props.timeline_bounds.start;
     let end = this.props.timeline_bounds.end;
     let duration = end - start;
@@ -337,6 +333,7 @@ interface TicksProps {
     if (canvas) {
       const ctx = canvas.getContext("2d");
       if (ctx) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.beginPath();
         ctx.font = '12px sans-serif';
         ctx.textAlign = "center";
@@ -355,6 +352,18 @@ interface TicksProps {
         ctx.stroke();
       }
     }
+  }
+
+  componentDidMount() {
+    this.disposer = autorun(() => this.render_canvas());
+  }
+
+  componentDidUpdate() {
+    this.render_canvas();
+  }
+
+  componentWillUnmount() {
+    this.disposer();
   }
 
   render() {
