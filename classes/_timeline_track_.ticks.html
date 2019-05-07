@@ -112,6 +112,7 @@
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-not-exported"><a href="_timeline_track_.ticks.html#canvas_ref" class="tsd-kind-icon">canvas_<wbr>ref</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-not-exported"><a href="_timeline_track_.ticks.html#context" class="tsd-kind-icon">context</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-not-exported"><a href="_timeline_track_.ticks.html#disposer" class="tsd-kind-icon">disposer</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-not-exported"><a href="_timeline_track_.ticks.html#props" class="tsd-kind-icon">props</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-not-exported"><a href="_timeline_track_.ticks.html#refs" class="tsd-kind-icon">refs</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-not-exported"><a href="_timeline_track_.ticks.html#state" class="tsd-kind-icon">state</a></li>
@@ -126,14 +127,15 @@
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-not-exported"><a href="_timeline_track_.ticks.html#unsafe_componentwillupdate" class="tsd-kind-icon">UNSAFE_<wbr>component<wbr>Will<wbr>Update</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-not-exported"><a href="_timeline_track_.ticks.html#componentdidcatch" class="tsd-kind-icon">component<wbr>Did<wbr>Catch</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-not-exported"><a href="_timeline_track_.ticks.html#componentdidmount" class="tsd-kind-icon">component<wbr>Did<wbr>Mount</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-not-exported"><a href="_timeline_track_.ticks.html#componentdidupdate" class="tsd-kind-icon">component<wbr>Did<wbr>Update</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-not-exported"><a href="_timeline_track_.ticks.html#componentdidupdate" class="tsd-kind-icon">component<wbr>Did<wbr>Update</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-not-exported"><a href="_timeline_track_.ticks.html#componentwillmount" class="tsd-kind-icon">component<wbr>Will<wbr>Mount</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-not-exported"><a href="_timeline_track_.ticks.html#componentwillreceiveprops" class="tsd-kind-icon">component<wbr>Will<wbr>Receive<wbr>Props</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-not-exported"><a href="_timeline_track_.ticks.html#componentwillunmount" class="tsd-kind-icon">component<wbr>Will<wbr>Unmount</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-not-exported"><a href="_timeline_track_.ticks.html#componentwillunmount" class="tsd-kind-icon">component<wbr>Will<wbr>Unmount</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-not-exported"><a href="_timeline_track_.ticks.html#componentwillupdate" class="tsd-kind-icon">component<wbr>Will<wbr>Update</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-not-exported"><a href="_timeline_track_.ticks.html#forceupdate" class="tsd-kind-icon">force<wbr>Update</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-not-exported"><a href="_timeline_track_.ticks.html#getsnapshotbeforeupdate" class="tsd-kind-icon">get<wbr>Snapshot<wbr>Before<wbr>Update</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-not-exported"><a href="_timeline_track_.ticks.html#render" class="tsd-kind-icon">render</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-not-exported"><a href="_timeline_track_.ticks.html#render_canvas" class="tsd-kind-icon">render_<wbr>canvas</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited tsd-is-not-exported"><a href="_timeline_track_.ticks.html#setstate" class="tsd-kind-icon">set<wbr>State</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-not-exported"><a href="_timeline_track_.ticks.html#shouldcomponentupdate" class="tsd-kind-icon">should<wbr>Component<wbr>Update</a></li>
 							</ul>
@@ -154,7 +156,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides Component.__constructor</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/f4f59b4/vgridjs/src/timeline_track.tsx#L324">timeline_track.tsx:324</a></li>
+									<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/2bd1efa/vgridjs/src/timeline_track.tsx#L320">timeline_track.tsx:320</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -176,7 +178,7 @@
 					<div class="tsd-signature tsd-kind-icon">canvas_<wbr>ref<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">RefObject</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">HTMLCanvasElement</span><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/f4f59b4/vgridjs/src/timeline_track.tsx#L324">timeline_track.tsx:324</a></li>
+							<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/2bd1efa/vgridjs/src/timeline_track.tsx#L319">timeline_track.tsx:319</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -187,7 +189,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from Component.context</p>
 						<ul>
-							<li>Defined in /home/travis/build/scanner-research/vgrid/vgridjs/node_modules/@types/react/index.d.ts:435</li>
+							<li>Defined in /home/travis/build/scanner-research/vgrid/vgridjs/node_modules/@types/react/index.d.ts:434</li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -207,6 +209,16 @@ context!: React.ContextType&lt;<span class="hljs-keyword">typeof</span> MyContex
 						</dl>
 					</div>
 				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-not-exported">
+					<a name="disposer" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> disposer</h3>
+					<div class="tsd-signature tsd-kind-icon">disposer<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/2bd1efa/vgridjs/src/timeline_track.tsx#L320">timeline_track.tsx:320</a></li>
+						</ul>
+					</aside>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-not-exported">
 					<a name="props" class="tsd-anchor"></a>
 					<h3>props</h3>
@@ -214,7 +226,7 @@ context!: React.ContextType&lt;<span class="hljs-keyword">typeof</span> MyContex
 					<aside class="tsd-sources">
 						<p>Inherited from Component.props</p>
 						<ul>
-							<li>Defined in /home/travis/build/scanner-research/vgrid/vgridjs/node_modules/@types/react/index.d.ts:460</li>
+							<li>Defined in /home/travis/build/scanner-research/vgrid/vgridjs/node_modules/@types/react/index.d.ts:459</li>
 						</ul>
 					</aside>
 				</section>
@@ -225,7 +237,7 @@ context!: React.ContextType&lt;<span class="hljs-keyword">typeof</span> MyContex
 					<aside class="tsd-sources">
 						<p>Inherited from Component.refs</p>
 						<ul>
-							<li>Defined in /home/travis/build/scanner-research/vgrid/vgridjs/node_modules/@types/react/index.d.ts:466</li>
+							<li>Defined in /home/travis/build/scanner-research/vgrid/vgridjs/node_modules/@types/react/index.d.ts:465</li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -251,7 +263,7 @@ context!: React.ContextType&lt;<span class="hljs-keyword">typeof</span> MyContex
 					<aside class="tsd-sources">
 						<p>Inherited from Component.state</p>
 						<ul>
-							<li>Defined in /home/travis/build/scanner-research/vgrid/vgridjs/node_modules/@types/react/index.d.ts:461</li>
+							<li>Defined in /home/travis/build/scanner-research/vgrid/vgridjs/node_modules/@types/react/index.d.ts:460</li>
 						</ul>
 					</aside>
 				</section>
@@ -262,7 +274,7 @@ context!: React.ContextType&lt;<span class="hljs-keyword">typeof</span> MyContex
 					<aside class="tsd-sources">
 						<p>Inherited from Component.contextType</p>
 						<ul>
-							<li>Defined in /home/travis/build/scanner-research/vgrid/vgridjs/node_modules/@types/react/index.d.ts:420</li>
+							<li>Defined in /home/travis/build/scanner-research/vgrid/vgridjs/node_modules/@types/react/index.d.ts:419</li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -301,7 +313,7 @@ class Foo extends React.Component {
 							<aside class="tsd-sources">
 								<p>Inherited from DeprecatedLifecycle.UNSAFE_componentWillMount</p>
 								<ul>
-									<li>Defined in /home/travis/build/scanner-research/vgrid/vgridjs/node_modules/@types/react/index.d.ts:648</li>
+									<li>Defined in /home/travis/build/scanner-research/vgrid/vgridjs/node_modules/@types/react/index.d.ts:647</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -339,7 +351,7 @@ class Foo extends React.Component {
 							<aside class="tsd-sources">
 								<p>Inherited from DeprecatedLifecycle.UNSAFE_componentWillReceiveProps</p>
 								<ul>
-									<li>Defined in /home/travis/build/scanner-research/vgrid/vgridjs/node_modules/@types/react/index.d.ts:680</li>
+									<li>Defined in /home/travis/build/scanner-research/vgrid/vgridjs/node_modules/@types/react/index.d.ts:679</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -388,7 +400,7 @@ class Foo extends React.Component {
 							<aside class="tsd-sources">
 								<p>Inherited from DeprecatedLifecycle.UNSAFE_componentWillUpdate</p>
 								<ul>
-									<li>Defined in /home/travis/build/scanner-research/vgrid/vgridjs/node_modules/@types/react/index.d.ts:708</li>
+									<li>Defined in /home/travis/build/scanner-research/vgrid/vgridjs/node_modules/@types/react/index.d.ts:707</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -438,7 +450,7 @@ class Foo extends React.Component {
 							<aside class="tsd-sources">
 								<p>Inherited from ComponentLifecycle.componentDidCatch</p>
 								<ul>
-									<li>Defined in /home/travis/build/scanner-research/vgrid/vgridjs/node_modules/@types/react/index.d.ts:577</li>
+									<li>Defined in /home/travis/build/scanner-research/vgrid/vgridjs/node_modules/@types/react/index.d.ts:576</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -471,45 +483,27 @@ class Foo extends React.Component {
 							<aside class="tsd-sources">
 								<p>Overrides ComponentLifecycle.componentDidMount</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/f4f59b4/vgridjs/src/timeline_track.tsx#L331">timeline_track.tsx:331</a></li>
+									<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/2bd1efa/vgridjs/src/timeline_track.tsx#L357">timeline_track.tsx:357</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-not-exported">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-not-exported">
 					<a name="componentdidupdate" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> component<wbr>Did<wbr>Update</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-not-exported">
-						<li class="tsd-signature tsd-kind-icon">component<wbr>Did<wbr>Update<span class="tsd-signature-symbol">(</span>prevProps<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Readonly</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_timeline_track_.ticksprops.html" class="tsd-signature-type">TicksProps</a><span class="tsd-signature-symbol">&gt;</span>, prevState<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Readonly</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">__type</span><span class="tsd-signature-symbol">&gt;</span>, snapshot<span class="tsd-signature-symbol">?: </span><a href="" class="tsd-signature-type">SS</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					<h3>component<wbr>Did<wbr>Update</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-not-exported">
+						<li class="tsd-signature tsd-kind-icon">component<wbr>Did<wbr>Update<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from NewLifecycle.componentDidUpdate</p>
+								<p>Overrides NewLifecycle.componentDidUpdate</p>
 								<ul>
-									<li>Defined in /home/travis/build/scanner-research/vgrid/vgridjs/node_modules/@types/react/index.d.ts:619</li>
+									<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/2bd1efa/vgridjs/src/timeline_track.tsx#L361">timeline_track.tsx:361</a></li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Called immediately after updating occurs. Not called for the initial render.</p>
-								</div>
-								<p>The snapshot is only present if getSnapshotBeforeUpdate is present and returns non-null.</p>
-							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>prevProps: <span class="tsd-signature-type">Readonly</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_timeline_track_.ticksprops.html" class="tsd-signature-type">TicksProps</a><span class="tsd-signature-symbol">&gt;</span></h5>
-								</li>
-								<li>
-									<h5>prevState: <span class="tsd-signature-type">Readonly</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">__type</span><span class="tsd-signature-symbol">&gt;</span></h5>
-								</li>
-								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> snapshot: <a href="" class="tsd-signature-type">SS</a></h5>
-								</li>
-							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
@@ -525,7 +519,7 @@ class Foo extends React.Component {
 							<aside class="tsd-sources">
 								<p>Inherited from DeprecatedLifecycle.componentWillMount</p>
 								<ul>
-									<li>Defined in /home/travis/build/scanner-research/vgrid/vgridjs/node_modules/@types/react/index.d.ts:634</li>
+									<li>Defined in /home/travis/build/scanner-research/vgrid/vgridjs/node_modules/@types/react/index.d.ts:633</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -562,7 +556,7 @@ class Foo extends React.Component {
 							<aside class="tsd-sources">
 								<p>Inherited from DeprecatedLifecycle.componentWillReceiveProps</p>
 								<ul>
-									<li>Defined in /home/travis/build/scanner-research/vgrid/vgridjs/node_modules/@types/react/index.d.ts:663</li>
+									<li>Defined in /home/travis/build/scanner-research/vgrid/vgridjs/node_modules/@types/react/index.d.ts:662</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -599,26 +593,20 @@ class Foo extends React.Component {
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-not-exported">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-not-exported">
 					<a name="componentwillunmount" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> component<wbr>Will<wbr>Unmount</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-not-exported">
+					<h3>component<wbr>Will<wbr>Unmount</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-not-exported">
 						<li class="tsd-signature tsd-kind-icon">component<wbr>Will<wbr>Unmount<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from ComponentLifecycle.componentWillUnmount</p>
+								<p>Overrides ComponentLifecycle.componentWillUnmount</p>
 								<ul>
-									<li>Defined in /home/travis/build/scanner-research/vgrid/vgridjs/node_modules/@types/react/index.d.ts:572</li>
+									<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/2bd1efa/vgridjs/src/timeline_track.tsx#L365">timeline_track.tsx:365</a></li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Called immediately before a component is destroyed. Perform any necessary cleanup in this method, such as
-									cancelled network requests, or cleaning up any DOM elements created in <code>componentDidMount</code>.</p>
-								</div>
-							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
@@ -634,7 +622,7 @@ class Foo extends React.Component {
 							<aside class="tsd-sources">
 								<p>Inherited from DeprecatedLifecycle.componentWillUpdate</p>
 								<ul>
-									<li>Defined in /home/travis/build/scanner-research/vgrid/vgridjs/node_modules/@types/react/index.d.ts:693</li>
+									<li>Defined in /home/travis/build/scanner-research/vgrid/vgridjs/node_modules/@types/react/index.d.ts:692</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -683,7 +671,7 @@ class Foo extends React.Component {
 							<aside class="tsd-sources">
 								<p>Inherited from Component.forceUpdate</p>
 								<ul>
-									<li>Defined in /home/travis/build/scanner-research/vgrid/vgridjs/node_modules/@types/react/index.d.ts:452</li>
+									<li>Defined in /home/travis/build/scanner-research/vgrid/vgridjs/node_modules/@types/react/index.d.ts:451</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -707,7 +695,7 @@ class Foo extends React.Component {
 							<aside class="tsd-sources">
 								<p>Inherited from NewLifecycle.getSnapshotBeforeUpdate</p>
 								<ul>
-									<li>Defined in /home/travis/build/scanner-research/vgrid/vgridjs/node_modules/@types/react/index.d.ts:613</li>
+									<li>Defined in /home/travis/build/scanner-research/vgrid/vgridjs/node_modules/@types/react/index.d.ts:612</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -746,10 +734,27 @@ class Foo extends React.Component {
 							<aside class="tsd-sources">
 								<p>Overrides Component.render</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/f4f59b4/vgridjs/src/timeline_track.tsx#L360">timeline_track.tsx:360</a></li>
+									<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/2bd1efa/vgridjs/src/timeline_track.tsx#L369">timeline_track.tsx:369</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Element</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-not-exported">
+					<a name="render_canvas" class="tsd-anchor"></a>
+					<h3>render_<wbr>canvas</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-not-exported">
+						<li class="tsd-signature tsd-kind-icon">render_<wbr>canvas<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/2bd1efa/vgridjs/src/timeline_track.tsx#L327">timeline_track.tsx:327</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -764,7 +769,7 @@ class Foo extends React.Component {
 							<aside class="tsd-sources">
 								<p>Inherited from Component.setState</p>
 								<ul>
-									<li>Defined in /home/travis/build/scanner-research/vgrid/vgridjs/node_modules/@types/react/index.d.ts:447</li>
+									<li>Defined in /home/travis/build/scanner-research/vgrid/vgridjs/node_modules/@types/react/index.d.ts:446</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -797,7 +802,7 @@ class Foo extends React.Component {
 							<aside class="tsd-sources">
 								<p>Inherited from ComponentLifecycle.shouldComponentUpdate</p>
 								<ul>
-									<li>Defined in /home/travis/build/scanner-research/vgrid/vgridjs/node_modules/@types/react/index.d.ts:567</li>
+									<li>Defined in /home/travis/build/scanner-research/vgrid/vgridjs/node_modules/@types/react/index.d.ts:566</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -855,6 +860,9 @@ class Foo extends React.Component {
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-not-exported">
 								<a href="_timeline_track_.ticks.html#context" class="tsd-kind-icon">context</a>
 							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-not-exported">
+								<a href="_timeline_track_.ticks.html#disposer" class="tsd-kind-icon">disposer</a>
+							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-not-exported">
 								<a href="_timeline_track_.ticks.html#props" class="tsd-kind-icon">props</a>
 							</li>
@@ -882,7 +890,7 @@ class Foo extends React.Component {
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-not-exported">
 								<a href="_timeline_track_.ticks.html#componentdidmount" class="tsd-kind-icon">component<wbr>Did<wbr>Mount</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-not-exported">
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-not-exported">
 								<a href="_timeline_track_.ticks.html#componentdidupdate" class="tsd-kind-icon">component<wbr>Did<wbr>Update</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-not-exported">
@@ -891,7 +899,7 @@ class Foo extends React.Component {
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-not-exported">
 								<a href="_timeline_track_.ticks.html#componentwillreceiveprops" class="tsd-kind-icon">component<wbr>Will<wbr>Receive<wbr>Props</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-not-exported">
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-not-exported">
 								<a href="_timeline_track_.ticks.html#componentwillunmount" class="tsd-kind-icon">component<wbr>Will<wbr>Unmount</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-not-exported">
@@ -905,6 +913,9 @@ class Foo extends React.Component {
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-not-exported">
 								<a href="_timeline_track_.ticks.html#render" class="tsd-kind-icon">render</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-not-exported">
+								<a href="_timeline_track_.ticks.html#render_canvas" class="tsd-kind-icon">render_<wbr>canvas</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited tsd-is-not-exported">
 								<a href="_timeline_track_.ticks.html#setstate" class="tsd-kind-icon">set<wbr>State</a>
