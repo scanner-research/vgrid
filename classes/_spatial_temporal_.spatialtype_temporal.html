@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>BlockLabelState | @wcrichto/vgrid</title>
+	<title>SpatialType_Temporal | @wcrichto/vgrid</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,13 +56,13 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_label_state_.html">&quot;label_state&quot;</a>
+					<a href="../modules/_spatial_temporal_.html">&quot;spatial/temporal&quot;</a>
 				</li>
 				<li>
-					<a href="_label_state_.blocklabelstate.html">BlockLabelState</a>
+					<a href="_spatial_temporal_.spatialtype_temporal.html">SpatialType_Temporal</a>
 				</li>
 			</ul>
-			<h1>Class BlockLabelState</h1>
+			<h1>Class SpatialType_Temporal</h1>
 		</div>
 	</div>
 </header>
@@ -73,7 +73,12 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">BlockLabelState</span>
+						<a href="_spatial_spatial_type_.spatialtype.html" class="tsd-signature-type">SpatialType</a>
+						<ul class="tsd-hierarchy">
+							<li>
+								<span class="target">SpatialType_Temporal</span>
+							</li>
+						</ul>
 					</li>
 				</ul>
 			</section>
@@ -82,36 +87,76 @@
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
-							<h3>Properties</h3>
+							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_label_state_.blocklabelstate.html#captions_selected" class="tsd-kind-icon">captions_<wbr>selected</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_label_state_.blocklabelstate.html#new_intervals" class="tsd-kind-icon">new_<wbr>intervals</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="_spatial_temporal_.spatialtype_temporal.html#draw_view" class="tsd-kind-icon">draw_<wbr>view</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="_spatial_temporal_.spatialtype_temporal.html#label_view" class="tsd-kind-icon">label_<wbr>view</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="_spatial_temporal_.spatialtype_temporal.html#from_json" class="tsd-kind-icon">from_<wbr>json</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="captions_selected" class="tsd-anchor"></a>
-					<h3>captions_<wbr>selected</h3>
-					<div class="tsd-signature tsd-kind-icon">captions_<wbr>selected<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">ObservableSet</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;observable.set()</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/3c699fa/vgridjs/src/label_state.tsx#L13">label_state.tsx:13</a></li>
-						</ul>
-					</aside>
+				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+					<a name="draw_view" class="tsd-anchor"></a>
+					<h3>draw_<wbr>view</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+						<li class="tsd-signature tsd-kind-icon">draw_<wbr>view<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Overrides <a href="_spatial_spatial_type_.spatialtype.html">SpatialType</a>.<a href="_spatial_spatial_type_.spatialtype.html#draw_view">draw_view</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/3c699fa/vgridjs/src/spatial/temporal.tsx#L5">spatial/temporal.tsx:5</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">null</span></h4>
+						</li>
+					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="new_intervals" class="tsd-anchor"></a>
-					<h3>new_<wbr>intervals</h3>
-					<div class="tsd-signature tsd-kind-icon">new_<wbr>intervals<span class="tsd-signature-symbol">:</span> <a href="_interval_.intervalset.html" class="tsd-signature-type">IntervalSet</a><span class="tsd-signature-symbol"> =&nbsp;new IntervalSet([])</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/3c699fa/vgridjs/src/label_state.tsx#L14">label_state.tsx:14</a></li>
-						</ul>
-					</aside>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+					<a name="label_view" class="tsd-anchor"></a>
+					<h3>label_<wbr>view</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+						<li class="tsd-signature tsd-kind-icon">label_<wbr>view<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Overrides <a href="_spatial_spatial_type_.spatialtype.html">SpatialType</a>.<a href="_spatial_spatial_type_.spatialtype.html#label_view">label_view</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/3c699fa/vgridjs/src/spatial/temporal.tsx#L6">spatial/temporal.tsx:6</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">null</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
+					<a name="from_json" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> from_<wbr>json</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">from_<wbr>json<span class="tsd-signature-symbol">(</span>args<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_spatial_temporal_.spatialtype_temporal.html" class="tsd-signature-type">SpatialType_Temporal</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/3c699fa/vgridjs/src/spatial/temporal.tsx#L8">spatial/temporal.tsx:8</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>args: <span class="tsd-signature-type">any</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="_spatial_temporal_.spatialtype_temporal.html" class="tsd-signature-type">SpatialType_Temporal</a></h4>
+						</li>
+					</ul>
 				</section>
 			</section>
 		</div>
@@ -122,33 +167,30 @@
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
 					<li class="current tsd-kind-external-module">
-						<a href="../modules/_label_state_.html">"label_<wbr>state"</a>
+						<a href="../modules/_spatial_temporal_.html">"spatial/temporal"</a>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-enum tsd-parent-kind-external-module">
-						<a href="../enums/_label_state_.blockselecttype.html" class="tsd-kind-icon">Block<wbr>Select<wbr>Type</a>
-					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class tsd-parent-kind-external-module">
-						<a href="_label_state_.blocklabelstate.html" class="tsd-kind-icon">Block<wbr>Label<wbr>State</a>
+						<a href="_spatial_temporal_.spatialtype_temporal.html" class="tsd-kind-icon">Spatial<wbr>Type_<wbr><wbr>Temporal</a>
 						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_label_state_.blocklabelstate.html#captions_selected" class="tsd-kind-icon">captions_<wbr>selected</a>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+								<a href="_spatial_temporal_.spatialtype_temporal.html#draw_view" class="tsd-kind-icon">draw_<wbr>view</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_label_state_.blocklabelstate.html#new_intervals" class="tsd-kind-icon">new_<wbr>intervals</a>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+								<a href="_spatial_temporal_.spatialtype_temporal.html#label_view" class="tsd-kind-icon">label_<wbr>view</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
+								<a href="_spatial_temporal_.spatialtype_temporal.html#from_json" class="tsd-kind-icon">from_<wbr>json</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-class tsd-parent-kind-external-module">
-						<a href="_label_state_.labelstate.html" class="tsd-kind-icon">Label<wbr>State</a>
-					</li>
 				</ul>
 			</nav>
 		</div>
