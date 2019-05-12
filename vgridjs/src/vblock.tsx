@@ -195,7 +195,7 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
                  show_in_timeline(name))} {...args} />
              </div>
              : null}
-            {this.captions !== null
+            {this.captions !== null && (this.props.settings!.show_captions || this.state.expand)
              ? <div className='vblock-row'>
                <CaptionTrack intervals={this.captions} delimiter={"> > "} {...args} />
              </div>

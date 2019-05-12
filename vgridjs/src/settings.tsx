@@ -7,6 +7,7 @@ export interface Settings {
   video_endpoint: string,
   use_frameserver: boolean,
   show_timeline: boolean,
+  show_captions: boolean,
   blocks_per_page: number
 }
 
@@ -17,5 +18,6 @@ export let default_settings = {
   video_endpoint: '/videos',
   use_frameserver: false,
   show_timeline: true,
+  show_captions: true,
   blocks_per_page: 50
 };
