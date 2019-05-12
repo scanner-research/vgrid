@@ -708,7 +708,7 @@ export default class TimelineTrack extends React.Component<TimelineTrackProps, {
         <TimelineNavigator
           timeline_bounds={this.timeline_bounds}
           timeline_width={timeline_width}
-          full_duration={this.props.video.num_frames / this.props.video.fps}/>
+          full_duration={this.props.video.num_frames / this.props.video.fps} />
         <div className='timeline-row'>
 
             <Timeline
