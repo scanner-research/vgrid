@@ -41,14 +41,15 @@ export class BlockPagination extends React.Component<BlockPaginationProps, Block
       </Rb.ButtonGroup>
     </div>;
 
+    let paginate = this.props.settings!.paginate || num_pages > 1;
     return <div className='vgrid-pagination'>
-      <PageButtons />
+      {paginate ? <PageButtons /> : null}
       <div className='page'>
         {this.props.blocks.filter((_, i) =>
           i >= this.state.page * blocks_per_page && i < (this.state.page + 1) * blocks_per_page)}
         <div className='clearfix' />
       </div>
-      <PageButtons />
+      {paginate ? <PageButtons /> : null}
     </div>;
   }
 }

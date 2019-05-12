@@ -8,6 +8,7 @@ export interface Settings {
   use_frameserver: boolean,
   show_timeline: boolean,
   show_captions: boolean,
+  paginate: boolean,
   blocks_per_page: number
 }
 
@@ -19,5 +20,6 @@ export let default_settings = {
   use_frameserver: false,
   show_timeline: true,
   show_captions: true,
+  paginate: true,
   blocks_per_page: 50
 };
