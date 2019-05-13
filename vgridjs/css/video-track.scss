@@ -32,6 +32,8 @@
 
     &.expanded {
 
+        width: 100%;
+
         /* .vblock-highlight { */
         /*     padding: 5px; */
         /* } */
@@ -65,11 +67,20 @@
 .metadata-track {
     background: white;
 
-    .metadata-key { font-weight: bold; }
-
     .metadata-entry {
-        float: left;
         margin-right: 5px;
+        height: 100%;
+        overflow: hidden;
+        white-space: nowrap;
+        word-wrap: break-word;
+    }
+
+    .metadata-key {
+        font-weight: bold;
+    }
+
+    .metadata-value {
+        white-space: normal;
     }
 }
 

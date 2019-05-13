@@ -26,14 +26,16 @@ export let MetadataTrack: React.SFC<MetadataTrackProps> = observer((props) => {
   // Collect all generic metadata from every current interval.
   let generic_metadata: {[key: string]: any} =
     props.intervals.reduce(
-      ((meta: {[key: string]: any}, {interval_set}: {interval_set: IntervalSet}) =>
-        _.merge(meta, interval_set.to_list().reduce(
-          ((meta: {[key: string]: any}, intvl: Interval) =>
-            _.merge(meta, _.filter(intvl.data.metadata, (v) => v instanceof Metadata_Generic))), {}))),
-      {});
+      (meta: {[key: string]: any}, {interval_set}: {interval_set: IntervalSet}) =>
+        _.assign(meta, interval_set.to_list().reduce(
+          (meta: {[key: string]: any}, intvl: Interval) =>
+            _.assign(meta, _.pickBy(
+                intvl.data.metadata,
+                (v) => v instanceof Metadata_Generic)), {}))
+      , {});
 
   let style = {
-    width: props.expand ? 100 : props.width,
+    width: props.expand ? 200 : props.width,
     height: props.expand ? props.height : 20,
     display: _.keys(generic_metadata).length == 0 ? 'none' : 'block'
   };
@@ -41,7 +43,7 @@ export let MetadataTrack: React.SFC<MetadataTrackProps> = observer((props) => {
   return <div className='metadata-track' style={style}>
     {_.keys(generic_metadata).map((k) => <div className='metadata-entry' key={k}>
       <span className='metadata-key'>{k}:</span> &nbsp;
-      <span className='metadata-value'>{JSON.stringify(generic_metadata[k].data)}</span>
+      <span className='metadata-value'>{generic_metadata[k].data}</span>
     </div>)}
   </div>;
 });
