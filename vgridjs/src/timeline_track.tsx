@@ -251,7 +251,7 @@ class TimelineNavigator extends React.Component<TimelineNavigatorProps, {}> {
       let start = (this.props.full_duration * (value / this.props.timeline_width)) - (this.props.timeline_bounds.span()/2);
       let end = (this.props.full_duration * (value / this.props.timeline_width)) + (this.props.timeline_bounds.span()/2);
 
-      //make sure bounds is within duration
+      //Make sure that start/end of bounds do not extend past the duration of the video
       if (start < 0) {
         end -= start;
         start = 0;
@@ -294,7 +294,7 @@ class TimelineNavigator extends React.Component<TimelineNavigatorProps, {}> {
   }
 
   render () {
-    return <div style={{width: this.props.timeline_width, height: 10, position: "relative"}}>
+    return <div style={{width: this.props.timeline_width, height: Constatns.navigator_height, position: "relative"}}>
         <canvas style = {{position: "absolute", top:0, left:0}} ref = {this.canvas_ref} width = {this.props.timeline_width} height="10" />
         <div style={{width: this.props.timeline_width, position: "absolute", top:0, left: 0, opacity: 0}}>
             <input id="slider" type="range" min="0" max={this.props.timeline_width} onChange={this.handleChange}/>
