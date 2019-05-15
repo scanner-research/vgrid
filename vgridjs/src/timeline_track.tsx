@@ -24,19 +24,10 @@ let Constants = {
   tick_height: 20,
 
   /** Number of ticks (evenly spaced) */
-  num_ticks: 10
+  num_ticks: 10,
 
   /** Navigator height in pixels */
   navigator_height: 10
-}
-
-interface TimelineRowProps {
-  intervals: IntervalSet,
-  row_height: number
-  full_width: number
-  full_duration: number
-  bounds: TimelineBounds
-  color: string
 }
 
 function time_to_x(t: number, bounds: TimelineBounds, width: number): number {
@@ -47,17 +38,65 @@ function x_to_time(x: number, bounds: TimelineBounds, width: number): number {
   return x / width * bounds.span() + bounds.start;
 }
 
+let canvas_component = <C extends object>(Component: C): C =>
+  (class WithCanvas extends React.Component<any, {}> {
+    component: any
+    disposer : any
+    
+    constructor(props: any) {
+      super(props);
+      this.component = React.createRef();
+    }
+    
+    call_if = (f: (() => void) | undefined) => {
+      if (f) {
+        f();
+      }
+    }
+    
+    render_canvas () {
+      this.call_if(this.component.current.render_canvas);
+    }
+
+    componentDidMount() {
+      this.disposer = autorun(() => this.render_canvas());
+    }
+
+    componentDidUpdate() {
+      this.render_canvas();
+    }
+
+    componentWillUnmount() {
+      this.disposer();
+    }
+
+    render() {
+      let _Component = Component as any;
+      return < _Component {...this.props} ref={this.component} />;
+    }
+  }) as any as C
+
+interface TimelineRowProps {
+  intervals: IntervalSet
+  full_width: number
+  row_height: number
+  full_duration: number
+  bounds: TimelineBounds
+  color: string
+}
+
 // Single row of the timeline corresponding to one interval set
-class TimelineRow extends React.Component<TimelineRowProps, {}> {
+@canvas_component
+class TimelineRow extends React.Component<TimelineRowProps, {}>{
   private canvas_ref : React.RefObject<HTMLCanvasElement>;
-  private disposer : any;
 
   constructor(props : TimelineRowProps) {
     super(props);
     this.canvas_ref = React.createRef();
   }
 
-  render_canvas() {
+  render_canvas = () => {
+    let props : TimelineRowProps = this.props as TimelineRowProps;
     const canvas = this.canvas_ref.current;
     if (canvas) {
       const ctx = canvas.getContext("2d");
@@ -77,20 +116,8 @@ class TimelineRow extends React.Component<TimelineRowProps, {}> {
     }
   }
 
-  componentDidMount() {
-    this.disposer = autorun(() => this.render_canvas());
-  }
-
-  componentDidUpdate() {
-    this.render_canvas();
-  }
-
-  componentWillUnmount() {
-    this.disposer();
-  }
-
   render() {
-    return <canvas ref={this.canvas_ref} width={this.props.full_width} height={this.props.row_height}/>
+    return <canvas ref = {this.canvas_ref} width = {this.props.full_width} height = {this.props.row_height} />;
   }
 }
 
@@ -109,42 +136,13 @@ class TimelineBounds {
   }
 }
 
-interface TimelineProps {
-  intervals: NamedIntervalSet[]
-  time_state: TimeState
-  timeline_bounds: TimelineBounds
-  timeline_width: number
-  timeline_height: number
-  expand: boolean
-  video: DbVideo
-  settings?: Settings
-  label_state?: BlockLabelState
-  action_stack?: ActionStack
-  colors?: ColorMap
-}
-
-interface DragTimelineState {
-  dragging: boolean
-  click_x: number
-  click_y: number
-  click_time: number
-  click_start_time: number
-  click_end_time: number
-}
-
-interface TimelineState {
-  shift_held: boolean
-  drag_state: DragTimelineState
-  new_interval: Interval | null
-}
-
 interface TimelineNavigatorProps {
   timeline_bounds: TimelineBounds,
   timeline_width: number,
   full_duration: number
 }
 
-@observer
+@canvas_component
 class TimelineNavigator extends React.Component<TimelineNavigatorProps, {}> {
   private canvas_ref : React.RefObject<HTMLCanvasElement>;
   private disposer : any;
@@ -175,7 +173,7 @@ class TimelineNavigator extends React.Component<TimelineNavigatorProps, {}> {
     }
   }
   
-  render_canvas() {
+  render_canvas = () => {
     const canvas = this.canvas_ref.current;
     if (canvas) {
       canvas.style.display = 'block';
@@ -191,26 +189,43 @@ class TimelineNavigator extends React.Component<TimelineNavigatorProps, {}> {
     }
   }
 
-  componentDidMount() {
-    this.disposer = autorun(() => this.render_canvas());
-  }
-
-  componentDidUpdate() {
-    this.render_canvas();
-  }
-
-  componentWillUnmount() {
-    this.disposer();
-  }
-
   render () {
-    return <div style={{width: this.props.timeline_width, height: Constatns.navigator_height, position: "relative"}}>
+    return <div style={{width: this.props.timeline_width, height: Constants.navigator_height, position: "relative"}}>
         <canvas style = {{position: "absolute", top:0, left:0}} ref = {this.canvas_ref} width = {this.props.timeline_width} height="10" />
         <div style={{width: this.props.timeline_width, position: "absolute", top:0, left: 0, opacity: 0}}>
             <input id="slider" type="range" min="0" max={this.props.timeline_width} onChange={this.handleChange}/>
         </div>
     </div>;
   }
+}
+
+interface TimelineProps {
+  intervals: NamedIntervalSet[]
+  time_state: TimeState
+  timeline_bounds: TimelineBounds
+  timeline_width: number
+  timeline_height: number
+  expand: boolean
+  video: DbVideo
+  settings?: Settings
+  label_state?: BlockLabelState
+  action_stack?: ActionStack
+  colors?: ColorMap
+}
+
+interface DragTimelineState {
+  dragging: boolean
+  click_x: number
+  click_y: number
+  click_time: number
+  click_start_time: number
+  click_end_time: number
+}
+
+interface TimelineState {
+  shift_held: boolean
+  drag_state: DragTimelineState
+  new_interval: Interval | null
 }
 
 /**
@@ -393,16 +408,17 @@ interface TicksProps {
 }
 
 /** Ticks at the bottom of the timeline indicating video time at regular intervals */
-@observer class Ticks extends React.Component<TicksProps, {}> {
+@canvas_component
+@observer 
+class Ticks extends React.Component<TicksProps, {}> {
   private canvas_ref : React.RefObject<HTMLCanvasElement>;
-  private disposer : any;
 
   constructor (props: TicksProps) {
     super(props);
     this.canvas_ref = React.createRef();
   }
   
-  render_canvas() {
+  render_canvas = () => {
     let start = this.props.timeline_bounds.start;
     let end = this.props.timeline_bounds.end;
     let duration = end - start;
@@ -430,18 +446,6 @@ interface TicksProps {
         ctx.stroke();
       }
     }
-  }
-
-  componentDidMount() {
-    this.disposer = autorun(() => this.render_canvas());
-  }
-
-  componentDidUpdate() {
-    this.render_canvas();
-  }
-
-  componentWillUnmount() {
-    this.disposer();
   }
 
   render() {
