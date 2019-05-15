@@ -146,7 +146,7 @@ interface TimelineNavigatorProps {
 class TimelineNavigator extends React.Component<TimelineNavigatorProps, {}> {
   private canvas_ref : React.RefObject<HTMLCanvasElement>;
   private disposer : any;
-
+  
   constructor (props: TimelineNavigatorProps) {
     super(props);
     this.canvas_ref = React.createRef();
@@ -226,81 +226,6 @@ interface TimelineState {
   shift_held: boolean
   drag_state: DragTimelineState
   new_interval: Interval | null
-}
-
-interface TimelineNavigatorProps {
-  timeline_bounds: TimelineBounds,
-  timeline_width: number,
-  full_duration: number
-}
-
-@observer
-class TimelineNavigator extends React.Component<TimelineNavigatorProps, {}> {
-  private canvas_ref : React.RefObject<HTMLCanvasElement>;
-  private disposer : any;
-  
-  constructor (props: TimelineNavigatorProps) {
-    super(props);
-    this.canvas_ref = React.createRef();
-  }
-  
-  handleChange = (event: any) => {
-    if (event.target) {
-      let value  = event.target.valueAsNumber;
-      let max = parseInt(event.target.max);
-      let start = (this.props.full_duration * (value / this.props.timeline_width)) - (this.props.timeline_bounds.span()/2);
-      let end = (this.props.full_duration * (value / this.props.timeline_width)) + (this.props.timeline_bounds.span()/2);
-
-      //Make sure that start/end of bounds do not extend past the duration of the video
-      if (start < 0) {
-        end -= start;
-        start = 0;
-      }
-      else if (end > this.props.full_duration) {
-        start -= end - this.props.full_duration;
-        end = this.props.full_duration
-      }
-      this.props.timeline_bounds.set_bounds(start, end);
-      this.forceUpdate();
-    }
-  }
-  
-  render_canvas() {
-    const canvas = this.canvas_ref.current;
-    if (canvas) {
-      canvas.style.display = 'block';
-      const ctx = canvas.getContext("2d");
-      if (ctx) {
-        ctx.fillStyle = "gray";
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        let x = this.props.timeline_bounds.start * (canvas.width / this.props.full_duration);
-        let width = this.props.timeline_bounds.span() * (canvas.width / this.props.full_duration);
-        ctx.fillRect(x, 0, width, canvas.height);
-        ctx.strokeRect(0, 0, canvas.width, canvas.height);
-      }
-    }
-  }
-
-  componentDidMount() {
-    this.disposer = autorun(() => this.render_canvas());
-  }
-
-  componentDidUpdate() {
-    this.render_canvas();
-  }
-
-  componentWillUnmount() {
-    this.disposer();
-  }
-
-  render () {
-    return <div style={{width: this.props.timeline_width, height: Constatns.navigator_height, position: "relative"}}>
-        <canvas style = {{position: "absolute", top:0, left:0}} ref = {this.canvas_ref} width = {this.props.timeline_width} height="10" />
-        <div style={{width: this.props.timeline_width, position: "absolute", top:0, left: 0, opacity: 0}}>
-            <input id="slider" type="range" min="0" max={this.props.timeline_width} onChange={this.handleChange}/>
-        </div>
-    </div>;
-  }
 }
 
 /**
