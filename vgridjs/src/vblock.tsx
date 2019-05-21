@@ -197,7 +197,7 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
              : null}
             {this.captions !== null && (this.props.settings!.show_captions || this.state.expand)
              ? <div className='vblock-row'>
-               <CaptionTrack intervals={this.captions} delimiter={"> > "} {...args} />
+               <CaptionTrack intervals={this.captions} delimiter={this.props.settings!.caption_delimiter} {...args} />
              </div>
              : null}
           </div>

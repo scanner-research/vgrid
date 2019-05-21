@@ -10,6 +10,7 @@ export interface Settings {
   show_captions: boolean,
   paginate: boolean,
   blocks_per_page: number
+  caption_delimiter: string
 }
 
 export let default_settings = {
@@ -21,5 +22,6 @@ export let default_settings = {
   show_timeline: true,
   show_captions: true,
   paginate: true,
-  blocks_per_page: 50
+  blocks_per_page: 50,
+  caption_delimiter: '>>'
 };
