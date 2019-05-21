@@ -138,12 +138,14 @@ export class VGrid extends React.Component<VGridProps, VGridState> {
              action_stack={this.action_stack} >
       <div className='vgrid' ref={this.container}>
         <BlockPagination blocks={this.props.interval_blocks.map((block, i) =>
+          <li>
           <VBlock key={i}
                   block={block}
                   on_select={(type) => this.on_block_selected(i, type)}
                   selected={selected.has(i) ? selected.get(i)! : null}
                   label_state={this.label_state.block_labels.get(i)!}
                   container_width={this.props.max_width || this.state.container_width} />
+          </li>
         )} />
       </div>
     </Provider>;
