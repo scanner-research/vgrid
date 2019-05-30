@@ -248,7 +248,7 @@ export default class CaptionTrack extends React.Component<CaptionTrackProps, {}>
   render() {
     let track_style = {
       width: this.props.width,
-      height: this.props.expand ? 200 : 50
+      height: this.props.expand ? this.props.height : 50
     };
 
     let cur_time = this.props.time_state.time;

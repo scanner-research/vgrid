@@ -17,6 +17,8 @@ interface VideoTrackProps {
   /** Intervals to draw over the video */
   intervals: NamedIntervalSet[]
 
+  thumb: boolean,
+
   /** Video metadata */
   video: DbVideo,
 

@@ -43,6 +43,7 @@ export interface VGridProps {
 
 interface VGridState {
   container_width: number
+  expand_num: number
 }
 
 /**
@@ -52,7 +53,7 @@ interface VGridState {
 @mouse_key_events
 @observer
 export class VGrid extends React.Component<VGridProps, VGridState> {
-  state = {container_width: 10000000}
+  state = {container_width: 10000000, expand_num: -1}
 
   action_stack: ActionStack
   label_state: LabelState
@@ -130,24 +131,34 @@ export class VGrid extends React.Component<VGridProps, VGridState> {
       this.action_stack.redo();
     }
   }
+  
+  onChildExpand = (id: number) => {
+    console.log("EXPAND", id);
+    if (this.state.expand_num == id)
+      this.setState({expand_num: -1});
+    else
+      this.setState({expand_num: id});
+  }
 
   render() {
     let selected = this.label_state.blocks_selected;
     return <Provider
              database={this.props.database} colors={this.color_map} settings={default_settings}
              action_stack={this.action_stack} >
-      <div className='vgrid' ref={this.container}>
-        <BlockPagination blocks={this.props.interval_blocks.map((block, i) =>
-          <li>
-          <VBlock key={i}
-                  block={block}
-                  on_select={(type) => this.on_block_selected(i, type)}
-                  selected={selected.has(i) ? selected.get(i)! : null}
-                  label_state={this.label_state.block_labels.get(i)!}
-                  container_width={this.props.max_width || this.state.container_width} />
-          </li>
-        )} />
-      </div>
+        <div className='vgrid' ref={this.container}>
+            <BlockPagination blocks={this.props.interval_blocks.map((block, i) =>
+              <li style={{display: "inline-block", verticalAlign: "top"}}>
+                  <VBlock key={i}
+                              block={block}
+                              on_select={(type) => this.on_block_selected(i, type)}
+                              selected={selected.has(i) ? selected.get(i)! : null}
+                              label_state={this.label_state.block_labels.get(i)!}
+                              container_width={this.props.max_width || this.state.container_width} 
+                              expand={i == this.state.expand_num } 
+                          onExpand = {() => this.onChildExpand(i)} />
+              </li>
+            )} />
+        </div>
     </Provider>;
   }
 }

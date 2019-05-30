@@ -35,15 +35,19 @@ export let MetadataTrack: React.SFC<MetadataTrackProps> = observer((props) => {
       , {});
 
   let style = {
-    width: props.expand ? 200 : props.width,
-    height: props.expand ? props.height : 20,
-    display: _.keys(generic_metadata).length == 0 ? 'none' : 'block'
+    width: props.expand ? props.width : props.width,
+    height: props.expand ? 20 : 20,
+    display: _.keys(generic_metadata).length == 0 ? 'none' : 'block',
+    background: props.expand ? "gray" : "white"
   };
 
+  console.log("props width", props.width);
+  console.log("style width", style.width);
+
   return <div className='metadata-track' style={style}>
-    {_.keys(generic_metadata).map((k) => <div className='metadata-entry' key={k}>
-      <span className='metadata-key'>{k}:</span> &nbsp;
-      <span className='metadata-value'>{generic_metadata[k].data}</span>
-    </div>)}
+      {_.keys(generic_metadata).map((k) => <div className='metadata-entry' key={k}>
+          <span className='metadata-key'>{k}:</span> &nbsp;
+        <span className='metadata-value'>{generic_metadata[k].data}</span>
+      </div>)}
   </div>;
 });
