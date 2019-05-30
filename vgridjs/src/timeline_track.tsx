@@ -193,7 +193,7 @@ class TimelineNavigator extends React.Component<TimelineNavigatorProps, {}> {
     return <div style={{width: this.props.timeline_width, height: Constants.navigator_height, position: "relative"}}>
         <canvas style = {{position: "absolute", top:0, left:0}} ref = {this.canvas_ref} width = {this.props.timeline_width} height="10" />
         <div style={{width: this.props.timeline_width, position: "absolute", top:0, left: 0, opacity: 0}}>
-            <input id="slider" type="range" min="0" max={this.props.timeline_width} onChange={this.handleChange}/>
+            <input id="slider" type="range" min="0" max={this.props.timeline_width} onChange={this.handleChange} style = {{width: this.props.timeline_width}} />
         </div>
     </div>;
   }
