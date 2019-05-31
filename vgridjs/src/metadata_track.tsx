@@ -38,7 +38,6 @@ export let MetadataTrack: React.SFC<MetadataTrackProps> = observer((props) => {
     width: props.expand ? props.width : props.width,
     height: props.expand ? 20 : 20,
     display: _.keys(generic_metadata).length == 0 ? 'none' : 'block',
-    background: props.expand ? "gray" : "white"
   };
 
   console.log("props width", props.width);

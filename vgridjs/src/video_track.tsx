@@ -32,7 +32,9 @@ interface VideoTrackProps {
   height: number,
 
   /* Injected */
-  settings?: Settings
+  settings?: Settings,
+  
+  onExpand: () => void
 }
 
 interface VideoTrackState {
@@ -77,6 +79,11 @@ export default class VideoTrack extends React.Component<VideoTrackProps, VideoTr
     if (!this.props.expand && this.state.video_active) {
       this.setState({video_active: false});
     }
+  }
+
+  onMouseDown = (x: number, y: number) => {
+    if(this.props.thumb)
+      this.props.onExpand();
   }
 
   render() {

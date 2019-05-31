@@ -152,6 +152,10 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
     return current_intervals;
   }
 
+  closeClick = (e : React.MouseEvent<HTMLElement>) => {
+    this.props.onExpand();
+  }
+
   render() {
     let current_intervals = this.current_intervals();
 
@@ -207,7 +211,7 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
       borderBottomWidth: thumb_width/12,
       borderLeftColor: 'transparent',
       borderRightColor: 'transparent',
-      borderBottomColor: 'gray',
+      borderBottomColor: 'black',
       marginLeft: "auto",
       marginRight: "auto",
       marginBottom: 0,
@@ -231,7 +235,7 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
           <div className={classNames({vblock: true, expanded: false})} style={{height: full_height}}>
               <div className={`vblock-highlight ${select_class}`} style={{paddingBottom: 0}}>
                   <div className='vblock-row'>
-                      <VideoTrack thumb = {true} intervals={current_intervals} {...args_mini} />
+                      <VideoTrack onExpand = {this.props.onExpand} thumb = {true} intervals={current_intervals} {...args_mini} />
                       <MetadataTrack intervals={current_intervals} {...args_mini} />
                       <div className='clearfix' />
                   </div>
@@ -250,14 +254,17 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
                    <div style = {triangle} /> : null}
               </div>
               {this.props.expand ? 
-               <div className={`vblock-highlight ${select_class}`} style={{position: "absolute", left: 0, background: "gray", marginTop: 0, paddingTop: 10}}>
+               <div className={`vblock-highlight ${select_class}`} style={{position: "absolute", left: 0, borderStyle: 'solid', marginTop: 0, padding: 10}}>
                    <div className='vblock-row' style={{display: "inline-block"}}>
-                       <VideoTrack thumb = {false} intervals={current_intervals} {...args} />
+                       <VideoTrack onExpand = {this.props.onExpand} thumb = {false} intervals={current_intervals} {...args} />
                        <MetadataTrack intervals={current_intervals} {...args} />
                        <div className='clearfix' />
                    </div>
+                   <div style={{display: "inline-block", verticalAlign: "top", float: "right", fontSize: 16, fontFamily: "sans-serif", fontWeight: "bold", cursor: "pointer" }} onClick={this.closeClick}>
+                       x
+                   </div>
                    {this.captions !== null && (this.props.settings!.show_captions || this.props.expand)
-                   ? <div className='vblock-row' style={{display: "inline-block", verticalAlign: "top"}}>
+                   ? <div className='vblock-row' style={{display: "inline-block"}}>
                        <CaptionTrack intervals={this.captions} delimiter={this.props.settings!.caption_delimiter} {...cap_args} />
                    </div>
                    : null}

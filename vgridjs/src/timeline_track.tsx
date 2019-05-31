@@ -543,15 +543,11 @@ export default class TimelineTrack extends React.Component<TimelineTrackProps, {
       this.props.expand
       ? Constants.timeline_expanded_height
       : Constants.timeline_unexpanded_height;
-    let timeline_color =
-      this.props.expand
-      ? "gray"
-      : "white";
 
     let controller_size = timeline_height;
     let track_width = this.props.expand ? timeline_width + controller_size : timeline_width;
 
-    return <div className='timeline-track' style={{width: track_width, background: timeline_color}}>
+    return <div className='timeline-track' style={{width: track_width}}>
         <div className='timeline-row'>
 
             <Timeline
