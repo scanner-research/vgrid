@@ -169,7 +169,8 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
       height = 100;
       width = video.width * (height / video.height);
     } else {
-      width = Math.min(video.width, this.props.container_width - 100); // 100 for metadata box width
+      width = Math.min(video.width, this.props.container_width - 200); // 200 for metadata box width
+      width = this.props.container_width - 200;
       height = video.height * (width / video.width);
     }
 
