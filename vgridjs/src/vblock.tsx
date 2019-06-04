@@ -169,8 +169,7 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
       height = 100;
       width = video.width * (height / video.height);
     } else {
-      width = Math.min(video.width, this.props.container_width - 200); // 200 for metadata box width
-      width = this.props.container_width - 200;
+      width = this.props.container_width - 200;   // 200 for metadata box width
       height = video.height * (width / video.width);
     }
 
@@ -185,7 +184,7 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
       height: height
     };
 
-    let cap_args = {
+    let caption_args = {
       time_state: this.time_state,
       video: video,
       expand: this.props.expand,
@@ -266,7 +265,7 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
                    </div>
                    {this.captions !== null && (this.props.settings!.show_captions || this.props.expand)
                    ? <div className='vblock-row' style={{display: "inline-block"}}>
-                       <CaptionTrack intervals={this.captions} delimiter={this.props.settings!.caption_delimiter} {...cap_args} />
+                       <CaptionTrack intervals={this.captions} delimiter={this.props.settings!.caption_delimiter} {...caption_args} />
                    </div>
                    : null}
                    <div className='vblock-row'>
