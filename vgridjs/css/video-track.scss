@@ -166,6 +166,31 @@
     .timeline-ticks {
         user-select: none;
     }
+
+    .timeline-navigator {
+        position: relative;
+
+
+        .timeline-navigator-slider {
+            position: absolute;
+            top: 0; 
+            left: 0;
+            opacity: 0;
+        }
+
+        .timeline-navigator-canvas {
+            display: block;
+            position: absolute;
+            top:0; 
+            left:0;
+        }
+    }
+
+    .timeline-overview-canvas {
+        display: block;
+    }
+
+    
 }
 
 .caption-track {
