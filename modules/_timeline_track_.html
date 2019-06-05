@@ -77,6 +77,8 @@
 								<li class="tsd-kind-class tsd-parent-kind-external-module tsd-has-type-parameter tsd-is-not-exported"><a href="../classes/_timeline_track_.timeline.html" class="tsd-kind-icon">Timeline</a></li>
 								<li class="tsd-kind-class tsd-parent-kind-external-module tsd-is-not-exported"><a href="../classes/_timeline_track_.timelinebounds.html" class="tsd-kind-icon">Timeline<wbr>Bounds</a></li>
 								<li class="tsd-kind-class tsd-parent-kind-external-module tsd-has-type-parameter tsd-is-not-exported"><a href="../classes/_timeline_track_.timelinecontrols.html" class="tsd-kind-icon">Timeline<wbr>Controls</a></li>
+								<li class="tsd-kind-class tsd-parent-kind-external-module tsd-has-type-parameter tsd-is-not-exported"><a href="../classes/_timeline_track_.timelinenavigator.html" class="tsd-kind-icon">Timeline<wbr>Navigator</a></li>
+								<li class="tsd-kind-class tsd-parent-kind-external-module tsd-has-type-parameter tsd-is-not-exported"><a href="../classes/_timeline_track_.timelineoverview.html" class="tsd-kind-icon">Timeline<wbr>Overview</a></li>
 								<li class="tsd-kind-class tsd-parent-kind-external-module tsd-has-type-parameter tsd-is-not-exported"><a href="../classes/_timeline_track_.timelinerow.html" class="tsd-kind-icon">Timeline<wbr>Row</a></li>
 								<li class="tsd-kind-class tsd-parent-kind-external-module tsd-has-type-parameter"><a href="../classes/_timeline_track_.timelinetrack.html" class="tsd-kind-icon">Timeline<wbr>Track</a></li>
 							</ul>
@@ -87,6 +89,8 @@
 								<li class="tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported"><a href="../interfaces/_timeline_track_.dragtimelinestate.html" class="tsd-kind-icon">Drag<wbr>Timeline<wbr>State</a></li>
 								<li class="tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported"><a href="../interfaces/_timeline_track_.ticksprops.html" class="tsd-kind-icon">Ticks<wbr>Props</a></li>
 								<li class="tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported"><a href="../interfaces/_timeline_track_.timelinecontrolsprops.html" class="tsd-kind-icon">Timeline<wbr>Controls<wbr>Props</a></li>
+								<li class="tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported"><a href="../interfaces/_timeline_track_.timelinenavigatorprops.html" class="tsd-kind-icon">Timeline<wbr>Navigator<wbr>Props</a></li>
+								<li class="tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported"><a href="../interfaces/_timeline_track_.timelineoverviewprops.html" class="tsd-kind-icon">Timeline<wbr>Overview<wbr>Props</a></li>
 								<li class="tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported"><a href="../interfaces/_timeline_track_.timelineprops.html" class="tsd-kind-icon">Timeline<wbr>Props</a></li>
 								<li class="tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported"><a href="../interfaces/_timeline_track_.timelinerowprops.html" class="tsd-kind-icon">Timeline<wbr>Row<wbr>Props</a></li>
 								<li class="tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported"><a href="../interfaces/_timeline_track_.timelinestate.html" class="tsd-kind-icon">Timeline<wbr>State</a></li>
@@ -96,6 +100,7 @@
 						<section class="tsd-index-section tsd-is-not-exported">
 							<h3>Functions</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter tsd-is-not-exported"><a href="_timeline_track_.html#canvas_component" class="tsd-kind-icon">canvas_<wbr>component</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported"><a href="_timeline_track_.html#time_to_x" class="tsd-kind-icon">time_<wbr>to_<wbr>x</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported"><a href="_timeline_track_.html#x_to_time" class="tsd-kind-icon">x_<wbr>to_<wbr>time</a></li>
 							</ul>
@@ -111,6 +116,43 @@
 			</section>
 			<section class="tsd-panel-group tsd-member-group tsd-is-not-exported">
 				<h2>Functions</h2>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter tsd-is-not-exported">
+					<a name="canvas_component" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagLet">Let</span> canvas_<wbr>component</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter tsd-is-not-exported">
+						<li class="tsd-signature tsd-kind-icon">canvas_<wbr>component&lt;C&gt;<span class="tsd-signature-symbol">(</span>Component<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">C</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">C</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/ab0094f/vgridjs/src/timeline_track.tsx#L57">timeline_track.tsx:57</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Annotate a react component with @canvas_component to use.
+										The component should have a render_canvas method. This
+										annotation will then call render_canvas upon an update
+									to the component.</p>
+								</div>
+							</div>
+							<h4 class="tsd-type-parameters-title">Type parameters</h4>
+							<ul class="tsd-type-parameters">
+								<li>
+									<h4>C<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span></h4>
+								</li>
+							</ul>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>Component: <span class="tsd-signature-type">C</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">C</span></h4>
+						</li>
+					</ul>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
 					<a name="time_to_x" class="tsd-anchor"></a>
 					<h3>time_<wbr>to_<wbr>x</h3>
@@ -121,7 +163,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/f61ba82/vgridjs/src/timeline_track.tsx#L39">timeline_track.tsx:39</a></li>
+									<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/ab0094f/vgridjs/src/timeline_track.tsx#L42">timeline_track.tsx:42</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -150,7 +192,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/f61ba82/vgridjs/src/timeline_track.tsx#L43">timeline_track.tsx:43</a></li>
+									<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/ab0094f/vgridjs/src/timeline_track.tsx#L46">timeline_track.tsx:46</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -178,16 +220,61 @@
 					<div class="tsd-signature tsd-kind-icon">Constants<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/f61ba82/vgridjs/src/timeline_track.tsx#L18">timeline_track.tsx:18</a></li>
+							<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/ab0094f/vgridjs/src/timeline_track.tsx#L18">timeline_track.tsx:18</a></li>
 						</ul>
 					</aside>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal tsd-is-not-exported">
+						<a name="constants.mini_timeline_height" class="tsd-anchor"></a>
+						<h3>mini_<wbr>timeline_<wbr>height</h3>
+						<div class="tsd-signature tsd-kind-icon">mini_<wbr>timeline_<wbr>height<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;2</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/ab0094f/vgridjs/src/timeline_track.tsx#L33">timeline_track.tsx:33</a></li>
+							</ul>
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>Small timeline</p>
+							</div>
+						</div>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal tsd-is-not-exported">
+						<a name="constants.navigator_color" class="tsd-anchor"></a>
+						<h3>navigator_<wbr>color</h3>
+						<div class="tsd-signature tsd-kind-icon">navigator_<wbr>color<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;gray&quot;</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/ab0094f/vgridjs/src/timeline_track.tsx#L36">timeline_track.tsx:36</a></li>
+							</ul>
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>Navigator color</p>
+							</div>
+						</div>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal tsd-is-not-exported">
+						<a name="constants.navigator_height" class="tsd-anchor"></a>
+						<h3>navigator_<wbr>height</h3>
+						<div class="tsd-signature tsd-kind-icon">navigator_<wbr>height<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;10</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/ab0094f/vgridjs/src/timeline_track.tsx#L30">timeline_track.tsx:30</a></li>
+							</ul>
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>Navigator height in pixels</p>
+							</div>
+						</div>
+					</section>
 					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal tsd-is-not-exported">
 						<a name="constants.num_ticks" class="tsd-anchor"></a>
 						<h3>num_<wbr>ticks</h3>
 						<div class="tsd-signature tsd-kind-icon">num_<wbr>ticks<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;10</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/f61ba82/vgridjs/src/timeline_track.tsx#L27">timeline_track.tsx:27</a></li>
+								<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/ab0094f/vgridjs/src/timeline_track.tsx#L27">timeline_track.tsx:27</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -197,12 +284,27 @@
 						</div>
 					</section>
 					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal tsd-is-not-exported">
+						<a name="constants.overview_color" class="tsd-anchor"></a>
+						<h3>overview_<wbr>color</h3>
+						<div class="tsd-signature tsd-kind-icon">overview_<wbr>color<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;blue&quot;</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/ab0094f/vgridjs/src/timeline_track.tsx#L39">timeline_track.tsx:39</a></li>
+							</ul>
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>Overview color</p>
+							</div>
+						</div>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal tsd-is-not-exported">
 						<a name="constants.tick_height" class="tsd-anchor"></a>
 						<h3>tick_<wbr>height</h3>
 						<div class="tsd-signature tsd-kind-icon">tick_<wbr>height<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;20</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/f61ba82/vgridjs/src/timeline_track.tsx#L24">timeline_track.tsx:24</a></li>
+								<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/ab0094f/vgridjs/src/timeline_track.tsx#L24">timeline_track.tsx:24</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -217,7 +319,7 @@
 						<div class="tsd-signature tsd-kind-icon">timeline_<wbr>expanded_<wbr>height<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;100</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/f61ba82/vgridjs/src/timeline_track.tsx#L21">timeline_track.tsx:21</a></li>
+								<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/ab0094f/vgridjs/src/timeline_track.tsx#L21">timeline_track.tsx:21</a></li>
 							</ul>
 						</aside>
 					</section>
@@ -227,7 +329,7 @@
 						<div class="tsd-signature tsd-kind-icon">timeline_<wbr>unexpanded_<wbr>height<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;50</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/f61ba82/vgridjs/src/timeline_track.tsx#L20">timeline_track.tsx:20</a></li>
+								<li>Defined in <a href="https://github.com/scanner-research/vgrid/blob/ab0094f/vgridjs/src/timeline_track.tsx#L20">timeline_track.tsx:20</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -265,6 +367,12 @@
 						<a href="../classes/_timeline_track_.timelinecontrols.html" class="tsd-kind-icon">Timeline<wbr>Controls</a>
 					</li>
 					<li class=" tsd-kind-class tsd-parent-kind-external-module tsd-has-type-parameter tsd-is-not-exported">
+						<a href="../classes/_timeline_track_.timelinenavigator.html" class="tsd-kind-icon">Timeline<wbr>Navigator</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-external-module tsd-has-type-parameter tsd-is-not-exported">
+						<a href="../classes/_timeline_track_.timelineoverview.html" class="tsd-kind-icon">Timeline<wbr>Overview</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-external-module tsd-has-type-parameter tsd-is-not-exported">
 						<a href="../classes/_timeline_track_.timelinerow.html" class="tsd-kind-icon">Timeline<wbr>Row</a>
 					</li>
 					<li class=" tsd-kind-class tsd-parent-kind-external-module tsd-has-type-parameter">
@@ -280,6 +388,12 @@
 						<a href="../interfaces/_timeline_track_.timelinecontrolsprops.html" class="tsd-kind-icon">Timeline<wbr>Controls<wbr>Props</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../interfaces/_timeline_track_.timelinenavigatorprops.html" class="tsd-kind-icon">Timeline<wbr>Navigator<wbr>Props</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../interfaces/_timeline_track_.timelineoverviewprops.html" class="tsd-kind-icon">Timeline<wbr>Overview<wbr>Props</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
 						<a href="../interfaces/_timeline_track_.timelineprops.html" class="tsd-kind-icon">Timeline<wbr>Props</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
@@ -290,6 +404,9 @@
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
 						<a href="../interfaces/_timeline_track_.timelinetrackprops.html" class="tsd-kind-icon">Timeline<wbr>Track<wbr>Props</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter tsd-is-not-exported">
+						<a href="_timeline_track_.html#canvas_component" class="tsd-kind-icon">canvas_<wbr>component</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
 						<a href="_timeline_track_.html#time_to_x" class="tsd-kind-icon">time_<wbr>to_<wbr>x</a>
