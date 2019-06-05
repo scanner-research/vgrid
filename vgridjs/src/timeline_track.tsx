@@ -30,7 +30,13 @@ let Constants = {
   navigator_height: 10,
 
   /** Small timeline */
-  mini_timeline_height: 2
+  mini_timeline_height: 2,
+
+  /** Navigator color */
+  navigator_color: "gray",
+
+  /** Overview color */
+  overview_color: "blue"
 }
 
 function time_to_x(t: number, bounds: TimelineBounds, width: number): number {
@@ -185,10 +191,9 @@ class TimelineNavigator extends React.Component<TimelineNavigatorProps, {}> {
   
   render_canvas = (canvas: HTMLCanvasElement, ctx : CanvasRenderingContext2D) => {
     let time = this.props.time_state.time;
-    canvas.style.display = 'block';
     
     //Draw the navigator bar's current location
-    ctx.fillStyle = "gray";
+    ctx.fillStyle = Constants.navigator_color;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     let x = this.props.timeline_bounds.start * (canvas.width / this.props.full_duration);
     let width = this.props.timeline_bounds.span() * (canvas.width / this.props.full_duration);
@@ -227,8 +232,7 @@ class TimelineOverview extends React.Component<TimelineOverviewProps, {}> {
   }
   
   render_canvas = (canvas: HTMLCanvasElement, ctx : CanvasRenderingContext2D) => {
-    canvas.style.display = 'block';
-    ctx.fillStyle = "blue";
+    ctx.fillStyle = Constants.overview_color;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     this.props.intervals.forEach((namedIntervalSet, i) => {
       let intervalSet = namedIntervalSet.interval_set;
@@ -242,7 +246,7 @@ class TimelineOverview extends React.Component<TimelineOverviewProps, {}> {
   }
 
   render () {
-    return <canvas ref = {this.canvas_ref} width = {this.props.timeline_width} height= {Constants.mini_timeline_height} />;
+    return <canvas className ="timeline-overview-canvas" ref = {this.canvas_ref} width = {this.props.timeline_width} height= {Constants.mini_timeline_height} />;
   }
 }
 

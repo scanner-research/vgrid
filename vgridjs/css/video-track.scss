@@ -179,10 +179,15 @@
         }
 
         .timeline-navigator-canvas {
+            display: block;
             position: absolute;
             top:0; 
             left:0;
         }
+    }
+
+    .timeline-overview-canvas {
+        display: block;
     }
 
     
