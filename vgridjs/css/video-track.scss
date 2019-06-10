@@ -22,11 +22,11 @@
         padding: 5px;
 
         &.select-positive {
-            background-color: #FFDEAD;
+            background-color: #60F14B;
         }
 
         &.select-negative {
-            background-color: #FFB6C1;
+            background-color: #FC6B81;
         }
     }
 
@@ -173,7 +173,7 @@
 
         .timeline-navigator-slider {
             position: absolute;
-            top: 0; 
+            top: 0;
             left: 0;
             opacity: 0;
         }
@@ -181,7 +181,7 @@
         .timeline-navigator-canvas {
             display: block;
             position: absolute;
-            top:0; 
+            top:0;
             left:0;
         }
     }
@@ -190,7 +190,7 @@
         display: block;
     }
 
-    
+
 }
 
 .caption-track {
