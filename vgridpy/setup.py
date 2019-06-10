@@ -2,7 +2,7 @@ from setuptools import setup
 
 if __name__ == "__main__":
     setup(name='vgridpy',
-          version='0.1.12',
+          version='0.1.13',
           description='Python bindings into Vgrid objects',
           url='http://github.com/scanner-research/vgrid',
           author='Xinwei Yao, Will Crichton',
