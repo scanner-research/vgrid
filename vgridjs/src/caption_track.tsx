@@ -217,7 +217,8 @@ export default class CaptionTrack extends React.Component<CaptionTrackProps, {}>
 
     // Make sure to include the unfinished caption group at the end.
     if (current_group.length > 0) {
-      push_intvl(current_group, intervals.length - 1);
+      this.caption_groups.push(current_group);
+      current_group = null;
     }
 
     /* Create the mirror index for the nested_to_flat */
