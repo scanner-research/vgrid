@@ -186,7 +186,8 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
           <div className={`vblock-highlight ${select_class}`}>
             <div className='vblock-row'>
               <VideoTrack intervals={current_intervals} {...args} />
-              <MetadataTrack intervals={current_intervals} {...args} />
+              {this.props.settings!.show_metadata || this.state.expand
+                ? <MetadataTrack intervals={current_intervals} {...args} /> : null}
               <div className='clearfix' />
             </div>
             {this.props.settings!.show_timeline && (this.show_timeline || this.state.expand)

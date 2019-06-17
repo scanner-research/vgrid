@@ -8,6 +8,7 @@ export interface Settings {
   use_frameserver: boolean,
   show_timeline: boolean,
   show_captions: boolean,
+  show_metadata: boolean,
   paginate: boolean,
   blocks_per_page: number
   caption_delimiter: string
@@ -21,6 +22,7 @@ export let default_settings = {
   use_frameserver: false,
   show_timeline: true,
   show_captions: true,
+  show_metadata: true,
   paginate: true,
   blocks_per_page: 50,
   caption_delimiter: '>>'
