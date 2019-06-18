@@ -28,6 +28,22 @@
         &.select-negative {
             background-color: #FC6B81;
         }
+        
+         .vblock-triangle {
+         width: 0;
+         height: 0;
+         background-color: transparent;
+         border-style: solid;
+         border-left-color: transparent;
+         border-right-color: transparent;
+         border-bottom-color: black;
+         margin-left: auto;
+         margin-right: auto;
+         margin-bottom: 0;
+         padding-bottom: 0;
+         border-top-width: 0;
+         top: auto;
+    }
     }
 
     &.expanded {

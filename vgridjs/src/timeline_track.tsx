@@ -58,18 +58,18 @@ let canvas_component = <C extends object>(Component: C): C =>
   (class WithCanvas extends React.Component<any, {}> {
     component: any
     disposer : any
-    
+
     constructor(props: any) {
       super(props);
       this.component = React.createRef();
     }
-    
+
     call_if = (f: (() => void) | undefined) => {
       if (f) {
         f();
       }
     }
-    
+
     render_canvas () {
       const canvas = this.component.current.canvas_ref.current;
       if (canvas) {
@@ -123,7 +123,7 @@ class TimelineRow extends React.Component<TimelineRowProps, {}>{
     ctx.fillStyle = this.props.color;
     this.props.intervals.to_list().forEach(intvl => {
       let bounds = intvl.bounds;
-      if (bounds.t2 > this.props.bounds.start && bounds.t1 < this.props.bounds.end) { 
+      if (bounds.t2 > this.props.bounds.start && bounds.t1 < this.props.bounds.end) {
         let x1 = Math.max((bounds.t1 - this.props.bounds.start) / this.props.bounds.span() * this.props.full_width, 0);
         let width = Math.max(
           ((bounds.t2 - this.props.bounds.start) / this.props.bounds.span() * this.props.full_width) - x1, 1);
@@ -133,7 +133,7 @@ class TimelineRow extends React.Component<TimelineRowProps, {}>{
   }
 
   render() {
-    return <canvas ref = {this.canvas_ref} width = {this.props.full_width} height = {this.props.row_height} />;
+    return <canvas ref={this.canvas_ref} width={this.props.full_width} height={this.props.row_height} style={{background: "white"}} />
   }
 }
 
@@ -163,12 +163,12 @@ interface TimelineNavigatorProps {
 class TimelineNavigator extends React.Component<TimelineNavigatorProps, {}> {
   private canvas_ref : React.RefObject<HTMLCanvasElement>;
   private disposer : any;
-  
+
   constructor (props: TimelineNavigatorProps) {
     super(props);
     this.canvas_ref = React.createRef();
   }
-  
+
   handleChange = (event: any) => {
     if (event.target) {
       let value  = event.target.valueAsNumber;
@@ -188,10 +188,10 @@ class TimelineNavigator extends React.Component<TimelineNavigatorProps, {}> {
       this.props.timeline_bounds.set_bounds(start, end);
     }
   }
-  
+
   render_canvas = (canvas: HTMLCanvasElement, ctx : CanvasRenderingContext2D) => {
     let time = this.props.time_state.time;
-    
+
     //Draw the navigator bar's current location
     ctx.fillStyle = Constants.navigator_color;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -225,12 +225,12 @@ interface TimelineOverviewProps {
 class TimelineOverview extends React.Component<TimelineOverviewProps, {}> {
   private canvas_ref : React.RefObject<HTMLCanvasElement>;
   private disposer : any;
-  
+
   constructor (props: TimelineOverviewProps) {
     super(props);
     this.canvas_ref = React.createRef();
   }
-  
+
   render_canvas = (canvas: HTMLCanvasElement, ctx : CanvasRenderingContext2D) => {
     ctx.fillStyle = Constants.overview_color;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -469,7 +469,7 @@ interface TicksProps {
 
 /** Ticks at the bottom of the timeline indicating video time at regular intervals */
 @canvas_component
-@observer 
+@observer
 class Ticks extends React.Component<TicksProps, {}> {
   private canvas_ref : React.RefObject<HTMLCanvasElement>;
 
@@ -477,7 +477,7 @@ class Ticks extends React.Component<TicksProps, {}> {
     super(props);
     this.canvas_ref = React.createRef();
   }
-  
+
   render_canvas = (canvas: HTMLCanvasElement, ctx : CanvasRenderingContext2D) => {
     let start = this.props.timeline_bounds.start;
     let end = this.props.timeline_bounds.end;
@@ -679,6 +679,10 @@ export default class TimelineTrack extends React.Component<TimelineTrackProps, {
       this.props.expand
       ? Constants.timeline_expanded_height
       : Constants.timeline_unexpanded_height;
+    let timeline_color =
+      this.props.expand
+      ? "gray"
+      : "white";
 
     let controller_size = timeline_height;
     let track_width = this.props.expand ? timeline_width + controller_size : timeline_width;
@@ -694,8 +698,9 @@ export default class TimelineTrack extends React.Component<TimelineTrackProps, {
           timeline_width={timeline_width}
           full_duration={this.props.video.num_frames / this.props.video.fps}
           intervals= {this.props.intervals} />
+
         <div className='timeline-row'>
-            
+
             <Timeline
               timeline_bounds={this.timeline_bounds}
               timeline_width={timeline_width}
@@ -704,16 +709,16 @@ export default class TimelineTrack extends React.Component<TimelineTrackProps, {
               intervals={this.props.intervals}
               expand={this.props.expand}
               video={this.props.video} />
-            
+
             {this.props.expand
             ? (<TimelineControls
                  timeline_bounds={this.timeline_bounds} video={this.props.video}
                  time_state={this.props.time_state} controller_size={controller_size} />)
             : null }
-            
+
             <div className='clearfix' />
         </div>
-        
+
         <div className='timeline-row'>
             {this.props.expand
             ? <Ticks
