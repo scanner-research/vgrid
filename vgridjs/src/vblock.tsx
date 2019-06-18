@@ -18,14 +18,14 @@ import {BlockSelectType, BlockLabelState} from './label_state';
 
 let Constants = {
   padding_expanded: 10,
-  metadata_height: 20,
-  metadata_height_expanded: 20,
+  metadata_height: 25,
+  metadata_height_expanded: 'auto',
   timeline_height: 50,
   timeline_height_expanded: 100,
   triangle_height_ratio: 12,
   triangle_width_ratio: 16,
   caption_height: 50,
-  caption_width_expanded: 200
+  caption_width_expanded: 300
 }
 
 /** Core unit of visualization in the grid for a single video */
@@ -207,91 +207,91 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
     return (
       <Provider label_state={this.props.label_state} time_state={this.time_state}>
         <div className={classNames({vblock: true, expanded: false})} style={{height: full_height}}>
-            <div className={`vblock-highlight ${select_class}`} style={{paddingBottom: 0}}>
-                <div className='vblock-row'>
-                    <VideoTrack onExpand = {this.props.onExpand}
-                                thumb = {true}
-                                intervals={current_intervals}
-                                height={thumb_height}
-                                {...args} />
+          <div className={`vblock-highlight ${select_class}`} style={{paddingBottom: 0}}>
+            <div className='vblock-row'>
+              <VideoTrack onExpand = {this.props.onExpand}
+                          thumb = {true}
+                          intervals={current_intervals}
+                          height={thumb_height}
+                          {...args} />
 
-                    {this.props.settings!.show_metadata || this.state.expand
-                    ? <MetadataTrack intervals={current_intervals}
-                                     height={Constants.metadata_height}
-                                     {...args} />
-                    : null}
+              <div className='clearfix' />
+            </div>
 
-                    <div className='clearfix' />
-                </div>
+            {this.props.settings!.show_metadata
+            ? <div className='vblock-row'>
+                <MetadataTrack intervals={current_intervals}
+                                 height={Constants.metadata_height}
+                                 {...args} />
+              </div>
+            : null}
 
-                {this.props.settings!.show_timeline && (this.show_timeline)
-                ? <div className='vblock-row'>
-                    <TimelineTrack intervals={this.props.block.interval_sets.filter(({name}) =>
-                      show_in_timeline(name))} height={Constants.timeline_height} {...args} />
-                </div>
-                : null}
+            {this.props.settings!.show_timeline && this.show_timeline
+            ? <div className='vblock-row'>
+                <TimelineTrack intervals={this.props.block.interval_sets.filter(({name}) =>
+                  show_in_timeline(name))} height={Constants.timeline_height} {...args} />
+            </div>
+            : null}
 
-                {this.captions !== null && (this.props.settings!.show_captions)
-                ? <div className='vblock-row'>
-                    <CaptionTrack intervals={this.captions}
-                                  delimiter={this.props.settings!.caption_delimiter}
-                                  height={Constants.caption_height} {...args} />
-                </div>
-                : null}
+            {this.captions !== null && (this.props.settings!.show_captions)
+            ? <div className='vblock-row'>
+                <CaptionTrack intervals={this.captions}
+                              delimiter={this.props.settings!.caption_delimiter}
+                              height={Constants.caption_height} {...args} />
+            </div>
+            : null}
 
-                {this.props.expand ?
-                 <div className='vblock-triangle'
-                      style = {{borderLeftWidth: thumb_width/Constants.triangle_width_ratio,
-                                borderRightWidth: thumb_width/Constants.triangle_width_ratio,
-                                borderBottomWidth: thumb_width/Constants.triangle_height_ratio}} /> : null}
-      </div>
-
-      {this.props.expand ?
-       <div className={`vblock-highlight ${select_class}`}
-            style={{position: "absolute", left: 0, borderStyle: 'solid',
-                    marginTop: 0, padding: Constants.padding_expanded}}>
-         <div className='vblock-row' style={{display: "inline-block"}}>
-          <VideoTrack onExpand = {this.props.onExpand}
-                      thumb = {false}
-                      intervals={current_intervals}
-                      width = {expanded_width}
-                      height={expanded_height}
-          {...args_expanded} />
-
-          <MetadataTrack intervals={current_intervals}
-                         width = {expanded_width}
-                         height = {Constants.metadata_height_expanded}
-          {...args_expanded} />
-
-          <div className='clearfix' />
-          </div>
-          <div style={{display: "inline-block", verticalAlign: "top", float: "right",
-                       fontSize: 16, fontFamily: "sans-serif", fontWeight: "bold",
-                       cursor: "pointer" }}
-               onClick={this.closeClick}>
-              x
+            {this.props.expand ?
+             <div className='vblock-triangle'
+                  style = {{borderLeftWidth: thumb_width/Constants.triangle_width_ratio,
+                            borderRightWidth: thumb_width/Constants.triangle_width_ratio,
+                            borderBottomWidth: thumb_width/Constants.triangle_height_ratio}} /> : null}
           </div>
 
-          {this.captions !== null && (this.props.settings!.show_captions || this.props.expand)
-          ? <div className='vblock-row' style={{display: "inline-block"}}>
-              <CaptionTrack intervals={this.captions}
-                            delimiter={this.props.settings!.caption_delimiter}
-                            width = {Constants.caption_width_expanded}
-                            height ={expanded_height}
-                            {...args_expanded} />
-          </div>
-          : null}
+          {this.props.expand ?
+          <div className={`vblock-highlight ${select_class}`}
+                style={{position: "absolute", left: 0, borderStyle: 'solid',
+                        marginTop: 0, padding: Constants.padding_expanded}}>
+            <div className='vblock-row' style={{display: "inline-block"}}>
+              <VideoTrack onExpand = {this.props.onExpand}
+                          thumb = {false}
+                          intervals={current_intervals}
+                          width = {expanded_width}
+                          height={expanded_height}
+              {...args_expanded} />
 
-          <div className='vblock-row'>
-              <TimelineTrack intervals={this.props.block.interval_sets.filter(({name}) =>
-                show_in_timeline(name))}
-                             width = {expanded_width}
-                             height={Constants.timeline_height_expanded}
-                             {...args_expanded} />
+              <div className='clearfix' />
+            </div>
+
+            <div className='vblock-close-expand' onClick={this.closeClick}>X</div>
+
+            {this.captions !== null && (this.props.settings!.show_captions || this.props.expand)
+            ? <div className='vblock-row' style={{display: "inline-block"}}>
+                <CaptionTrack intervals={this.captions}
+                              delimiter={this.props.settings!.caption_delimiter}
+                              width={Constants.caption_width_expanded}
+                              height={expanded_height}
+                              {...args_expanded} />
+              </div>
+            : null}
+
+            <div className='vblock-row'>
+              <MetadataTrack intervals={current_intervals}
+                             width={expanded_width}
+                             height={Constants.metadata_height_expanded}
+              {...args_expanded} />
+            </div>
+
+            <div className='vblock-row'>
+                <TimelineTrack intervals={this.props.block.interval_sets.filter(({name}) =>
+                  show_in_timeline(name))}
+                               width={expanded_width}
+                               height={Constants.timeline_height_expanded}
+                               {...args_expanded} />
+            </div>
           </div>
-          </div>
-        : null }
-      </div>
+          : null }
+        </div>
       </Provider>
     );
   }

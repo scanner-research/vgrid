@@ -28,7 +28,7 @@
         &.select-negative {
             background-color: #FC6B81;
         }
-        
+
          .vblock-triangle {
          width: 0;
          height: 0;
@@ -223,7 +223,7 @@
         position: absolute;
         left: 0;
 
-        font-size: 9px;
+        font-size: 12px;
         line-height: 1em;
 
         .active {
@@ -241,4 +241,16 @@
         margin-bottom: 2px;
         word-break: break-all;
     }
+}
+
+.vblock-close-expand {
+    display: inline-block;
+    vertical-align: top;
+    float: right;
+    margin-left: 10px;
+    font-size: 16;
+    font-family: sans-serif;
+    font-weight: bold;
+    cursor: pointer;
+    color: red;
 }

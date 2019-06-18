@@ -14,7 +14,7 @@ interface MetadataTrackProps {
   video: DbVideo,
   expand: boolean,
   width: number,
-  height: number
+  height: number | string
 }
 
 /**
