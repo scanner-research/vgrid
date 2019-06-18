@@ -638,8 +638,10 @@ class TimelineControls extends React.Component<TimelineControlsProps, {}> {
         <span className="btn-group">
             <ControllerButton callback={this.zoom_in} cls="plus" />
             <ControllerButton callback={this.zoom_out} cls="minus" />
-            <ControllerButton callback={this.shift_earlier} cls="caret-left" />
-            <ControllerButton callback={this.shift_later} cls="caret-right" />
+        </span>
+        <span className="btn-group">
+          <ControllerButton callback={this.shift_earlier} cls="caret-left" />
+          <ControllerButton callback={this.shift_later} cls="caret-right" />
         </span>
     </div>;
   }

@@ -16,6 +16,7 @@ import CaptionTrack from './caption_track';
 import {SpatialType_Caption} from './spatial/caption';
 import {BlockSelectType, BlockLabelState} from './label_state';
 
+// FIXME: this needs to allow variable height
 let Constants = {
   padding_expanded: 10,
   metadata_height: 25,
@@ -193,9 +194,23 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
       width: thumb_width
     };
 
-    let full_height = thumb_height + Constants.timeline_height + Constants.caption_height + Constants.padding_expanded;
-    if (this.props.expand)
-      full_height = full_height + expanded_height + Constants.timeline_height_expanded + Constants.caption_height + (thumb_height/Constants.triangle_height_ratio) + (Constants.padding_expanded * 2);
+    // FIXME: This does not work for variable height metadata. Can we figure out how to make this auto size?
+    var full_height = thumb_height + Constants.padding_expanded;
+    if (this.captions !== null && this.props.settings!.show_captions) {
+      full_height += Constants.caption_height
+    }
+    if (this.props.settings!.show_timeline && this.show_timeline) {
+      full_height += Constants.timeline_height
+    }
+    if (this.props.settings!.show_metadata) {
+      full_height += Constants.metadata_height;
+    }
+    if (this.props.expand) {
+      full_height += expanded_height + Constants.timeline_height_expanded + Constants.caption_height + (thumb_height/Constants.triangle_height_ratio) + (Constants.padding_expanded * 2);
+
+      // FIXME: metadata_height not being accounted for
+      full_height += 50
+    }
 
     let select_class =
       this.props.selected
@@ -266,7 +281,7 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
             <div className='vblock-close-expand' onClick={this.closeClick}>X</div>
 
             {this.captions !== null && (this.props.settings!.show_captions || this.props.expand)
-            ? <div className='vblock-row' style={{display: "inline-block"}}>
+            ? <div className='vblock-row' style={{display: "inline-block", float: "right"}}>
                 <CaptionTrack intervals={this.captions}
                               delimiter={this.props.settings!.caption_delimiter}
                               width={Constants.caption_width_expanded}
