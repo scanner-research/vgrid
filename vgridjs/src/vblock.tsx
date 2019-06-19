@@ -176,7 +176,7 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
     let video = this.props.database!.table('videos').lookup<DbVideo>(this.props.block.video_id);
 
     // Compute block height
-    let expanded_width = this.props.container_width - Constants.caption_width_expanded;
+    let expanded_width = 0.9 * (this.props.container_width - Constants.caption_width_expanded);
     let expanded_height = video.height * (expanded_width / video.width);
     let thumb_height = 100;
     let thumb_width = video.width * (thumb_height / video.height);
@@ -271,14 +271,14 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
               <VideoTrack onExpand = {this.props.onExpand}
                           thumb = {false}
                           intervals={current_intervals}
-                          width = {expanded_width}
+                          width={expanded_width}
                           height={expanded_height}
               {...args_expanded} />
 
               <div className='clearfix' />
             </div>
 
-            <div className='vblock-close-expand' onClick={this.closeClick}>X</div>
+            <div className='vblock-close-expand' onClick={this.closeClick}>minimize</div>
 
             {this.captions !== null && (this.props.settings!.show_captions || this.props.expand)
             ? <div className='vblock-row' style={{display: "inline-block", float: "right"}}>
