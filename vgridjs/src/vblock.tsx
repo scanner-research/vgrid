@@ -219,6 +219,7 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
        : '')
       : '';
 
+    // FIXME: use of float to layout here is really haphazard...
     return (
       <Provider label_state={this.props.label_state} time_state={this.time_state}>
         <div className={classNames({vblock: true, expanded: false})} style={{height: full_height}}>

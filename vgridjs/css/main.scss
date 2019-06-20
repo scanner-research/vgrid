@@ -12,9 +12,13 @@
         background-position: center center;
     }
 
-    .btn-group .btn { margin-left: 0; }
+    .btn-group .btn { margin-left: 0px; }
 
     .clearfix {
         clear: both;
+    }
+
+    ul {
+      padding: 0px;
     }
 }
