@@ -6,12 +6,20 @@ export interface Settings {
   frameserver_endpoint: string,
   video_endpoint: string,
   use_frameserver: boolean,
+
+  /* show in thumbnail mode */
   show_timeline: boolean,
   show_captions: boolean,
   show_metadata: boolean,
+
+  /* show in expand mode */
+  show_timeline_controls: boolean,
+
   paginate: boolean,
-  blocks_per_page: number
-  caption_delimiter: string
+  blocks_per_page: number,
+  caption_delimiter: string,
+
+  vblock_constants: any
 }
 
 export let default_settings = {
@@ -23,7 +31,9 @@ export let default_settings = {
   show_timeline: true,
   show_captions: true,
   show_metadata: true,
+  show_timeline_controls: true,
   paginate: true,
   blocks_per_page: 50,
-  caption_delimiter: '>>'
+  caption_delimiter: '>>',
+  vblock_constants: {}
 };

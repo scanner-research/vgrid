@@ -96,6 +96,7 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
   time_state: TimeState;
   captions: IntervalSet | null;
   show_timeline: boolean;
+  show_metadata: boolean;
 
   constructor(props: VBlockProps) {
     super(props);
@@ -131,6 +132,11 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
       interval_sets.length == 1 &&
       interval_sets[0].interval_set.to_list().filter((intvl) =>
         intvl.bounds.t1 != example_interval.bounds.t1 && intvl.bounds.t2 != example_interval.bounds.t2).length == 0);
+
+    // Decide whether there is metadata to show
+    this.show_metadata = interval_sets.some(
+      ({interval_set}: {interval_set: IntervalSet}) =>
+        interval_set.to_list().some((intvl: Interval) => intvl.data.metadata));
   }
 
   toggle_expand = () => {
@@ -183,8 +189,12 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
     // Get video metadata out of the database
     let video = this.props.database!.table('videos').lookup<DbVideo>(this.props.block.video_id);
 
+    let vblock_constants = this.props.settings!.vblock_constants;
+
     // Compute block height
-    let expanded_width = 0.9 * (this.props.container_width - Constants.caption_width_expanded);
+    let expanded_width = 0.9 * (
+      this.props.container_width -
+      _.get(vblock_constants, 'caption_width_expanded', Constants.caption_width_expanded));
     let expanded_height = video.height * (expanded_width / video.width);
     let thumb_height = 100;
     let thumb_width = video.width * (thumb_height / video.height);
@@ -202,24 +212,32 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
       width: thumb_width
     };
 
-    // FIXME: This does not work for variable height metadata. Can we figure out how to make this auto size?
-    var full_height = thumb_height + Constants.padding_expanded;
+    var full_height = thumb_height + _.get(vblock_constants, 'padding_expanded', Constants.padding_expanded);
     if (this.captions !== null && this.props.settings!.show_captions) {
-      full_height += Constants.caption_height
+      full_height += _.get(vblock_constants, 'caption_height', Constants.caption_height);
     }
     if (this.props.settings!.show_timeline && this.show_timeline) {
-      full_height += Constants.timeline_height
+      full_height += _.get(vblock_constants, 'timeline_height', Constants.timeline_height);
     }
-    if (this.props.settings!.show_metadata) {
-      full_height += Constants.metadata_height;
+    if (this.props.settings!.show_metadata && this.show_metadata) {
+      full_height += _.get(vblock_constants, 'metadata_height', Constants.metadata_height);
     }
     if (this.props.expand) {
-      full_height += expanded_height + Constants.timeline_height_expanded + Constants.caption_height + (thumb_height/Constants.triangle_height_ratio) + (Constants.padding_expanded * 2);
+      full_height += expanded_height
+          + _.get(vblock_constants, 'timeline_height_expanded', Constants.timeline_height_expanded)
+          + (thumb_height / _.get(vblock_constants, 'triangle_height_ratio', Constants.triangle_height_ratio))
+          + (_.get(vblock_constants, 'padding_expanded', Constants.padding_expanded) * 2);
       if (this.title) {
-        full_height += Constants.title_height_expanded;
+        full_height += _.get(vblock_constants, 'title_height_expanded', Constants.title_height_expanded);
       }
-      // FIXME: metadata_height not being accounted for
-      // full_height += 50
+      if (this.show_metadata) {
+        let metadata_height_expanded = _.get(vblock_constants, 'metadata_height_expanded', Constants.metadata_height_expanded);
+        if (metadata_height_expanded != 'auto') {
+          full_height += metadata_height_expanded;
+        } else {
+          full_height += 50;
+        }
+      }
     }
 
     let select_class =
@@ -244,10 +262,10 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
               <div className='clearfix' />
             </div>
 
-            {this.props.settings!.show_metadata
+            {this.props.settings!.show_metadata && this.show_metadata
             ? <div className='vblock-row'>
                 <MetadataTrack intervals={current_intervals}
-                                 height={Constants.metadata_height}
+                                 height={_.get(vblock_constants, 'metadata_height', Constants.metadata_height)}
                                  {...args} />
               </div>
             : null}
@@ -255,29 +273,34 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
             {this.props.settings!.show_timeline && this.show_timeline
             ? <div className='vblock-row'>
                 <TimelineTrack intervals={this.props.block.interval_sets.filter(({name}) =>
-                  show_in_timeline(name))} height={Constants.timeline_height} {...args} />
-            </div>
+                  show_in_timeline(name))}
+                               height={_.get(vblock_constants, 'timeline_height', Constants.timeline_height)}
+                               show_timeline_controls={this.props.settings!.show_timeline_controls}
+                               {...args} />
+              </div>
             : null}
 
             {this.captions !== null && (this.props.settings!.show_captions)
             ? <div className='vblock-row'>
                 <CaptionTrack intervals={this.captions}
                               delimiter={this.props.settings!.caption_delimiter}
-                              height={Constants.caption_height} {...args} />
-            </div>
+                              height={_.get(vblock_constants, 'caption_height', Constants.caption_height)}
+                              {...args} />
+              </div>
             : null}
 
             {this.props.expand ?
              <div className='vblock-triangle'
-                  style = {{borderLeftWidth: thumb_width/Constants.triangle_width_ratio,
-                            borderRightWidth: thumb_width/Constants.triangle_width_ratio,
-                            borderBottomWidth: thumb_width/Constants.triangle_height_ratio}} /> : null}
+                  style = {{borderLeftWidth: thumb_width/_.get(vblock_constants, 'triangle_width_ratio', Constants.triangle_width_ratio),
+                            borderRightWidth: thumb_width/_.get(vblock_constants, 'triangle_width_ratio', Constants.triangle_width_ratio),
+                            borderBottomWidth: thumb_width/_.get(vblock_constants, 'triangle_height_ratio', Constants.triangle_height_ratio)}} />
+            : null}
           </div>
 
           {this.props.expand ?
           <div className={`vblock-highlight ${select_class}`}
                 style={{position: "absolute", left: 0, borderStyle: 'solid',
-                        marginTop: 0, padding: Constants.padding_expanded}}>
+                        marginTop: 0, padding: _.get(vblock_constants, 'padding_expanded', Constants.padding_expanded)}}>
 
             {this.title ? <div className='vblock-title'>{this.title}</div> : null}
 
@@ -298,24 +321,26 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
             ? <div className='vblock-row' style={{display: "inline-block", float: "right"}}>
                 <CaptionTrack intervals={this.captions}
                               delimiter={this.props.settings!.caption_delimiter}
-                              width={Constants.caption_width_expanded}
+                              width={_.get(vblock_constants, 'caption_width_expanded', Constants.caption_width_expanded)}
                               height={expanded_height}
                               {...args_expanded} />
               </div>
             : null}
 
-            <div className='vblock-row'>
-              <MetadataTrack intervals={current_intervals}
-                             width={expanded_width}
-                             height={Constants.metadata_height_expanded}
-              {...args_expanded} />
-            </div>
+            {this.show_metadata
+            ? <div className='vblock-row'>
+                <MetadataTrack intervals={current_intervals}
+                               width={expanded_width}
+                               height={_.get(vblock_constants, 'metadata_height_expanded', Constants.metadata_height_expanded)}
+                               {...args_expanded} />
+              </div>
+            : null }
 
             <div className='vblock-row'>
-                <TimelineTrack intervals={this.props.block.interval_sets.filter(({name}) =>
-                  show_in_timeline(name))}
+                <TimelineTrack intervals={this.props.block.interval_sets.filter(({name}) => show_in_timeline(name))}
                                width={expanded_width}
-                               height={Constants.timeline_height_expanded}
+                               height={_.get(vblock_constants, 'timeline_height_expanded', Constants.timeline_height_expanded)}
+                               show_timeline_controls={this.props.settings!.show_timeline_controls}
                                {...args_expanded} />
             </div>
           </div>

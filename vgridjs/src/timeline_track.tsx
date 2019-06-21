@@ -640,8 +640,8 @@ class TimelineControls extends React.Component<TimelineControlsProps, {}> {
             <ControllerButton callback={this.zoom_out} cls="minus" />
         </span>
         <span className="btn-group">
-          <ControllerButton callback={this.shift_earlier} cls="caret-left" />
-          <ControllerButton callback={this.shift_later} cls="caret-right" />
+            <ControllerButton callback={this.shift_earlier} cls="caret-left" />
+            <ControllerButton callback={this.shift_later} cls="caret-right" />
         </span>
     </div>;
   }
@@ -653,7 +653,8 @@ interface TimelineTrackProps {
   video: DbVideo,
   expand: boolean,
   width: number,
-  height: number
+  height: number,
+  show_timeline_controls: boolean
 }
 
 /**
@@ -690,16 +691,18 @@ export default class TimelineTrack extends React.Component<TimelineTrackProps, {
     let track_width = this.props.expand ? timeline_width + controller_size : timeline_width;
 
     return <div className='timeline-track' style={{width: track_width}}>
-        <TimelineNavigator
-          time_state={this.props.time_state}
-          timeline_bounds={this.timeline_bounds}
-          timeline_width={timeline_width}
-          full_duration={this.props.video.num_frames / this.props.video.fps} />
+        {this.props.expand && this.props.show_timeline_controls
+        ? [<TimelineNavigator
+            time_state={this.props.time_state}
+            timeline_bounds={this.timeline_bounds}
+            timeline_width={timeline_width}
+            full_duration={this.props.video.num_frames / this.props.video.fps} />,
 
-        <TimelineOverview
-          timeline_width={timeline_width}
-          full_duration={this.props.video.num_frames / this.props.video.fps}
-          intervals= {this.props.intervals} />
+          <TimelineOverview
+            timeline_width={timeline_width}
+            full_duration={this.props.video.num_frames / this.props.video.fps}
+            intervals={this.props.intervals} />]
+        : null }
 
         <div className='timeline-row'>
 
@@ -712,7 +715,7 @@ export default class TimelineTrack extends React.Component<TimelineTrackProps, {
               expand={this.props.expand}
               video={this.props.video} />
 
-            {this.props.expand
+            {this.props.expand && this.props.show_timeline_controls
             ? (<TimelineControls
                  timeline_bounds={this.timeline_bounds} video={this.props.video}
                  time_state={this.props.time_state} controller_size={controller_size} />)
