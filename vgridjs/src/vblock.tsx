@@ -19,6 +19,7 @@ import {BlockSelectType, BlockLabelState} from './label_state';
 // FIXME: this needs to allow variable height
 let Constants = {
   padding_expanded: 10,
+  title_height_expanded: 25,
   metadata_height: 25,
   metadata_height_expanded: 'auto',
   timeline_height: 50,
@@ -31,13 +32,17 @@ let Constants = {
 
 /** Core unit of visualization in the grid for a single video */
 export interface IntervalBlock {
-  /** Set of named interval sets within the same video **/
+  /** Title for the vblock */
+  title: string
+
+  /** Set of named interval sets within the same video */
   interval_sets: NamedIntervalSet[]
 
   /** ID of the corresponding video */
   video_id: number
 }
 
+// FIXME: probably need to handle title here too
 export let interval_blocks_from_json = (obj: any): IntervalBlock[] => {
   return obj.map(({video_id, interval_sets}: any) => {
     return {
@@ -87,12 +92,15 @@ const show_in_timeline = (k: string) => k[0] != '_';
 export class VBlock extends React.Component<VBlockProps, VBlockState> {
   state = {expand: this.props.expand}
 
+  title: string | null;
   time_state: TimeState;
   captions: IntervalSet | null;
   show_timeline: boolean;
 
   constructor(props: VBlockProps) {
     super(props);
+
+    this.title = props.block.title;
 
     let interval_sets = props.block.interval_sets;
 
@@ -207,9 +215,11 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
     }
     if (this.props.expand) {
       full_height += expanded_height + Constants.timeline_height_expanded + Constants.caption_height + (thumb_height/Constants.triangle_height_ratio) + (Constants.padding_expanded * 2);
-
+      if (this.title) {
+        full_height += Constants.title_height_expanded;
+      }
       // FIXME: metadata_height not being accounted for
-      full_height += 50
+      // full_height += 50
     }
 
     let select_class =
@@ -268,6 +278,9 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
           <div className={`vblock-highlight ${select_class}`}
                 style={{position: "absolute", left: 0, borderStyle: 'solid',
                         marginTop: 0, padding: Constants.padding_expanded}}>
+
+            {this.title ? <div className='vblock-title'>{this.title}</div> : null}
+
             <div className='vblock-row' style={{display: "inline-block"}}>
               <VideoTrack onExpand = {this.props.onExpand}
                           thumb = {false}
@@ -279,7 +292,7 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
               <div className='clearfix' />
             </div>
 
-            <div className='vblock-close-expand' onClick={this.closeClick}>minimize</div>
+            <div className='vblock-close-expand' onClick={this.closeClick}>X</div>
 
             {this.captions !== null && (this.props.settings!.show_captions || this.props.expand)
             ? <div className='vblock-row' style={{display: "inline-block", float: "right"}}>

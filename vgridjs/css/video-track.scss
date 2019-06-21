@@ -20,6 +20,12 @@
 
     .row {}
 
+    .vblock-title {
+        width: 100%;
+        font-weight: bold;
+        padding: 2px;
+    }
+
     .vblock-highlight {
         padding: 5px;
 
@@ -69,6 +75,7 @@
             .caption-canvas {
                 font-size: 13px;
                 line-height: 1.2em;
+                padding: 5px;
             }
 
             .caption-group {
@@ -225,6 +232,8 @@
         font-size: 12px;
         line-height: 1em;
 
+        padding: 4px;
+
         .active {
             -webkit-text-stroke: 1px black;
             text-decoration: underline;
@@ -246,7 +255,7 @@
     display: inline-block;
     vertical-align: top;
     position: absolute;
-    bottom: 0px;
+    top: 0px;
     right: 5px;
     font-size: 16px;
     font-family: sans-serif;
