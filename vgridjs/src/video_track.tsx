@@ -33,7 +33,7 @@ interface VideoTrackProps {
 
   /* Injected */
   settings?: Settings,
-  
+
   onExpand: () => void
 }
 
@@ -58,13 +58,15 @@ export default class VideoTrack extends React.Component<VideoTrackProps, VideoTr
   }
 
   play_video = () => {
-    this.setState({video_active: true});
-    this.video.current.toggle();
+    if (!this.props.thumb) {
+      this.setState({video_active: true});
+      this.video.current.toggle();
+    }
   }
 
   key_bindings = {
     [KeyMode.Standalone]: {
-      'p': this.play_video
+      ' ': this.play_video
     },
     [KeyMode.Jupyter]: {
       ';': this.play_video
@@ -82,8 +84,11 @@ export default class VideoTrack extends React.Component<VideoTrackProps, VideoTr
   }
 
   onMouseDown = (x: number, y: number) => {
-    if(this.props.thumb)
+    if(this.props.thumb) {
       this.props.onExpand();
+    } else {
+      this.play_video();
+    }
   }
 
   render() {
