@@ -1,3 +1,7 @@
+.page {
+  text-align: center;
+}
+
 .page-buttons {
     margin-top: 10px;
 
@@ -233,6 +237,7 @@
     .caption-canvas {
         position: absolute;
         left: 0;
+        text-align: left;
 
         font-size: 12px;
         line-height: 1em;
@@ -253,6 +258,7 @@
     .caption-group {
         margin-bottom: 1rem;
         word-break: break-all;
+        white-space: normal;
     }
 }
 

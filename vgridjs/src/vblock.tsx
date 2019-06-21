@@ -303,33 +303,35 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
 
           {this.props.expand ?
           <div className={`vblock-highlight ${select_class}`}
-                style={{position: "absolute", left: 0, borderStyle: 'solid',
+                style={{position: "absolute", left: "50%", transform: "translateX(-50%)", borderStyle: 'solid',
                         marginTop: 0, padding: _.get(vblock_constants, 'padding_expanded', Constants.padding_expanded)}}>
 
             {this.title ? <div className='vblock-title'>{this.title}</div> : null}
 
-            <div className='vblock-row' style={{display: "inline-block"}}>
-              <VideoTrack onExpand = {this.props.onExpand}
-                          thumb = {false}
-                          intervals={current_intervals}
-                          width={expanded_width}
-                          height={expanded_height}
-              {...args_expanded} />
-
-              <div className='clearfix' />
-            </div>
-
             <div className='vblock-close-expand' onClick={this.closeClick}>X</div>
 
-            {this.captions !== null && (this.props.settings!.show_captions || this.props.expand)
-            ? <div className='vblock-row' style={{display: "inline-block", float: "right"}}>
-                <CaptionTrack intervals={this.captions}
-                              delimiter={this.props.settings!.caption_delimiter}
-                              width={_.get(vblock_constants, 'caption_width_expanded', Constants.caption_width_expanded)}
-                              height={expanded_height}
-                              {...args_expanded} />
+            <span style={{whiteSpace: "nowrap"}}>
+              <div className='vblock-row' style={{display: "inline-block"}}>
+                <VideoTrack onExpand = {this.props.onExpand}
+                            thumb = {false}
+                            intervals={current_intervals}
+                            width={expanded_width}
+                            height={expanded_height}
+                {...args_expanded} />
+
+                <div className='clearfix' />
               </div>
-            : null}
+
+              {this.captions !== null && (this.props.settings!.show_captions || this.props.expand)
+              ? <div className='vblock-row' style={{display: "inline-block"}}>
+                  <CaptionTrack intervals={this.captions}
+                                delimiter={this.props.settings!.caption_delimiter}
+                                width={_.get(vblock_constants, 'caption_width_expanded', Constants.caption_width_expanded)}
+                                height={expanded_height}
+                                {...args_expanded} />
+                </div>
+              : null}
+            </span>
 
             {this.show_metadata
             ? <div className='vblock-row'>
