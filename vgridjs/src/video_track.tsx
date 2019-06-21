@@ -91,6 +91,11 @@ export default class VideoTrack extends React.Component<VideoTrackProps, VideoTr
     }
   }
 
+  onReplay = () => {
+    this.props.time_state.time = 0;
+    this.play_video();
+  }
+
   render() {
     // Get current frame
     let time = this.props.time_state.time;
@@ -119,6 +124,10 @@ export default class VideoTrack extends React.Component<VideoTrackProps, VideoTr
           intervals={this.props.intervals} width={this.props.width}
           height={this.props.height} />
       </div>
+
+      {time >= Math.floor(video.num_frames / video.fps)
+       ? <div className='replay-button noselect' onClick={this.onReplay}>&#8634;</div>
+      : null}
 
     </div>;
   }

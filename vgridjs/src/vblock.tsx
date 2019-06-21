@@ -308,7 +308,7 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
 
             {this.title ? <div className='vblock-title'>{this.title}</div> : null}
 
-            <div className='vblock-close-expand' onClick={this.closeClick}>X</div>
+            <div className='vblock-close-expand noselect' onClick={this.closeClick}>&#10005;</div>
 
             <div style={{whiteSpace: "nowrap"}}>
               <div className='vblock-row' style={{display: "inline-block", verticalAlign: "top"}}>

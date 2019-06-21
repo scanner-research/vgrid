@@ -126,6 +126,17 @@
         z-index: 1000;
     }
 
+    .replay-button {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%,-50%);
+        font-size: 144px;
+        color: white;
+        cursor: pointer;
+        text-shadow: 4px 4px black;
+    }
+
     /* Make the video controls on Chrome always show over the spatial overlay */
     video::-webkit-media-controls-panel {
         position: relative;

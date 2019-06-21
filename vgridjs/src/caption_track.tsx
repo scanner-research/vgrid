@@ -261,8 +261,8 @@ export default class CaptionTrack extends React.Component<CaptionTrackProps, {}>
       // Find the latest caption group less than the current time
       let current_group = 0;
       for (let [i, group] of this.caption_groups.entries()) {
+        current_group = i;
         if (group[group.length - 1].bounds.t1 >= cur_time) {
-          current_group = i;
           break;
         }
       }
