@@ -276,9 +276,10 @@ export default class CaptionTrack extends React.Component<CaptionTrackProps, {}>
       top = group_middle - track_style.height / 2;
     }
 
+    // Do not allow large amounts of empty space on top
     return <div className='caption-track' style={track_style}>
       <div className='caption-window'>
-        <div className='caption-canvas' style={{top: -top, width: track_style.width}}
+        <div className='caption-canvas' style={{top: Math.min(10, -top), width: track_style.width}}
              ref={this.canvas_ref}>
           {this.caption_groups.map((group, i) => {
              return <div key={i} ref={this.group_refs[i]}>
