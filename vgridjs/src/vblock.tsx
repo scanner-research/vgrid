@@ -310,8 +310,8 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
 
             <div className='vblock-close-expand' onClick={this.closeClick}>X</div>
 
-            <span style={{whiteSpace: "nowrap"}}>
-              <div className='vblock-row' style={{display: "inline-block"}}>
+            <div style={{whiteSpace: "nowrap"}}>
+              <div className='vblock-row' style={{display: "inline-block", verticalAlign: "top"}}>
                 <VideoTrack onExpand = {this.props.onExpand}
                             thumb = {false}
                             intervals={current_intervals}
@@ -323,7 +323,7 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
               </div>
 
               {this.captions !== null && (this.props.settings!.show_captions || this.props.expand)
-              ? <div className='vblock-row' style={{display: "inline-block"}}>
+              ? <div className='vblock-row' style={{display: "inline-block", verticalAlign: "top"}}>
                   <CaptionTrack intervals={this.captions}
                                 delimiter={this.props.settings!.caption_delimiter}
                                 width={_.get(vblock_constants, 'caption_width_expanded', Constants.caption_width_expanded)}
@@ -331,7 +331,7 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
                                 {...args_expanded} />
                 </div>
               : null}
-            </span>
+            </div>
 
             {this.show_metadata
             ? <div className='vblock-row'>
