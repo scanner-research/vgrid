@@ -131,9 +131,9 @@ export class VGrid extends React.Component<VGridProps, VGridState> {
       this.action_stack.redo();
     }
   }
-  
+
   onChildExpand = (id: number) => {
-    console.log("EXPAND", id);
+    // console.log("EXPAND", id);
     if (this.state.expand_num == id)
       this.setState({expand_num: -1});
     else
@@ -153,8 +153,8 @@ export class VGrid extends React.Component<VGridProps, VGridState> {
                               on_select={(type) => this.on_block_selected(i, type)}
                               selected={selected.has(i) ? selected.get(i)! : null}
                               label_state={this.label_state.block_labels.get(i)!}
-                              container_width={this.props.max_width || this.state.container_width} 
-                              expand={i == this.state.expand_num } 
+                              container_width={this.props.max_width || this.state.container_width}
+                              expand={i == this.state.expand_num }
                           onExpand = {() => this.onChildExpand(i)} />
               </li>
             )} />

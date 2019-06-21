@@ -40,8 +40,8 @@ export let MetadataTrack: React.SFC<MetadataTrackProps> = observer((props) => {
     display: _.keys(generic_metadata).length == 0 ? 'none' : 'block',
   };
 
-  console.log("props width", props.width);
-  console.log("style width", style.width);
+  // console.log("props width", props.width);
+  // console.log("style width", style.width);
 
   return <div className='metadata-track' style={style}>
       {_.keys(generic_metadata).map((k) => <div className='metadata-entry' key={k}>
