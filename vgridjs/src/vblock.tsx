@@ -252,12 +252,16 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
       <Provider label_state={this.props.label_state} time_state={this.time_state}>
         <div className={classNames({vblock: true, expanded: false})} style={{height: full_height}}>
           <div className={`vblock-highlight ${select_class}`} style={{paddingBottom: 0}}>
+
             <div className='vblock-row'>
-              <VideoTrack onExpand = {this.props.onExpand}
-                          thumb = {true}
-                          intervals={current_intervals}
-                          height={thumb_height}
-                          {...args} />
+              {!this.props.expand
+              ? <VideoTrack onExpand = {this.props.onExpand}
+                            thumb = {true}
+                            intervals={current_intervals}
+                            height={thumb_height}
+                            {...args} />
+              : <div className='video-track-placeholder' onClick={this.closeClick}
+                     style={{height: thumb_height, width: thumb_width}} />}
 
               <div className='clearfix' />
             </div>
