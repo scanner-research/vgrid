@@ -40,7 +40,8 @@ let CaptionGroup: React.SFC<CaptionGroupProps> = observer((props: CaptionGroupPr
 
       return <span key={i}>
         <span className={classNames({caption: true, active: overlaps, flag: flag})}
-              data-group={props.group_index} data-interval={i}>
+              data-group={props.group_index} data-interval={i}
+              style={(intvl.data.spatial_type as SpatialType_Caption).style}>
           {(intvl.data.spatial_type as SpatialType_Caption).text}
         </span>
         {/* To avoid discontinuously highlighting individual words, we also highlight the spacing
@@ -194,6 +195,7 @@ export default class CaptionTrack extends React.Component<CaptionTrackProps, {}>
      * in the middle. */
     intervals.forEach((intvl, index) => {
       let text = (intvl.data.spatial_type as SpatialType_Caption).text;
+      let style = (intvl.data.spatial_type as SpatialType_Caption).style;
       let parts = text.split(delimiter);
 
       if (parts.length == 1) {
@@ -204,7 +206,10 @@ export default class CaptionTrack extends React.Component<CaptionTrackProps, {}>
           push_intvl(
             new Interval(
               intvl.bounds,
-              {spatial_type: new SpatialType_Caption(part_text), metadata: intvl.data.metadata}),
+              {
+                spatial_type: new SpatialType_Caption(part_text, style),
+                metadata: intvl.data.metadata
+              }),
             index);
 
           if (i != parts.length - 1) {
