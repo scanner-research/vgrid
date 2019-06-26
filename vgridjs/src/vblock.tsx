@@ -310,7 +310,7 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
 
             <div className='vblock-close-expand noselect' onClick={this.closeClick}>&#10005;</div>
 
-            <div style={{whiteSpace: "nowrap"}}>
+            <div style={{whiteSpace: "nowrap", textAlign: "left"}}>
               <div className='vblock-row' style={{display: "inline-block", verticalAlign: "top"}}>
                 <VideoTrack onExpand = {this.props.onExpand}
                             thumb = {false}
