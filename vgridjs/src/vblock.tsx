@@ -136,7 +136,7 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
     // Decide whether there is metadata to show
     this.show_metadata = interval_sets.some(
       ({interval_set}: {interval_set: IntervalSet}) =>
-        interval_set.to_list().some((intvl: Interval) => intvl.data.metadata));
+        interval_set.to_list().some((intvl: Interval) => intvl.data.metadata != null));
   }
 
   toggle_expand = () => {
