@@ -218,6 +218,11 @@ export default class CaptionTrack extends React.Component<CaptionTrackProps, {}>
           }
         });
       }
+
+      if (current_group.length > 100) {
+        this.caption_groups.push(current_group);
+        current_group = [];
+      }
     });
 
     // Make sure to include the unfinished caption group at the end.

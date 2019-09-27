@@ -269,8 +269,12 @@
 
     .caption-group {
         margin-bottom: 1rem;
-        word-break: break-all;
+        word-break: normal;
         white-space: normal;
+
+        span {
+            display: inline-block;
+        }
     }
 }
 
