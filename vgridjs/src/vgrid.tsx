@@ -7,7 +7,7 @@ import {VBlock, IntervalBlock} from'./vblock';
 import {IntervalSet} from './interval';
 import {Database} from './database';
 import {default_settings, Settings} from './settings';
-import {default_palette, ColorMap} from './color';
+import {ColorMap} from './color';
 import {BlockSelectType, BlockLabelState, LabelState} from './label_state';
 import {ActionStack} from './undo';
 import {mouse_key_events} from './events';
@@ -79,13 +79,9 @@ export class VGrid extends React.Component<VGridProps, VGridState> {
     }
 
     // Set a default color for each interval set
-    if (this.settings.colors.length > 0) {
-        this.color_map = {'__new_intervals': this.settings.colors[this.settings.colors.length - 1]};
-    } else {
-        this.color_map = {'__new_intervals': default_palette[default_palette.length - 1]};
-    }
+    this.color_map = {'__new_intervals': this.settings.colors[this.settings.colors.length - 1]};
     this.props.interval_blocks[0].interval_sets.forEach(({name}, i) => {
-      this.color_map[name] = default_palette[i];
+      this.color_map[name] = this.settings.colors[i];
     });
 
     if (this.props.label_callback) {

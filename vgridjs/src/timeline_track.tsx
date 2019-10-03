@@ -7,7 +7,6 @@ import {SpatialType_Bbox} from './spatial/bbox';
 import {IntervalSet, NamedIntervalSet, Interval, Bounds} from './interval';
 import TimeState from './time_state';
 import {DbVideo} from './database';
-import {default_palette} from './color';
 import {mouse_key_events} from './events';
 import {key_dispatch, KeyMode} from './keyboard';
 import {Settings} from './settings';
