@@ -133,7 +133,7 @@ class TimelineRow extends React.Component<TimelineRowProps, {}>{
   }
 
   render() {
-    return <canvas ref={this.canvas_ref} width={this.props.full_width} height={this.props.row_height} style={{background: "white", margin-bottom: "-5px"}} />
+    return <canvas ref={this.canvas_ref} width={this.props.full_width} height={this.props.row_height} style={{background: "white", "margin-bottom": "-5px"}} />
   }
 }
 
