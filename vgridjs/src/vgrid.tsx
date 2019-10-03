@@ -70,8 +70,20 @@ export class VGrid extends React.Component<VGridProps, VGridState> {
       this.label_state.block_labels.set(i, new BlockLabelState());
     });
 
+    // Copy in any provided settings, otherwise use defaults
+    this.settings = default_settings;
+    if (this.props.settings) {
+      _.keys(this.props.settings).forEach((k) => {
+        (this.settings as any)[k] = this.props.settings![k];
+      });
+    }
+
     // Set a default color for each interval set
-    this.color_map = {'__new_intervals': default_palette[default_palette.length - 1]};
+    if (this.settings.colors.length > 0) {
+        this.color_map = {'__new_intervals': this.settings.colors[this.settings.colors.length - 1]};
+    } else {
+        this.color_map = {'__new_intervals': default_palette[default_palette.length - 1]};
+    }
     this.props.interval_blocks[0].interval_sets.forEach(({name}, i) => {
       this.color_map[name] = default_palette[i];
     });
@@ -83,14 +95,6 @@ export class VGrid extends React.Component<VGridProps, VGridState> {
           block_state.new_intervals.length();
         });
         this.props.label_callback!(this.label_state);
-      });
-    }
-
-    // Copy in any provided settings, otherwise use defaults
-    this.settings = default_settings;
-    if (this.props.settings) {
-      _.keys(this.props.settings).forEach((k) => {
-        (this.settings as any)[k] = this.props.settings![k];
       });
     }
 

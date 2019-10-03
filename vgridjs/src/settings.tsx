@@ -19,7 +19,9 @@ export interface Settings {
   blocks_per_page: number,
   caption_delimiter: string,
 
-  vblock_constants: any
+  vblock_constants: any,
+
+  colors: Array<string>
 }
 
 export let default_settings = {
@@ -35,5 +37,6 @@ export let default_settings = {
   paginate: true,
   blocks_per_page: 50,
   caption_delimiter: '>>',
-  vblock_constants: {}
+  vblock_constants: {},
+  colors: []
 };
