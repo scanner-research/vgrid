@@ -133,7 +133,7 @@ class TimelineRow extends React.Component<TimelineRowProps, {}>{
   }
 
   render() {
-    return <canvas ref={this.canvas_ref} width={this.props.full_width} height={this.props.row_height} style={{background: "white"}} />
+    return <canvas ref={this.canvas_ref} width={this.props.full_width} height={this.props.row_height} style={{background: "white", margin-bottom: "-5px"}} />
   }
 }
 
@@ -428,7 +428,7 @@ class Timeline extends React.Component<TimelineProps, TimelineState> {
       keys.push('__new_intervals');
     }
 
-    let row_height = this.props.timeline_height / keys.length;
+    let row_height = Math.floor(this.props.timeline_height / keys.length);
     let time = this.props.time_state.time;
 
     let video_span = this.props.video.num_frames / this.props.video.fps;
@@ -463,8 +463,9 @@ class Timeline extends React.Component<TimelineProps, TimelineState> {
 interface TicksProps {
   timeline_width: number,
   timeline_bounds: TimelineBounds,
-  height: number
-  num_ticks: number
+  height: number,
+  num_ticks: number,
+  show_hours: boolean
 }
 
 /** Ticks at the bottom of the timeline indicating video time at regular intervals */
@@ -492,7 +493,10 @@ class Ticks extends React.Component<TicksProps, {}> {
       let hours = Math.floor(tick / 3600);
       let minutes = Math.floor(60 * (tick / 3600 - hours));
       let seconds = Math.floor(60 * (60 * (tick / 3600 - hours) - minutes));
-      let time_str = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+      let time_str = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+      if (this.props.show_hours) {
+        time_str = `${hours.toString().padStart(2, '0')}:` + time_str;
+      }
       let x = time_to_x(tick, this.props.timeline_bounds, this.props.timeline_width);
 
       ctx.moveTo(x, 0);
@@ -686,6 +690,8 @@ export default class TimelineTrack extends React.Component<TimelineTrackProps, {
       this.props.expand
       ? "gray"
       : "white";
+    let full_duration = this.props.video.num_frames / this.props.video.fps;
+    let show_hours = full_duration > 60 * 60;
 
     let controller_size = timeline_height;
     let track_width = this.props.expand ? timeline_width + controller_size : timeline_width;
@@ -696,11 +702,11 @@ export default class TimelineTrack extends React.Component<TimelineTrackProps, {
             time_state={this.props.time_state}
             timeline_bounds={this.timeline_bounds}
             timeline_width={timeline_width}
-            full_duration={this.props.video.num_frames / this.props.video.fps} />,
+            full_duration={full_duration} />,
 
           <TimelineOverview
             timeline_width={timeline_width}
-            full_duration={this.props.video.num_frames / this.props.video.fps}
+            full_duration={full_duration}
             intervals={this.props.intervals} />]
         : null }
 
@@ -730,7 +736,8 @@ export default class TimelineTrack extends React.Component<TimelineTrackProps, {
                 timeline_width={timeline_width}
                 timeline_bounds={this.timeline_bounds}
                 height={Constants.tick_height}
-                num_ticks={Constants.num_ticks} />
+                num_ticks={Constants.num_ticks}
+                show_hours={show_hours}/>
             : null}
             <div className='clearfix' />
         </div>
