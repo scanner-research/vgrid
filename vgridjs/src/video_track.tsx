@@ -108,7 +108,7 @@ export default class VideoTrack extends React.Component<VideoTrackProps, VideoTr
       `${this.props.settings!.video_endpoint}/${video.path}`;
     let image_path =
       `${this.props.settings!.frameserver_endpoint}?path=${encodeURIComponent(video.path)}&frame=${frame}`;
-    if (this.props.settings.use_frameserver && r.test(video.path)) {
+    if (this.props.settings!.use_frameserver && r.test(video.path)) {
       console.log('Cannot use the frameserver with absolute paths!');
     }
 
