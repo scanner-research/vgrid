@@ -66,6 +66,20 @@ export class Metadata_CaptionMeta extends Metadata {
   }
 }
 
+/** Metadata text on bbox. */
+export class Metadata_Bbox extends Metadata {
+  text: string
+
+  constructor(text: string) {
+    super();
+    this.text = text;
+  }
+
+  static from_json(obj: any): Metadata_Bbox {
+    throw new Error('Not yet implemented');
+  }
+}
+
 export let metadata_from_json = (obj: any): Metadata => {
   let types: any = {
     'Metadata_Categorical': Metadata_Categorical,

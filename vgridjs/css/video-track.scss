@@ -166,6 +166,12 @@
 
     .bbox-draw {
         position: absolute;
+
+        .text-label {
+            text-align: left;
+            white-space: nowrap;
+            padding-left: 4px;
+        }
     }
 }
 
@@ -193,7 +199,7 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
-            
+
             canvas {
                 display: block;
             }

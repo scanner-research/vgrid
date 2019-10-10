@@ -7,12 +7,14 @@ export interface DrawProps {
   width: number,
   height: number,
   color: string
+  expand: boolean
 }
 
 export interface LabelProps {
   width: number,
   height: number,
   color: string,
+  expand: boolean,
   label_state?: BlockLabelState
 }
 

@@ -14,6 +14,7 @@ interface SpatialOverlayProps {
   width: number,
   height: number,
   time: number, // just here to trigger re-render when time changes
+  expand: boolean,
   colors?: ColorMap
   database?: Database
 }
@@ -45,13 +46,15 @@ export class SpatialOverlay extends React.Component<SpatialOverlayProps, {}> {
 
             return View
                  ? <View
-                     key={i} interval={intvl} width={this.props.width} height={this.props.height}
+                     key={i} interval={intvl} expand={this.props.expand}
+                     width={this.props.width} height={this.props.height}
                      color={color} />
                  : null;
           }))}
       </div>
       <div className='spatial-labeler'>
-        <BboxLabeler width={this.props.width} height={this.props.height} color={label_color} />
+        <BboxLabeler width={this.props.width} height={this.props.height} color={label_color}
+                     expand={this.props.expand} />
       </div>
     </div>
   }

@@ -19,6 +19,7 @@ import 'main.scss';
 export * from './interval';
 export * from './database';
 export * from './spatial/mod';
+export * from './spatial/bbox'; // FIXME: this should not be needed
 export * from './metadata';
 export * from './label_state';
 export {IntervalBlock, interval_blocks_from_json} from './vblock';

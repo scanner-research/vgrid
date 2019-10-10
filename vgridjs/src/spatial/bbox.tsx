@@ -6,6 +6,7 @@ import {mouse_key_events} from '../events';
 import {Interval, Bounds, BoundingBox} from '../interval';
 import TimeState from '../time_state';
 import {ActionStack} from '../undo';
+import {Metadata_Bbox} from '../metadata';
 
 class BboxDrawView extends React.Component<DrawProps, {}> {
   render() {
@@ -19,8 +20,22 @@ class BboxDrawView extends React.Component<DrawProps, {}> {
       height: (bbox.y2 - bbox.y1) * this.props.height,
       border: `2px solid ${this.props.color}`
     };
+
+    let bbox_text: string[] = Object.values(
+      this.props.interval.data.metadata
+    ).filter(m => m instanceof Metadata_Bbox).map(
+      m => (m as Metadata_Bbox).text
+    );
+    let meta_style = {
+      backgroundColor: this.props.color
+    };
+
     return <div className='bbox-draw' style={position}>
       <div className='box-outline' style={box_style} />
+      {this.props.expand ?
+        bbox_text.map(text => {
+          return <div className='text-label' style={meta_style}>{text}</div>
+        }) : null}
     </div>;
   }
 }
@@ -125,7 +140,7 @@ class BboxLabelView extends React.Component<LabelProps & BboxLabelProps, BboxLab
       bbox = <BboxDrawView
                interval={this.make_interval()}
                width={this.props.width} height={this.props.height}
-               color={this.props.color} />;
+               color={this.props.color} expand={this.props.expand} />;
     }
 
     let style = {width: this.props.width, height: this.props.height};

@@ -120,9 +120,8 @@ export default class VideoTrack extends React.Component<VideoTrackProps, VideoTr
 
       <div className='track-overlay'>
         <SpatialOverlay
-          time={time}
-          intervals={this.props.intervals} width={this.props.width}
-          height={this.props.height} />
+          time={time} intervals={this.props.intervals} width={this.props.width}
+          height={this.props.height} expand={this.props.expand} />
       </div>
 
       {time >= Math.floor(video.num_frames / video.fps)
