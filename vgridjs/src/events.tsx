@@ -41,41 +41,57 @@ export let mouse_key_events = <C extends object>(Component: C): C  =>
     }
 
     onClick = (e: React.MouseEvent<HTMLElement>) => {
-      this.call_if(this.component.current.onClick, e);
+      if (this.component.current) {
+        this.call_if(this.component.current.onClick, e);
+      }
     }
 
     onMouseDown = (e: React.MouseEvent<HTMLElement>) => {
-      this.call_if(this.component.current.onMouseDown, e);
+      if (this.component.current) {
+        this.call_if(this.component.current.onMouseDown, e);
+      }
     }
 
     onMouseMove = (e: React.MouseEvent<HTMLElement>) => {
       this.last_x = e.clientX;
       this.last_y = e.clientY;
-      this.call_if(this.component.current.onMouseMove, e);
+      if (this.component.current) {
+        this.call_if(this.component.current.onMouseMove, e);
+      }
     }
 
     onMouseUp = (e: React.MouseEvent<HTMLElement>) => {
-      this.call_if(this.component.current.onMouseUp, e);
+      if (this.component.current) {
+        this.call_if(this.component.current.onMouseUp, e);
+      }
     }
 
     onKeyDown = (e: any) => {
-      this.call_if_kbd(this.component.current.onKeyDown, e);
+      if (this.component.current) {
+        this.call_if_kbd(this.component.current.onKeyDown, e);
+      }
     }
 
     onKeyUp = (e: any) => {
-      this.call_if_kbd(this.component.current.onKeyUp, e);
+      if (this.component.current) {
+        this.call_if_kbd(this.component.current.onKeyUp, e);
+      }
     }
 
     onMouseEnter = (e: React.MouseEvent<HTMLElement>) => {
       document.addEventListener('keydown', this.onKeyDown);
       document.addEventListener('keyup', this.onKeyUp);
-      this.call_if(this.component.current.onMouseEnter, e);
+      if (this.component.current) {
+        this.call_if(this.component.current.onMouseEnter, e);
+      }
     }
 
     onMouseLeave = (e: React.MouseEvent<HTMLElement>) => {
       document.removeEventListener('keydown', this.onKeyDown);
       document.removeEventListener('keyup', this.onKeyUp);
-      this.call_if(this.component.current.onMouseLeave, e);
+      if (this.component.current) {
+        this.call_if(this.component.current.onMouseLeave, e);
+      }
     }
 
     render() {

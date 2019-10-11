@@ -42,7 +42,7 @@ export class Keypoints {
     face_pose: Array<KeypointNode> = [],
     hand_left_pose: Array<KeypointNode> = [],
     hand_right_pose: Array<KeypointNode> = []
-  ) {
+  ): Keypoints {
     let POSE_COLOR = 'rgb(255, 60, 60)';
     let POSE_LEFT_COLOR = 'rgb(23, 166, 250)';
     let FACE_COLOR = 'rgb(240, 240, 240)';
