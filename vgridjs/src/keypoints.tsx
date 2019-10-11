@@ -5,13 +5,13 @@
 export interface KeypointNode {
   x: number
   y: number
-  score?: number
+  score: number
 }
 
 export interface KeypointEdge {
   start: number
   end: number
-  color?: string
+  color: string
 }
 
 export class Keypoints {
