@@ -99,14 +99,21 @@
 				<pre><code>python3 -m http.<span class="hljs-keyword">server</span></code></pre><h3 id="javascript-only">Javascript only</h3>
 				<p>If you&#39;re only running Javascript, then you will need to construct the video metadata and interval data using the Javascript API.</p>
 				<pre><code class="language-jsx"><span class="hljs-keyword">import</span> ReactDOM <span class="hljs-keyword">from</span> <span class="hljs-string">'react-dom'</span>;
-<span class="hljs-keyword">import</span> {VGrid, Database, IntervalSet, Interval, Bounds} <span class="hljs-keyword">from</span> <span class="hljs-string">'@wcrichto/vgrid'</span>;
+<span class="hljs-keyword">import</span> {VGrid, Table, Database, IntervalSet, Interval, Bounds, BoundingBox, SpatialType_Bbox} <span class="hljs-keyword">from</span> <span class="hljs-string">'@wcrichto/vgrid'</span>;
+<span class="hljs-keyword">import</span> <span class="hljs-string">'@wcrichto/vgrid/dist/vgrid.css'</span>;
 
 <span class="hljs-comment">// Setup intervals</span>
 <span class="hljs-keyword">let</span> interval_blocks = [{
   <span class="hljs-attr">video_id</span>: <span class="hljs-number">0</span>,
   <span class="hljs-attr">interval_sets</span>: [{
     <span class="hljs-attr">name</span>: <span class="hljs-string">'test'</span>,
-    <span class="hljs-attr">interval_set</span>: <span class="hljs-keyword">new</span> IntervalSet([<span class="hljs-keyword">new</span> Interval(<span class="hljs-keyword">new</span> Bounds(<span class="hljs-number">0</span>, <span class="hljs-number">10</span>))])
+    <span class="hljs-attr">interval_set</span>: <span class="hljs-keyword">new</span> IntervalSet([<span class="hljs-keyword">new</span> Interval(
+      <span class="hljs-keyword">new</span> Bounds(<span class="hljs-number">0</span>, <span class="hljs-number">10</span>),
+      {
+        <span class="hljs-attr">spatial_type</span>: <span class="hljs-keyword">new</span> SpatialType_Bbox(),
+        <span class="hljs-attr">metadata</span>: {}
+      }
+    )])
   }]
 }];
 
