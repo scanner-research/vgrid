@@ -93,4 +93,5 @@ class KeypointsDrawView extends React.Component<DrawProps, {}> {
 export class SpatialType_Keypoints extends SpatialType {
   draw_view(): React.ComponentType<DrawProps> { return KeypointsDrawView; }
   label_view(): null { return null; }
+  static from_json(obj: any): SpatialType_Keypoints { return new SpatialType_Keypoints(); }
 }

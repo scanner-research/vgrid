@@ -64,7 +64,9 @@ export class Metadata_CaptionMeta extends Metadata {
   }
 
   static from_json(obj: any): Metadata_CaptionMeta {
-    throw new Error('Not yet implemented');
+    return new Metadata_CaptionMeta(
+      obj.meta.to_json(), obj.char_start, obj.char_end
+    );
   }
 }
 
@@ -78,7 +80,7 @@ export class Metadata_Bbox extends Metadata {
   }
 
   static from_json(obj: any): Metadata_Bbox {
-    throw new Error('Not yet implemented');
+    return new Metadata_Bbox(obj.text)
   }
 }
 
@@ -105,17 +107,16 @@ export class Metadata_Keypoints extends Metadata {
       }
    */
   static from_json(obj: any): Metadata_Keypoints {
-    let keypoint_nodes: {[index: number]: KeypointNode} = [];
+    let keypoint_nodes: {[index: number]: KeypointNode} = {};
     let edges: Array<KeypointEdge> = [];
 
     for (let index of Object.keys(obj.keypoints)) {
-      if (typeof index == 'number') {
-        let node_tup = obj.keypoints[index];
-        keypoint_nodes[index] = {
-          x: node_tup[0],
-          y: node_tup[1],
-          score: node_tup[2]
-        }
+      let node_tup = obj.keypoints[index];
+      let index_num = parseInt(index)
+      keypoint_nodes[index_num] = {
+        x: node_tup[0],
+        y: node_tup[1],
+        score: node_tup[2]
       }
     }
 
