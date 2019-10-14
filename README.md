@@ -58,14 +58,21 @@ If you're only running Javascript, then you will need to construct the video met
 
 ```jsx
 import ReactDOM from 'react-dom';
-import {VGrid, Database, IntervalSet, Interval, Bounds} from '@wcrichto/vgrid';
+import {VGrid, Table, Database, IntervalSet, Interval, Bounds, BoundingBox, SpatialType_Bbox} from '@wcrichto/vgrid';
+import '@wcrichto/vgrid/dist/vgrid.css';
 
 // Setup intervals
 let interval_blocks = [{
   video_id: 0,
   interval_sets: [{
     name: 'test',
-    interval_set: new IntervalSet([new Interval(new Bounds(0, 10))])
+    interval_set: new IntervalSet([new Interval(
+      new Bounds(0, 10),
+      {
+        spatial_type: new SpatialType_Bbox(),
+        metadata: {}
+      }
+    )])
   }]
 }];
 
