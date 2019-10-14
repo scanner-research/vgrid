@@ -32,3 +32,15 @@ class SpatialType_Bbox(SpatialType):
 
     def to_json(self):
         return {"type": "SpatialType_Bbox"}
+
+class SpatialType_Temporal(SpatialType):
+    """A SpatialType for temporal data"""
+
+    def to_json(self):
+        return {"type": "SpatialType_Temporal"}
+
+class SpatialType_Keypoints(SpatialType):
+    """A SpatialType for keypoints. Metadata must be Metadata_Keypoints."""
+
+    def to_json(self):
+        return {"type": "SpatialType_Keypoints"}
