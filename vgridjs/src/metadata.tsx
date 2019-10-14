@@ -3,6 +3,8 @@
  * metadata is drawn differently in the interface.
  */
 
+import {KeypointNode, KeypointEdge, Keypoints} from './keypoints'
+
 export abstract class Metadata {}
 
 /**
@@ -62,7 +64,9 @@ export class Metadata_CaptionMeta extends Metadata {
   }
 
   static from_json(obj: any): Metadata_CaptionMeta {
-    throw new Error('Not yet implemented');
+    return new Metadata_CaptionMeta(
+      obj.meta.to_json(), obj.char_start, obj.char_end
+    );
   }
 }
 
@@ -76,14 +80,63 @@ export class Metadata_Bbox extends Metadata {
   }
 
   static from_json(obj: any): Metadata_Bbox {
-    throw new Error('Not yet implemented');
+    return new Metadata_Bbox(obj.text)
+  }
+}
+
+/** Metadata to store Keypoint information. See the Keypoints class for
+ * constructors from OpenPose and face landmarks. */
+export class Metadata_Keypoints extends Metadata {
+  keypoints: Keypoints
+
+  constructor(keypoints: Keypoints) {
+    super();
+    this.keypoints = keypoints;
+  }
+
+  /** Format:
+      {
+        keypoints: {
+          index: [x: number, y: number, score: number],
+          ...
+        },
+        edges: [
+          [start: number, end: number, color: string],
+          ...
+        ]
+      }
+   */
+  static from_json(obj: any): Metadata_Keypoints {
+    let keypoint_nodes: {[index: number]: KeypointNode} = {};
+    let edges: Array<KeypointEdge> = [];
+
+    for (let index of Object.keys(obj.keypoints)) {
+      let node_tup = obj.keypoints[index];
+      let index_num = parseInt(index)
+      keypoint_nodes[index_num] = {
+        x: node_tup[0],
+        y: node_tup[1],
+        score: node_tup[2]
+      }
+    }
+
+    for (let edge of obj.edges) {
+      edges.push({
+        start: edge[0],
+        end: edge[1],
+        color: edge[2]
+      })
+    }
+
+    return new Metadata_Keypoints(new Keypoints(keypoint_nodes, edges));
   }
 }
 
 export let metadata_from_json = (obj: any): Metadata => {
   let types: any = {
     'Metadata_Categorical': Metadata_Categorical,
-    'Metadata_Generic': Metadata_Generic
+    'Metadata_Generic': Metadata_Generic,
+    'Metadata_Keypoints': Metadata_Keypoints
   };
 
   return types[obj.type].from_json(obj.args);

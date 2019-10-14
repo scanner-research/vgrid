@@ -17,6 +17,7 @@ import 'main.scss';
 
 // Re-exports
 export * from './interval';
+export * from './keypoints';
 export * from './database';
 export * from './spatial/mod';
 export * from './spatial/bbox'; // FIXME: this should not be needed

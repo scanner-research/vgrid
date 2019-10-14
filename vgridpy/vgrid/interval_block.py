@@ -1,5 +1,5 @@
 from .spatial_type import SpatialType, SpatialType_Bbox
-
+from .metadata import Metadata
 
 class IntervalBlock:
     """
