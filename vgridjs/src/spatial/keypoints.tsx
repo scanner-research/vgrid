@@ -90,11 +90,7 @@ class KeypointsDrawView extends React.Component<DrawProps, {}> {
   }
 }
 
-class KeypointsLabelView extends React.Component<LabelProps, {}> {
-  render() { return null; }
-}
-
 export class SpatialType_Keypoints extends SpatialType {
   draw_view(): React.ComponentType<DrawProps> { return KeypointsDrawView; }
-  label_view(): React.ComponentType<LabelProps> { return KeypointsLabelView; }
+  label_view(): null { return null; }
 }
