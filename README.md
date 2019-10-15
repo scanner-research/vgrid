@@ -9,9 +9,10 @@ VGrid is a standalone JS library, so you can embed it any web page. See the [vgr
 * [Installation](#installation)
   * [Javascript API](#javascript-api)
   * [Python API](#python-api)
-* [Usage](#example-usage)
+* [Example Usage](#example-usage)
   * [Javascript only](#javascript-only)
   * [Javascript and Python](#javascript-and-python)
+  * [Examples](#examples)
 * [API](#api)
   * [Interval blocks](#interval-blocks)
   * [Draw types](#draw-types)
@@ -152,6 +153,9 @@ fetch_json_somehow(function(vgrid_spec) {
     document.getElementById('vgrid'));
 });
 ```
+
+### Examples
+To see more examples in Javascript and Python, check out the [examples](examples) folder!
 
 ## API
 
