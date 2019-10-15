@@ -30,7 +30,7 @@ export class Metadata_Generic extends Metadata {
   }
 
   static from_json(obj: any): Metadata_Generic {
-    return new Metadata_Generic(obj);
+    return new Metadata_Generic(obj.data);
   }
 }
 
@@ -134,8 +134,11 @@ export class Metadata_Keypoints extends Metadata {
 
 export let metadata_from_json = (obj: any): Metadata => {
   let types: any = {
-    'Metadata_Categorical': Metadata_Categorical,
+    'Metadata_Flag': Metadata_Flag,
     'Metadata_Generic': Metadata_Generic,
+    'Metadata_Categorical': Metadata_Categorical,
+    'Metadata_CaptionMeta': Metadata_CaptionMeta,
+    'Metadata_Bbox': Metadata_Bbox,
     'Metadata_Keypoints': Metadata_Keypoints
   };
 

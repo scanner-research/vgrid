@@ -11,6 +11,7 @@ export interface Settings {
   show_timeline: boolean,
   show_captions: boolean,
   show_metadata: boolean,
+  show_metadata_thumbnail_mode: boolean,
 
   /* show in expand mode */
   show_timeline_controls: boolean,
@@ -33,6 +34,7 @@ export let default_settings = {
   show_timeline: true,
   show_captions: true,
   show_metadata: true,
+  show_metadata_thumbnail_mode: false,
   show_timeline_controls: true,
   paginate: true,
   blocks_per_page: 50,

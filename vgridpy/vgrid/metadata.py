@@ -21,7 +21,7 @@ class Metadata_Generic(Metadata):
         self._data = data
 
     def to_json(self):
-        return {"type": "Metadata_Generic", "args": {"data": data}}
+        return {"type": "Metadata_Generic", "args": {"data": self._data}}
 
 
 class Metadata_Categorical(Metadata):

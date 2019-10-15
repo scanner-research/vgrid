@@ -266,14 +266,6 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
               <div className='clearfix' />
             </div>
 
-            {this.props.settings!.show_metadata && this.show_metadata
-            ? <div className='vblock-row'>
-                <MetadataTrack intervals={current_intervals}
-                                 height={_.get(vblock_constants, 'metadata_height', Constants.metadata_height)}
-                                 {...args} />
-              </div>
-            : null}
-
             {this.props.settings!.show_timeline && this.show_timeline
             ? <div className='vblock-row'>
                 <TimelineTrack intervals={this.props.block.interval_sets.filter(({name}) =>
@@ -281,6 +273,15 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
                                height={_.get(vblock_constants, 'timeline_height', Constants.timeline_height)}
                                show_timeline_controls={this.props.settings!.show_timeline_controls}
                                {...args} />
+              </div>
+            : null}
+
+            {(this.props.settings!.show_metadata && this.show_metadata &&
+              this.props.settings!.show_metadata_thumbnail_mode)
+            ? <div className='vblock-row'>
+                <MetadataTrack intervals={current_intervals}
+                                 height={_.get(vblock_constants, 'metadata_height', Constants.metadata_height)}
+                                 {...args} />
               </div>
             : null}
 
@@ -333,6 +334,14 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
               : null}
             </div>
 
+            <div className='vblock-row'>
+                <TimelineTrack intervals={this.props.block.interval_sets.filter(({name}) => show_in_timeline(name))}
+                               width={expanded_width}
+                               height={_.get(vblock_constants, 'timeline_height_expanded', Constants.timeline_height_expanded)}
+                               show_timeline_controls={this.props.settings!.show_timeline_controls}
+                               {...args_expanded} />
+            </div>
+
             {this.show_metadata
             ? <div className='vblock-row'>
                 <MetadataTrack intervals={current_intervals}
@@ -342,13 +351,6 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
               </div>
             : null }
 
-            <div className='vblock-row'>
-                <TimelineTrack intervals={this.props.block.interval_sets.filter(({name}) => show_in_timeline(name))}
-                               width={expanded_width}
-                               height={_.get(vblock_constants, 'timeline_height_expanded', Constants.timeline_height_expanded)}
-                               show_timeline_controls={this.props.settings!.show_timeline_controls}
-                               {...args_expanded} />
-            </div>
           </div>
           : null }
         </div>
