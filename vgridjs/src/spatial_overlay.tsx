@@ -28,7 +28,7 @@ interface SpatialOverlayProps {
 @observer
 export class SpatialOverlay extends React.Component<SpatialOverlayProps, {}> {
   render() {
-    let BboxLabeler = (new SpatialType_Bbox()).label_view()!;
+    let BboxLabeler = (new SpatialType_Bbox(null)).label_view()!;
     let label_color = this.props.colors!['__new_intervals'];
     return <div className='spatial-overlay'>
       <div className='spatial-intervals'>
@@ -48,12 +48,13 @@ export class SpatialOverlay extends React.Component<SpatialOverlayProps, {}> {
                  ? <View
                      key={i} interval={intvl} expand={this.props.expand}
                      width={this.props.width} height={this.props.height}
-                     color={color} />
+                     color={color} time={this.props.time}/>
                  : null;
           }))}
       </div>
       <div className='spatial-labeler'>
-        <BboxLabeler width={this.props.width} height={this.props.height} color={label_color}
+        <BboxLabeler width={this.props.width} height={this.props.height}
+                     color={label_color} time={this.props.time}
                      expand={this.props.expand} />
       </div>
     </div>

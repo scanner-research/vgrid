@@ -6,8 +6,9 @@ export interface DrawProps {
   interval: Interval,
   width: number,
   height: number,
-  color: string
-  expand: boolean
+  color: string,
+  expand: boolean,
+  time: number
 }
 
 export interface LabelProps {
@@ -15,6 +16,7 @@ export interface LabelProps {
   height: number,
   color: string,
   expand: boolean,
+  time: number,
   label_state?: BlockLabelState
 }
 

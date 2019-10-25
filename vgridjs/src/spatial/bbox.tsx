@@ -11,6 +11,14 @@ import {Metadata_Bbox} from '../metadata';
 class BboxDrawView extends React.Component<DrawProps, {}> {
   render() {
     let bbox = this.props.interval.bounds.bbox;
+
+    let bbox_args = (this.props.interval.data.spatial_type as SpatialType_Bbox).args;
+    var opacity = 1;
+    if (bbox_args.hasOwnProperty('fade')) {
+      let bounds = this.props.interval.bounds;
+      opacity -= bbox_args.fade * (this.props.time - bounds.t1) / (bounds.t2 - bounds.t1);
+    }
+
     let position = {
       left: bbox.x1 * this.props.width,
       top: bbox.y1 * this.props.height
@@ -18,7 +26,8 @@ class BboxDrawView extends React.Component<DrawProps, {}> {
     let box_style = {
       width: (bbox.x2 - bbox.x1) * this.props.width,
       height: (bbox.y2 - bbox.y1) * this.props.height,
-      border: `2px solid ${this.props.color}`
+      border: `2px solid ${this.props.color}`,
+      opacity: opacity
     };
 
     let bbox_text: string[] = Object.values(
@@ -27,7 +36,7 @@ class BboxDrawView extends React.Component<DrawProps, {}> {
       m => (m as Metadata_Bbox).text
     );
     let meta_style = {
-      backgroundColor: this.props.color
+      backgroundColor: this.props.color, opacity: opacity
     };
 
     return <div className='bbox-draw' style={position}>
@@ -116,7 +125,7 @@ class BboxLabelView extends React.Component<LabelProps & BboxLabelProps, BboxLab
     let end = this.state.mousemove_point!;
     return new Interval(
       new Bounds(t, t, new BoundingBox(start.x, end.x, start.y, end.y)),
-      {spatial_type: new SpatialType_Bbox(), metadata: {}});
+      {spatial_type: new SpatialType_Bbox(null), metadata: {}});
   }
 
   onMouseUp = (x: number, y: number) => {
@@ -140,7 +149,8 @@ class BboxLabelView extends React.Component<LabelProps & BboxLabelProps, BboxLab
       bbox = <BboxDrawView
                interval={this.make_interval()}
                width={this.props.width} height={this.props.height}
-               color={this.props.color} expand={this.props.expand} />;
+               color={this.props.color} expand={this.props.expand}
+               time={this.props.time} />;
     }
 
     let style = {width: this.props.width, height: this.props.height};
@@ -152,7 +162,17 @@ class BboxLabelView extends React.Component<LabelProps & BboxLabelProps, BboxLab
 }
 
 export class SpatialType_Bbox extends SpatialType {
+
+  args: any
+
+  constructor(args: any) {
+    super();
+    this.args = args ? args : {};
+  }
+
   draw_view(): React.ComponentType<DrawProps> { return BboxDrawView; }
   label_view(): React.ComponentType<LabelProps> { return BboxLabelView; }
-  static from_json(obj: any): SpatialType_Bbox { return new SpatialType_Bbox(); }
+  static from_json(obj: any): SpatialType_Bbox {
+    return new SpatialType_Bbox(obj);
+  }
 }
