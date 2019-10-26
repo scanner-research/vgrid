@@ -6,7 +6,6 @@ import {mouse_key_events} from '../events';
 import {Interval, Bounds, BoundingBox} from '../interval';
 import TimeState from '../time_state';
 import {ActionStack} from '../undo';
-import {Metadata_Bbox} from '../metadata';
 
 class BboxDrawView extends React.Component<DrawProps, {}> {
   render() {
@@ -14,7 +13,7 @@ class BboxDrawView extends React.Component<DrawProps, {}> {
 
     let bbox_args = (this.props.interval.data.spatial_type as SpatialType_Bbox).args;
     var opacity = 1;
-    if (bbox_args.hasOwnProperty('fade')) {
+    if (bbox_args.fade) {
       let bounds = this.props.interval.bounds;
       opacity -= bbox_args.fade * (this.props.time - bounds.t1) / (bounds.t2 - bounds.t1);
     }
@@ -30,21 +29,16 @@ class BboxDrawView extends React.Component<DrawProps, {}> {
       opacity: opacity
     };
 
-    let bbox_text: string[] = Object.values(
-      this.props.interval.data.metadata
-    ).filter(m => m instanceof Metadata_Bbox).map(
-      m => (m as Metadata_Bbox).text
-    );
-    let meta_style = {
+    let bbox_text = bbox_args.text ? bbox_args.text : null;
+    let bbox_text_style = {
       backgroundColor: this.props.color, opacity: opacity
     };
 
     return <div className='bbox-draw' style={position}>
       <div className='box-outline' style={box_style} />
-      {this.props.expand ?
-        bbox_text.map(text => {
-          return <div className='text-label' style={meta_style}>{text}</div>
-        }) : null}
+      {this.props.expand && bbox_text ?
+        <div className='text-label' style={bbox_text_style}>{bbox_text}</div>
+        : null}
     </div>;
   }
 }
