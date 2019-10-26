@@ -304,7 +304,7 @@ class Timeline extends React.Component<TimelineProps, TimelineState> {
       let intvls = this.props.label_state!.new_intervals;
 
       let new_interval = new Interval(
-        new Bounds(time), {spatial_type: new SpatialType_Bbox(null), metadata: {}});
+        new Bounds(time), {spatial_type: new SpatialType_Bbox(), metadata: {}});
 
       this.props.action_stack!.push({
         name: "add time interval",
