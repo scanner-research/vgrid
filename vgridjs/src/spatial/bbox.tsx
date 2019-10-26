@@ -29,14 +29,18 @@ class BboxDrawView extends React.Component<DrawProps, {}> {
       opacity: opacity
     };
 
-    let bbox_text = bbox_args.text ? bbox_args.text : null;
+    var bbox_text = bbox_args.text ? bbox_args.text : null;
+    if (!this.props.expand && bbox_text) {
+      bbox_text = (bbox_text as string).split(' ').filter(t => t.length > 0).map(t => t[0].toUpperCase()).join('');
+    }
     let bbox_text_style = {
-      backgroundColor: this.props.color, opacity: opacity
+      backgroundColor: this.props.color, opacity: opacity,
+      fontSize: this.props.expand ? 'medium' : 'small'
     };
 
     return <div className='bbox-draw' style={position}>
       <div className='box-outline' style={box_style} />
-      {this.props.expand && bbox_text ?
+      {bbox_text ?
         <div className='text-label' style={bbox_text_style}>{bbox_text}</div>
         : null}
     </div>;
