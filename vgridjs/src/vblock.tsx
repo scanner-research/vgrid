@@ -307,7 +307,7 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
                 style={{position: "absolute", left: "50%", transform: "translateX(-50%)", borderStyle: 'solid',
                         marginTop: 0, padding: _.get(vblock_constants, 'padding_expanded', Constants.padding_expanded)}}>
 
-            {this.title ? <div className='vblock-title'>{this.title}</div> : null}
+            {this.title ? <div className='vblock-title' dangerouslySetInnerHTML={{__html: this.title }} /> : null}
 
             <div className='vblock-close-expand noselect' onClick={this.closeClick}>&#10005;</div>
 
