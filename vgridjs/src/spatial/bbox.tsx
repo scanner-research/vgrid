@@ -15,7 +15,17 @@ class BboxDrawView extends React.Component<DrawProps, {}> {
     var opacity = 1;
     if (bbox_args.fade) {
       let bounds = this.props.interval.bounds;
-      opacity -= bbox_args.fade * (this.props.time - bounds.t1) / (bounds.t2 - bounds.t1);
+      var duration = bounds.t2 - bounds.t1;
+      var amount;
+      if (typeof(bbox_args.fade) == 'number') {
+        amount = bbox_args.fade;
+      } else {
+        amount = bbox_args.fade.amount ? bbox_args.fade.amount : 1.;
+        if (bbox_args.fade.duration) {
+          duration = bbox_args.fade.duration;
+        }
+      }
+      opacity -= amount * Math.min(this.props.time - bounds.t1, duration) / duration;
     }
 
     let position = {
