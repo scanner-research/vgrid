@@ -61,20 +61,6 @@ class Metadata_CaptionMeta(Metadata):
         }
 
 
-class Metadata_Bbox(Metadata):
-    """Metadata text on bbox."""
-
-    def __init__(self, text):
-        self._text = text
-
-    def to_json(self):
-        return {
-            "type": "Metadata_Bbox",
-            "args": {
-                "text": self._text
-            }
-        }
-
 class Metadata_Keypoints(Metadata):
     """Metadata for keypoints locations."""
     def __init__(self, keypoint_nodes, edges):
@@ -104,7 +90,7 @@ class Metadata_Keypoints(Metadata):
             [
                 [0, 1, "red"]
             ]
-        
+
         We expect start and end to be integers (indexed into keypoint_nodes),
         and color to be a string.
         """
@@ -137,7 +123,7 @@ class Metadata_Keypoints(Metadata):
         HAND_RIGHT_COLOR = 'rgb(95, 231, 118)'
 
         POSE_POINTS = 18
-        POSE_PAIRS = [[1,2], [1,5], [2,3], [3,4], [5,6], [6,7], [1,8], [8,9], 
+        POSE_PAIRS = [[1,2], [1,5], [2,3], [3,4], [5,6], [6,7], [1,8], [8,9],
             [9,10],  [1,11],  [11,12], [12,13],  [1,0], [0,14], [14,16],
             [0,15], [15,17]
         ]
@@ -150,8 +136,8 @@ class Metadata_Keypoints(Metadata):
         }
         edges = [
             [
-                edge[0], 
-                edge[1], 
+                edge[0],
+                edge[1],
                 POSE_LEFT_COLOR if (show_left_right and (
                     edge[0] in POSE_LEFT or
                     edge[1] in POSE_LEFT
@@ -162,13 +148,13 @@ class Metadata_Keypoints(Metadata):
         # Face keypoints
         FACE_POINTS = 68
         FACE_PAIRS = [
-            [0,1], [1,2], [2,3], [3,4], [4,5], [5,6], [6,7], [7,8], [8,9], [9,10], 
-            [10,11], [11,12], [12,13], [13,14], [14,15], [15,16], [17,18], [18,19], 
-            [19,20], [20,21], [22,23], [23,24], [24,25], [25,26], [27,28], [28,29], 
-            [29,30], [31,32], [32,33], [33,34], [34,35], [36,37], [37,38], [38,39], 
-            [39,40], [40,41], [41,36], [42,43], [43,44], [44,45], [45,46], [46,47], 
-            [47,42], [48,49], [49,50], [50,51], [51,52], [52,53], [53,54], [54,55], 
-            [55,56], [56,57], [57,58], [58,59], [59,48], [60,61], [61,62], [62,63], 
+            [0,1], [1,2], [2,3], [3,4], [4,5], [5,6], [6,7], [7,8], [8,9], [9,10],
+            [10,11], [11,12], [12,13], [13,14], [14,15], [15,16], [17,18], [18,19],
+            [19,20], [20,21], [22,23], [23,24], [24,25], [25,26], [27,28], [28,29],
+            [29,30], [31,32], [32,33], [33,34], [34,35], [36,37], [37,38], [38,39],
+            [39,40], [40,41], [41,36], [42,43], [43,44], [44,45], [45,46], [46,47],
+            [47,42], [48,49], [49,50], [50,51], [51,52], [52,53], [53,54], [54,55],
+            [55,56], [56,57], [57,58], [58,59], [59,48], [60,61], [61,62], [62,63],
             [63,64], [64,65], [65,66], [66,67], [67,60]
         ]
         if len(face_pose) > 0:
@@ -179,12 +165,12 @@ class Metadata_Keypoints(Metadata):
                 [ edge[0] + keypoints_len, edge[1] + keypoints_len, FACE_COLOR ]
                 for edge in FACE_PAIRS
             ]
-                
+
         # Hand keypoints
         HAND_POINTS = 21
         HAND_PAIRS = [
-            [0,1], [1,2], [2,3], [3,4], [0,5], [5,6], [6,7], [7,8], [0,9], [9,10], 
-            [10,11], [11,12], [0,13], [13,14], [14,15], [15,16], [0,17], [17,18], 
+            [0,1], [1,2], [2,3], [3,4], [0,5], [5,6], [6,7], [7,8], [0,9], [9,10],
+            [10,11], [11,12], [0,13], [13,14], [14,15], [15,16], [0,17], [17,18],
             [18,19], [19,20]
         ]
         for hand in ["left", "right"]:
@@ -195,11 +181,11 @@ class Metadata_Keypoints(Metadata):
                     keypoints[i + keypoints_len] = hand_pose[i]
                 edges += [
                     [
-                        edge[0] + keypoints_len, 
-                        edge[1] + keypoints_len, 
+                        edge[0] + keypoints_len,
+                        edge[1] + keypoints_len,
                         HAND_LEFT_COLOR if hand == "left" else HAND_RIGHT_COLOR
                     ]
                     for edge in HAND_PAIRS
                 ]
-        
+
         return cls(keypoints, edges)

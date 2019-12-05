@@ -3,7 +3,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {VGrid, Table, Database, IntervalSet, Interval, Bounds, BoundingBox,
-  SpatialType_Bbox, Metadata_Bbox} from '@wcrichto/vgrid';
+  SpatialType_Bbox} from '@wcrichto/vgrid';
 import '@wcrichto/vgrid/dist/vgrid.css';
 
 // Setup intervals
@@ -14,10 +14,7 @@ let interval_blocks = [{
     interval_set: new IntervalSet([new Interval(
       new Bounds(0, 10, new BoundingBox(0.1, 0.5, 0.3, 0.4)),
       {
-        spatial_type: new SpatialType_Bbox(),
-        metadata: {
-          'bbox_text': new Metadata_Bbox('my text')
-        }
+        spatial_type: new SpatialType_Bbox({text: 'my text'})
       }
     )])
   }]
@@ -47,4 +44,3 @@ ReactDOM.render(
   <VGrid interval_blocks={interval_blocks} database={database}
          settings={settings} label_callback={label_callback} />,
   document.getElementById('vgrid'));
-

@@ -30,14 +30,27 @@ class SpatialType_Caption(SpatialType):
 class SpatialType_Bbox(SpatialType):
     """A SpatialType for drawing bounding boxes"""
 
+    def __init__(self, text=None, fade=None):
+        self._text = text
+        self._fade = fade
+
     def to_json(self):
-        return {"type": "SpatialType_Bbox"}
+        ret = {"type": "SpatialType_Bbox"}
+        if self._text or self._fade:
+            ret["args"] = {}
+            if self._text:
+                ret["args"]["text"] = self._text
+            if self._fade:
+                ret["args"]["fade"] = self._fade
+        return ret
+
 
 class SpatialType_Temporal(SpatialType):
     """A SpatialType for temporal data"""
 
     def to_json(self):
         return {"type": "SpatialType_Temporal"}
+
 
 class SpatialType_Keypoints(SpatialType):
     """A SpatialType for keypoints. Metadata must be Metadata_Keypoints."""

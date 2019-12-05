@@ -70,20 +70,6 @@ export class Metadata_CaptionMeta extends Metadata {
   }
 }
 
-/** Metadata text on bbox. */
-export class Metadata_Bbox extends Metadata {
-  text: string
-
-  constructor(text: string) {
-    super();
-    this.text = text;
-  }
-
-  static from_json(obj: any): Metadata_Bbox {
-    return new Metadata_Bbox(obj.text)
-  }
-}
-
 /** Metadata to store Keypoint information. See the Keypoints class for
  * constructors from OpenPose and face landmarks. */
 export class Metadata_Keypoints extends Metadata {
@@ -138,7 +124,6 @@ export let metadata_from_json = (obj: any): Metadata => {
     'Metadata_Generic': Metadata_Generic,
     'Metadata_Categorical': Metadata_Categorical,
     'Metadata_CaptionMeta': Metadata_CaptionMeta,
-    'Metadata_Bbox': Metadata_Bbox,
     'Metadata_Keypoints': Metadata_Keypoints
   };
 
