@@ -89,7 +89,13 @@ class VGridSpec:
                  video_endpoint='http://localhost:8000/',
                  use_frameserver=False,
                  show_timeline=True,
-                 blocks_per_page=50):
+                 show_captions=True,
+                 show_metadata=True,
+                 show_metadata_thumbnail_mode=False,
+                 show_timeline_controls=True,
+                 paginate=True,
+                 blocks_per_page=50,
+                 caption_delimiter='>>'):
         """
         Args:
             video_meta: List of VideoMetadata objects describing all videos in the interval blocks
@@ -115,7 +121,13 @@ class VGridSpec:
             'video_endpoint': video_endpoint,
             'use_frameserver': use_frameserver,
             'show_timeline': show_timeline,
-            'blocks_per_page': blocks_per_page
+            'show_captions': show_captions,
+            'show_metadata': show_metadata,
+            'show_metadata_thumbnail_mode': show_metadata_thumbnail_mode,
+            'show_timeline_controls': show_timeline_controls,
+            'paginate': paginate,
+            'blocks_per_page': blocks_per_page,
+            'caption_delimiter': caption_delimiter
         }
 
         self._video_meta = video_meta
