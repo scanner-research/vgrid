@@ -138,8 +138,8 @@
 <span class="hljs-comment">// Render React component into a &lt;div id="#vgrid"&gt;&lt;/div&gt;</span>
 ReactDOM.render(
   <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">VGrid</span> <span class="hljs-attr">interval_blocks</span>=<span class="hljs-string">{interval_blocks}</span> <span class="hljs-attr">database</span>=<span class="hljs-string">{database}</span>
-         <span class="hljs-attr">settings</span>=<span class="hljs-string">{settings}</span> <span class="hljs-attr">label_callback</span>=<span class="hljs-string">{label_callback}</span> /&gt;</span>,
-  document.getElementById('vgrid'));</span></code></pre>
+         <span class="hljs-attr">settings</span>=<span class="hljs-string">{settings}</span> <span class="hljs-attr">label_callback</span>=<span class="hljs-string">{label_callback}</span> /&gt;</span></span>,
+  <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'vgrid'</span>));</code></pre>
 				<h3 id="javascript-and-python">Javascript and Python</h3>
 				<p>You can use the Python API to build the video metadata and interval data, then send the JSON string to the frontend. Python:</p>
 				<pre><code class="language-python"><span class="hljs-keyword">from</span> rekall <span class="hljs-keyword">import</span> Interval, IntervalSet, Bounds3D
@@ -181,9 +181,9 @@ fetch_json_somehow(<span class="hljs-function"><span class="hljs-keyword">functi
   <span class="hljs-comment">// Render React component into a &lt;div id="#vgrid"&gt;&lt;/div&gt;</span>
   ReactDOM.render(
     <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">VGrid</span> <span class="hljs-attr">interval_blocks</span>=<span class="hljs-string">{interval_blocks}</span> <span class="hljs-attr">database</span>=<span class="hljs-string">{database}</span>
-           <span class="hljs-attr">settings</span>=<span class="hljs-string">{settings}</span> <span class="hljs-attr">label_callback</span>=<span class="hljs-string">{label_callback}</span> /&gt;</span>,
-    document.getElementById('vgrid'));
-});</span></code></pre>
+           <span class="hljs-attr">settings</span>=<span class="hljs-string">{settings}</span> <span class="hljs-attr">label_callback</span>=<span class="hljs-string">{label_callback}</span> /&gt;</span></span>,
+    <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'vgrid'</span>));
+});</code></pre>
 				<h3 id="examples">Examples</h3>
 				<p>To see more examples in Javascript and Python, check out the <a href="examples">examples</a> folder!</p>
 				<h2 id="api">API</h2>
