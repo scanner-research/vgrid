@@ -81,7 +81,9 @@ export class VGrid extends React.Component<VGridProps, VGridState> {
     }
 
     // Set a default color for each interval set
-    this.color_map = {'__new_intervals': this.settings.colors[this.settings.colors.length - 1]};
+    this.color_map = {
+      '__new_intervals': this.settings.colors[this.settings.colors.length - 1]
+    };
     this.props.interval_blocks[0].interval_sets.forEach(({name}, i) => {
       this.color_map[name] = this.settings.colors[i];
     });
@@ -90,7 +92,8 @@ export class VGrid extends React.Component<VGridProps, VGridState> {
       // Watch changes to the label state to invoke the label_callback
       autorun(_ => {
         this.label_state.block_labels.forEach((block_state) => {
-          block_state.new_intervals.length();
+          block_state.new_positive_intervals.length() +
+            block_state.new_negative_intervals.length();
         });
         this.props.label_callback!(this.label_state);
       });

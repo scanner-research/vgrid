@@ -22,7 +22,9 @@ export interface Settings {
 
   vblock_constants: any,
 
-  colors: Array<string>
+  colors: Array<string>,
+  positive_color: string,
+  negative_color: string
 }
 
 export let default_settings = {
@@ -41,5 +43,7 @@ export let default_settings = {
   caption_delimiter: '>>',
   vblock_constants: {},
   colors: [ "#4e79a7", "#f28e2b", "#e15759", "#76b7b2", "#59a14f", "#edc948",
-    "#b07aa1", "#ff9da7", "#9c755f", "#bab0ac"]
+    "#b07aa1", "#ff9da7", "#9c755f", "#bab0ac"],
+  positive_color: "#60f14b",
+  negative_color: "#fc6b81"
 };

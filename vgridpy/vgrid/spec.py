@@ -95,7 +95,9 @@ class VGridSpec:
                  show_timeline_controls=True,
                  paginate=True,
                  blocks_per_page=50,
-                 caption_delimiter='>>'):
+                 caption_delimiter='>>',
+                 positive_color='#60f14b',
+                 negative_color='#fc6b81'):
         """
         Args:
             video_meta: List of VideoMetadata objects describing all videos in the interval blocks
@@ -127,7 +129,9 @@ class VGridSpec:
             'show_timeline_controls': show_timeline_controls,
             'paginate': paginate,
             'blocks_per_page': blocks_per_page,
-            'caption_delimiter': caption_delimiter
+            'caption_delimiter': caption_delimiter,
+            'positive_color': positive_color,
+            'negative_color': negative_color
         }
 
         self._video_meta = video_meta
