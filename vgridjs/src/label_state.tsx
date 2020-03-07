@@ -11,7 +11,8 @@ export enum BlockSelectType {
 
 export class BlockLabelState {
   @observable captions_selected: ObservableSet<number> = observable.set();
-  @observable new_intervals: IntervalSet = new IntervalSet([]);
+  @observable new_positive_intervals: IntervalSet = new IntervalSet([]);
+  @observable new_negative_intervals: IntervalSet = new IntervalSet([]);
 }
 
 /** Contains all intervals added/modified by the user when interacting with VGrid */
@@ -28,7 +29,8 @@ export class LabelState {
       block_labels: _.mapValues(this.block_labels.toJSON(), (block_label_state: BlockLabelState) => {
         return {
           captions_selected: toJS(block_label_state.captions_selected),
-          new_intervals: block_label_state.new_intervals.to_json()
+          new_positive_intervals: block_label_state.new_positive_intervals.to_json(),
+          new_negative_intervals: block_label_state.new_negative_intervals.to_json()
         }
       })
     };

@@ -15,10 +15,6 @@ import {ActionStack} from './undo';
 import {ColorMap} from './color';
 
 let Constants = {
-  /** How tall the timeline is when block is vs. isn't expanded */
-  timeline_unexpanded_height: 50,
-  timeline_expanded_height: 100,
-
   /** Height in pixels of ticks marking time beneath timeline */
   tick_height: 20,
 
@@ -120,15 +116,24 @@ class TimelineRow extends React.Component<TimelineRowProps, {}>{
     let props : TimelineRowProps = this.props as TimelineRowProps;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = this.props.color;
-    this.props.intervals.to_list().forEach(intvl => {
-      let bounds = intvl.bounds;
-      if (bounds.t2 > this.props.bounds.start && bounds.t1 < this.props.bounds.end) {
-        let x1 = Math.max((bounds.t1 - this.props.bounds.start) / this.props.bounds.span() * this.props.full_width, 0);
-        let width = Math.max(
-          ((bounds.t2 - this.props.bounds.start) / this.props.bounds.span() * this.props.full_width) - x1, 1);
-        ctx.fillRect(x1, 0, width, this.props.row_height);
-      }
-    });
+    if (this.props.intervals) {
+      this.props.intervals.to_list().forEach(intvl => {
+        ctx.fillStyle = this.props.color;
+        if (intvl.data.spatial_type instanceof SpatialType_Bbox) {
+          let bbox_args = (intvl.data.spatial_type as SpatialType_Bbox).args;
+          if (bbox_args.color) {
+            ctx.fillStyle = bbox_args.color;
+          }
+        }
+        let bounds = intvl.bounds;
+        if (bounds.t2 > this.props.bounds.start && bounds.t1 < this.props.bounds.end) {
+          let x1 = Math.max((bounds.t1 - this.props.bounds.start) / this.props.bounds.span() * this.props.full_width, 0);
+          let width = Math.max(
+            ((bounds.t2 - this.props.bounds.start) / this.props.bounds.span() * this.props.full_width) - x1, 1);
+          ctx.fillRect(x1, 0, width, this.props.row_height);
+        }
+      });
+    }
   }
 
   render() {
@@ -275,7 +280,8 @@ interface DragTimelineState {
 interface TimelineState {
   shift_held: boolean
   drag_state: DragTimelineState
-  new_interval: Interval | null
+  new_positive_interval: Interval | null
+  new_negative_interval: Interval | null
 }
 
 /**
@@ -289,32 +295,48 @@ interface TimelineState {
 @observer
 class Timeline extends React.Component<TimelineProps, TimelineState> {
   state: TimelineState = {
-    shift_held: false,
     drag_state: {
       dragging: false, click_x: 0, click_y: 0, click_time: 0, click_start_time: 0, click_end_time: 0
     },
-    new_interval: null
+    new_positive_interval: null,
+    new_negative_interval: null,
+    shift_held: false
   }
   private old_time: number = this.props.time_state.time;
 
   create_interval = () => {
-    if (!this.state.new_interval) {
+    let settings = this.props.settings!;
+    if ((!this.state.shift_held && !this.state.new_positive_interval) ||
+        (this.state.shift_held && !this.state.new_negative_interval)) {
       let time = this.props.time_state.time;
       this.old_time = time;
-      let intvls = this.props.label_state!.new_intervals;
+      let intvls = !this.state.shift_held ?
+        this.props.label_state!.new_positive_intervals :
+        this.props.label_state!.new_negative_intervals;
 
+      let interval_type = !this.state.shift_held ? "positive" : "negative";
+      let new_interval_color = !this.state.shift_held ?
+        settings.positive_color : settings.negative_color;
       let new_interval = new Interval(
-        new Bounds(time), {spatial_type: new SpatialType_Bbox(), metadata: {}});
+        new Bounds(time), {spatial_type: new SpatialType_Bbox({color: new_interval_color}), metadata: {}});
 
       this.props.action_stack!.push({
-        name: "add time interval",
+        name: "add " + interval_type + " time interval",
         do_: () => { intvls.add(new_interval); },
         undo: () => { intvls.remove(new_interval); }
       });
 
-      this.setState({new_interval: new_interval});
+      if (!this.state.shift_held) {
+        this.setState({ new_positive_interval: new_interval });
+      } else {
+        this.setState({ new_negative_interval: new_interval });
+      }
     } else {
-      this.setState({new_interval: null});
+      if (!this.state.shift_held) {
+        this.setState({ new_positive_interval: null });
+      } else {
+        this.setState({ new_negative_interval: null });
+      }
     }
   }
 
@@ -404,17 +426,30 @@ class Timeline extends React.Component<TimelineProps, TimelineState> {
       this.old_time = time;
     }
 
-    if (this.state.new_interval) {
-      let new_interval = this.state.new_interval;
-      if (time > new_interval.bounds.t1 && time != new_interval.bounds.t2) {
-        console.log(`Setting new_interval bounds to ${time}`);
-        new_interval.bounds.t2 = time;
+    if (this.state.new_positive_interval) {
+      let new_positive_interval = this.state.new_positive_interval;
+      if (time > new_positive_interval.bounds.t1 && time != new_positive_interval.bounds.t2) {
+        console.log(`Setting new_positive_interval bounds to ${time}`);
+        new_positive_interval.bounds.t2 = time;
 
         // Cycling the interval in/out of the set causes mobx to trigger updates to any renderers of the intervals.
         // We do this in lieu of observing interval fields since that gets too expensive with 10k+ intervals.
-        let new_intervals = this.props.label_state!.new_intervals;
-        new_intervals.remove(new_interval);
-        new_intervals.add(new_interval);
+        let new_positive_intervals = this.props.label_state!.new_positive_intervals;
+        new_positive_intervals.remove(new_positive_interval);
+        new_positive_intervals.add(new_positive_interval);
+      }
+    }
+    if (this.state.new_negative_interval) {
+      let new_negative_interval = this.state.new_negative_interval;
+      if (time > new_negative_interval.bounds.t1 && time != new_negative_interval.bounds.t2) {
+        console.log(`Setting new_negative_interval bounds to ${time}`);
+        new_negative_interval.bounds.t2 = time;
+
+        // Cycling the interval in/out of the set causes mobx to trigger updates to any renderers of the intervals.
+        // We do this in lieu of observing interval fields since that gets too expensive with 10k+ intervals.
+        let new_negative_intervals = this.props.label_state!.new_negative_intervals;
+        new_negative_intervals.remove(new_negative_interval);
+        new_negative_intervals.add(new_negative_interval);
       }
     }
   }
@@ -422,8 +457,9 @@ class Timeline extends React.Component<TimelineProps, TimelineState> {
   render() {
     let keys = this.props.intervals.map(({name}) => name);
 
-    let new_intervals = this.props.label_state!.new_intervals;
-    if (new_intervals.length() > 0) {
+    let new_positive_intervals = this.props.label_state!.new_positive_intervals;
+    let new_negative_intervals = this.props.label_state!.new_negative_intervals;
+    if (new_positive_intervals.length() > 0 || new_negative_intervals.length() > 0) {
       keys.push('__new_intervals');
     }
 
@@ -434,6 +470,16 @@ class Timeline extends React.Component<TimelineProps, TimelineState> {
     let window_span = this.props.timeline_bounds.span();
     let full_width = this.props.timeline_width;
     let box_style = {width: this.props.timeline_width, height: this.props.timeline_height};
+
+    let keys_to_intervals : { [key: string]: IntervalSet } = {};
+    for (let key_idx in keys) {
+      let key = keys[key_idx];
+      if (key == '__new_intervals') {
+        keys_to_intervals[key] = new_positive_intervals.union(new_negative_intervals);
+      } else {
+        keys_to_intervals[key] = this.props.intervals[key_idx].interval_set;
+      }
+    }
 
     return <div className='timeline-box' style={box_style}>
         <div className='timeline-cursor' style={{
@@ -446,7 +492,7 @@ class Timeline extends React.Component<TimelineProps, TimelineState> {
             {keys.map((k, i) =>
               <TimelineRow
                 key={k}
-                intervals={k == '__new_intervals' ? new_intervals : this.props.intervals[i].interval_set}
+                intervals={keys_to_intervals[k]}
                 row_height={row_height}
                 full_width={full_width}
                 full_duration={video_span}
@@ -657,13 +703,15 @@ interface TimelineTrackProps {
   expand: boolean,
   width: number,
   height: number,
-  show_timeline_controls: boolean
+  show_timeline_controls: boolean,
+  settings?: Settings
 }
 
 /**
  * Component that shows the temporal extent of all intervals within a block.
  * Each set of intervals is drawn in a different row.
  */
+@inject("settings")
 export default class TimelineTrack extends React.Component<TimelineTrackProps, {}> {
   /**
    * The timeline view shows all intervals between some bounds [t1, t2]. These bounds can
@@ -680,11 +728,12 @@ export default class TimelineTrack extends React.Component<TimelineTrackProps, {
   }
 
   render() {
+    let settings = this.props.settings!;
     let timeline_width = this.props.width;
     let timeline_height =
       this.props.expand
-      ? Constants.timeline_expanded_height
-      : Constants.timeline_unexpanded_height;
+      ? settings.timeline_height_expanded
+      : settings.timeline_height;
     let timeline_color =
       this.props.expand
       ? "gray"
