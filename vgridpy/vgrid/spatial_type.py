@@ -37,13 +37,13 @@ class SpatialType_Bbox(SpatialType):
 
     def to_json(self):
         ret = {"type": "SpatialType_Bbox"}
-        if self._text or self._fade:
+        if self._text or self._fade or self._color:
             ret["args"] = {}
             if self._text:
                 ret["args"]["text"] = self._text
             if self._fade:
                 ret["args"]["fade"] = self._fade
-            if self._fade:
+            if self._color:
                 ret["args"]["color"] = self._color
         return ret
 
