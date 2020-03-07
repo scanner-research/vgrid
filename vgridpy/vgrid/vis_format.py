@@ -20,12 +20,11 @@ class VideoBlockFormat(VisFormat):
             imaps: List of (name, IntervalSetMapping) pairs
             video_meta: List of VideoMetadata objects
         """
-        assert (imaps is not None) ^ (video_meta is not None)
         self._imaps = imaps
         self._video_meta = video_meta
 
     def interval_blocks(self):
-        if self._imaps is not None:
+        if self._imaps is not None and self._video_meta is None:
             _, example_imap = self._imaps[0]
             return [
                 IntervalBlock(
@@ -36,16 +35,21 @@ class VideoBlockFormat(VisFormat):
                     ])
                 for video_key in example_imap
             ] # yapf: disable
-        else:
+        elif self._imaps is not None:
             return [
                 IntervalBlock(
                     video_id=meta.id,
                     interval_sets=[
-                        NamedIntervalSet(
-                            name='default',
-                            interval_set=IntervalSet(
-                                [Interval(Bounds3D(0, meta.duration()))]))
-                    ]) for meta in self._video_meta
+                        NamedIntervalSet(name=name, interval_set=imap[meta.id])
+                        for (name, imap) in self._imaps
+                    ])
+                for meta in self._video_meta
+            ] # yapf: disable
+        else:
+            return [
+                IntervalBlock(
+                    video_id=meta.id,
+                    interval_sets=[]) for meta in self._video_meta
             ] # yapf: disable
 
 

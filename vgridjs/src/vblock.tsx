@@ -115,6 +115,9 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
             ? Math.min(n, interval_set.arbitrary_interval()!.bounds.t1)
             : n),
           Infinity);
+    if (first_time == Infinity) {
+      first_time = 0;
+    }
 
     this.time_state = new TimeState(first_time);
 
@@ -126,17 +129,20 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
         this.captions = interval_set;
       }
     });
-
-    let example_interval = interval_sets[0].interval_set.arbitrary_interval()!;
-    this.show_timeline = !(
-      interval_sets.length == 1 &&
-      interval_sets[0].interval_set.to_list().filter((intvl) =>
-        intvl.bounds.t1 != example_interval.bounds.t1 && intvl.bounds.t2 != example_interval.bounds.t2).length == 0);
+    
+    if (interval_sets.length > 0) {
+      let example_interval = interval_sets[0].interval_set.arbitrary_interval()!;
+      this.show_timeline = !(
+        interval_sets.length == 1 &&
+        interval_sets[0].interval_set.to_list().filter((intvl) =>
+          intvl.bounds.t1 != example_interval.bounds.t1 && intvl.bounds.t2 != example_interval.bounds.t2).length == 0);
+    }
+    else {
+      this.show_timeline = false;
+    }
 
     // Decide whether there is metadata to show
-    this.show_metadata = interval_sets.some(
-      ({interval_set}: {interval_set: IntervalSet}) =>
-        interval_set.to_list().some((intvl: Interval) => intvl.data.metadata != null));
+    this.show_metadata = true;
   }
 
   toggle_expand = () => {
