@@ -15,10 +15,6 @@ import {ActionStack} from './undo';
 import {ColorMap} from './color';
 
 let Constants = {
-  /** How tall the timeline is when block is vs. isn't expanded */
-  timeline_unexpanded_height: 50,
-  timeline_expanded_height: 100,
-
   /** Height in pixels of ticks marking time beneath timeline */
   tick_height: 20,
 
@@ -707,13 +703,15 @@ interface TimelineTrackProps {
   expand: boolean,
   width: number,
   height: number,
-  show_timeline_controls: boolean
+  show_timeline_controls: boolean,
+  settings?: Settings
 }
 
 /**
  * Component that shows the temporal extent of all intervals within a block.
  * Each set of intervals is drawn in a different row.
  */
+@inject("settings")
 export default class TimelineTrack extends React.Component<TimelineTrackProps, {}> {
   /**
    * The timeline view shows all intervals between some bounds [t1, t2]. These bounds can
@@ -730,11 +728,12 @@ export default class TimelineTrack extends React.Component<TimelineTrackProps, {
   }
 
   render() {
+    let settings = this.props.settings!;
     let timeline_width = this.props.width;
     let timeline_height =
       this.props.expand
-      ? Constants.timeline_expanded_height
-      : Constants.timeline_unexpanded_height;
+      ? settings.timeline_height_expanded
+      : settings.timeline_height;
     let timeline_color =
       this.props.expand
       ? "gray"

@@ -22,8 +22,6 @@ let Constants = {
   title_height_expanded: 25,
   metadata_height: 25,
   metadata_height_expanded: 'auto',
-  timeline_height: 50,
-  timeline_height_expanded: 100,
   triangle_height_ratio: 12,
   triangle_width_ratio: 16,
   caption_height: 50,
@@ -231,14 +229,14 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
       full_height += _.get(vblock_constants, 'caption_height', Constants.caption_height);
     }
     if (this.props.settings!.show_timeline && this.show_timeline) {
-      full_height += _.get(vblock_constants, 'timeline_height', Constants.timeline_height);
+      full_height += this.props.settings!.timeline_height;
     }
     if (this.props.settings!.show_metadata && this.show_metadata) {
       full_height += _.get(vblock_constants, 'metadata_height', Constants.metadata_height);
     }
     if (this.props.expand) {
       full_height += expanded_height
-          + _.get(vblock_constants, 'timeline_height_expanded', Constants.timeline_height_expanded)
+          + this.props.settings!.timeline_height_expanded
           + (thumb_height / _.get(vblock_constants, 'triangle_height_ratio', Constants.triangle_height_ratio))
           + (_.get(vblock_constants, 'padding_expanded', Constants.padding_expanded) * 2);
       if (this.title) {
@@ -284,7 +282,7 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
             ? <div className='vblock-row'>
                 <TimelineTrack intervals={this.props.block.interval_sets.filter(({name}) =>
                   show_in_timeline(name))}
-                               height={_.get(vblock_constants, 'timeline_height', Constants.timeline_height)}
+                               height={this.props.settings!.timeline_height}
                                show_timeline_controls={this.props.settings!.show_timeline_controls}
                                {...args} />
               </div>
@@ -351,7 +349,7 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
             <div className='vblock-row'>
                 <TimelineTrack intervals={this.props.block.interval_sets.filter(({name}) => show_in_timeline(name))}
                                width={expanded_width}
-                               height={_.get(vblock_constants, 'timeline_height_expanded', Constants.timeline_height_expanded)}
+                               height={this.props.settings!.timeline_height_expanded}
                                show_timeline_controls={this.props.settings!.show_timeline_controls}
                                {...args_expanded} />
             </div>

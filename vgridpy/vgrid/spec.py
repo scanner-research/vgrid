@@ -97,7 +97,9 @@ class VGridSpec:
                  blocks_per_page=50,
                  caption_delimiter='>>',
                  positive_color='#60f14b',
-                 negative_color='#fc6b81'):
+                 negative_color='#fc6b81',
+                 timeline_height=50,
+                 timeline_height_expanded=100):
         """
         Args:
             video_meta: List of VideoMetadata objects describing all videos in the interval blocks
@@ -131,7 +133,9 @@ class VGridSpec:
             'blocks_per_page': blocks_per_page,
             'caption_delimiter': caption_delimiter,
             'positive_color': positive_color,
-            'negative_color': negative_color
+            'negative_color': negative_color,
+            'timeline_height': timeline_height,
+            'timeline_height_expanded': timeline_height_expanded
         }
 
         self._video_meta = video_meta
