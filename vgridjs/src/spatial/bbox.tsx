@@ -10,9 +10,11 @@ import {ActionStack} from '../undo';
 class BboxDrawView extends React.Component<DrawProps, {}> {
   render() {
     let bbox = this.props.interval.bounds.bbox;
+    let color = this.props.color;
 
     let bbox_args = (this.props.interval.data.spatial_type as SpatialType_Bbox).args;
     var opacity = 1;
+
     if (bbox_args.fade) {
       let bounds = this.props.interval.bounds;
       var duration = bounds.t2 - bounds.t1;
@@ -27,6 +29,9 @@ class BboxDrawView extends React.Component<DrawProps, {}> {
       }
       opacity -= amount * Math.min(this.props.time - bounds.t1, duration) / duration;
     }
+    if (bbox_args.color) {
+      color = bbox_args.color;
+    }
 
     let position = {
       left: bbox.x1 * this.props.width,
@@ -35,7 +40,7 @@ class BboxDrawView extends React.Component<DrawProps, {}> {
     let box_style = {
       width: (bbox.x2 - bbox.x1) * this.props.width,
       height: (bbox.y2 - bbox.y1) * this.props.height,
-      border: `2px solid ${this.props.color}`,
+      border: `2px solid ${color}`,
       opacity: opacity
     };
 
@@ -143,8 +148,8 @@ class BboxLabelView extends React.Component<LabelProps & BboxLabelProps, BboxLab
 
       this.props.action_stack!.push({
         name: "add bbox",
-        do_: () => { label_state.new_intervals.add(interval); },
-        undo: () => { label_state.new_intervals.remove(interval); }
+        do_: () => { label_state.new_positive_intervals.add(interval); },
+        undo: () => { label_state.new_positive_intervals.remove(interval); }
       });
 
       this.reset_state();

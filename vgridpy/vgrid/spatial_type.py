@@ -30,9 +30,10 @@ class SpatialType_Caption(SpatialType):
 class SpatialType_Bbox(SpatialType):
     """A SpatialType for drawing bounding boxes"""
 
-    def __init__(self, text=None, fade=None):
+    def __init__(self, text=None, fade=None, color=None):
         self._text = text
         self._fade = fade
+        self._color = color
 
     def to_json(self):
         ret = {"type": "SpatialType_Bbox"}
@@ -42,6 +43,8 @@ class SpatialType_Bbox(SpatialType):
                 ret["args"]["text"] = self._text
             if self._fade:
                 ret["args"]["fade"] = self._fade
+            if self._fade:
+                ret["args"]["color"] = self._color
         return ret
 
 
