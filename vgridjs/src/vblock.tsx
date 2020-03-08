@@ -173,18 +173,12 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
       ({name: name, interval_set: interval_set.time_overlaps(bounds)}));
 
     let new_positive_intervals = this.props.label_state.new_positive_intervals.time_overlaps(bounds);
-    if (new_positive_intervals.length() > 0) {
-      current_intervals.push({
-        name: '__new_positive_intervals',
-        interval_set: new_positive_intervals
-      });
-    }
-
     let new_negative_intervals = this.props.label_state.new_negative_intervals.time_overlaps(bounds);
-    if (new_negative_intervals.length() > 0) {
+    if (new_positive_intervals.length() > 0 ||
+        new_negative_intervals.length() > 0) {
       current_intervals.push({
-        name: '__new_negative_intervals',
-        interval_set: new_negative_intervals
+        name: '__new_intervals',
+        interval_set: new_positive_intervals.union(new_negative_intervals)
       });
     }
 
