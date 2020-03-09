@@ -38,6 +38,9 @@ export interface IntervalBlock {
 
   /** ID of the corresponding video */
   video_id: number
+
+  /** Initial time to show the video */
+  init_time: number
 }
 
 // FIXME: probably need to handle title here too
@@ -47,7 +50,8 @@ export let interval_blocks_from_json = (obj: any): IntervalBlock[] => {
       video_id: video_id,
       interval_sets: interval_sets.map(({interval_set, name}: any) =>
         ({name: name,
-          interval_set: (IntervalSet as any).from_json(interval_set, vdata_from_json)}))
+          interval_set: (IntervalSet as any).from_json(interval_set, vdata_from_json)
+        }))
     };
   });
 };
@@ -88,13 +92,14 @@ const show_in_timeline = (k: string) => k[0] != '_';
 @mouse_key_events
 @observer
 export class VBlock extends React.Component<VBlockProps, VBlockState> {
-  state = {expand: this.props.expand}
+  state = {expand: this.props.expand, init_time: Infinity}
 
   title: string | null;
   time_state: TimeState;
   captions: IntervalSet | null;
   show_timeline: boolean;
   show_metadata: boolean;
+  init_time: number;
 
   constructor(props: VBlockProps) {
     super(props);
@@ -103,19 +108,26 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
 
     let interval_sets = props.block.interval_sets;
 
-    // Compute earliest time in all interval blocks to determine where to start the timeline
-    let first_time =
-      interval_sets
-        .filter(({name}) => show_in_timeline(name))
-        .reduce(
-          ((n, {interval_set}) =>
-            (interval_set.length() > 0)
-            ? Math.min(n, interval_set.arbitrary_interval()!.bounds.t1)
-            : n),
-          Infinity);
+    let first_time = Infinity;
+    if (!this.props.block.init_time) {
+      // Compute earliest time in all interval blocks to determine where to start the timeline
+      first_time =
+        interval_sets
+          .filter(({name}) => show_in_timeline(name))
+          .reduce(
+            ((n, {interval_set}) =>
+              (interval_set.length() > 0)
+              ? Math.min(n, interval_set.arbitrary_interval()!.bounds.t1)
+              : n),
+            Infinity);
+    } else {
+      first_time = this.props.block.init_time;
+    }
     if (first_time == Infinity) {
       first_time = 0;
     }
+
+    this.init_time = first_time;
 
     this.time_state = new TimeState(first_time);
 
@@ -141,6 +153,14 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
 
     // Decide whether there is metadata to show
     this.show_metadata = true;
+  }
+
+  componentDidUpdate(prevProps:VBlockProps) {
+    if (prevProps.expand != this.props.expand &&
+        !this.props.expand &&
+        this.props.settings!.snap_back_to_initial_time) {
+      this.time_state.time = this.init_time;
+    }
   }
 
   toggle_expand = () => {

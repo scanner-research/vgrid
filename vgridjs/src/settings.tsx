@@ -26,7 +26,9 @@ export interface Settings {
   positive_color: string,
   negative_color: string,
   timeline_height: number,
-  timeline_height_expanded: number
+  timeline_height_expanded: number,
+
+  snap_back_to_initial_time: boolean
 }
 
 export let default_settings = {
@@ -49,5 +51,6 @@ export let default_settings = {
   positive_color: "#60f14b",
   negative_color: "#fc6b81",
   timeline_height: 50,
-  timeline_height_expanded: 100
+  timeline_height_expanded: 100,
+  snap_back_to_initial_time: false
 };
