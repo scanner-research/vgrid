@@ -45,14 +45,17 @@ export interface IntervalBlock {
 
 // FIXME: probably need to handle title here too
 export let interval_blocks_from_json = (obj: any): IntervalBlock[] => {
-  return obj.map(({video_id, interval_sets}: any) => {
-    return {
-      video_id: video_id,
-      interval_sets: interval_sets.map(({interval_set, name}: any) =>
+  return obj.map((iblock_json: any) => {
+    let iblock : IntervalBlock = {
+      video_id: iblock_json.video_id,
+      interval_sets: iblock_json.interval_sets.map(({interval_set, name}: any) =>
         ({name: name,
           interval_set: (IntervalSet as any).from_json(interval_set, vdata_from_json)
-        }))
-    };
+        })),
+      title: iblock_json.title,
+      init_time: iblock_json.init_time
+    }
+    return iblock;
   });
 };
 
