@@ -126,7 +126,7 @@ export class VBlock extends React.Component<VBlockProps, VBlockState> {
     } else {
       first_time = this.props.block.init_time;
     }
-    if (first_time == Infinity) {
+    if (first_time == Infinity || first_time == -1) {
       first_time = 0;
     }
 

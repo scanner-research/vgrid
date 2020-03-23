@@ -82,7 +82,8 @@ export class Video extends React.Component<VideoProps, {loaded: boolean}> {
     if (this.video.current) {
       // Seek video to current time if it's different than video time
       let target_time = this.props.time_state.time;
-      if (target_time != this.video.current.currentTime) {
+      if (target_time != this.video.current.currentTime &&
+          target_time != -1 && target_time != Infinity) {
         this.video.current.currentTime = target_time;
       }
 
