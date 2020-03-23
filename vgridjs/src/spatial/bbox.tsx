@@ -137,8 +137,8 @@ class BboxLabelView extends React.Component<LabelProps & BboxLabelProps, BboxLab
     let start = this.state.mousedown_point!;
     let end = this.state.mousemove_point!;
     return new Interval(
-      new Bounds(t, t, new BoundingBox(start.x, end.x, start.y, end.y)),
-      {spatial_type: new SpatialType_Bbox(), metadata: {}});
+      new Bounds(t, t + 1, new BoundingBox(start.x, end.x, start.y, end.y)),
+      {spatial_type: new SpatialType_Bbox({fade: 0.5}), metadata: {}});
   }
 
   onMouseUp = (x: number, y: number) => {

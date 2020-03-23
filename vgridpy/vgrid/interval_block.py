@@ -8,15 +8,22 @@ class IntervalBlock:
     The video_id must map to an ID used in the VideoMetadata passed to the VGridSpec.
     """
 
-    def __init__(self, interval_sets, video_id):
+    def __init__(self, interval_sets, video_id, title=None, init_time=None):
         self.interval_sets = interval_sets
         self.video_id = video_id
+        self.title = title
+        self.init_time = init_time
 
     def to_json(self):
-        return {
+        json_rep = {
             'interval_sets': [iset.to_json() for iset in self.interval_sets],
             'video_id': self.video_id
         }
+        if self.title is not None:
+            json_rep['title'] = self.title
+        if self.init_time is not None:
+            json_rep['init_time'] = self.init_time
+        return json_rep
 
 
 class NamedIntervalSet:

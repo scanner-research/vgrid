@@ -99,7 +99,8 @@ class VGridSpec:
                  positive_color='#60f14b',
                  negative_color='#fc6b81',
                  timeline_height=50,
-                 timeline_height_expanded=100):
+                 timeline_height_expanded=100,
+                 snap_back_to_initial_time=False):
         """
         Args:
             video_meta: List of VideoMetadata objects describing all videos in the interval blocks
@@ -135,7 +136,8 @@ class VGridSpec:
             'positive_color': positive_color,
             'negative_color': negative_color,
             'timeline_height': timeline_height,
-            'timeline_height_expanded': timeline_height_expanded
+            'timeline_height_expanded': timeline_height_expanded,
+            'snap_back_to_initial_time': snap_back_to_initial_time
         }
 
         self._video_meta = video_meta

@@ -38,7 +38,8 @@ interface VideoTrackProps {
 }
 
 interface VideoTrackState {
-  video_active: boolean
+  video_active: boolean,
+  shift_held: boolean
 }
 
 /**
@@ -49,7 +50,10 @@ interface VideoTrackState {
 @mouse_key_events
 @observer
 export default class VideoTrack extends React.Component<VideoTrackProps, VideoTrackState> {
-  state = {video_active: false}
+  state = {
+    video_active: false,
+    shift_held: false
+  }
   video: any
 
   constructor(props: VideoTrackProps) {
@@ -74,6 +78,16 @@ export default class VideoTrack extends React.Component<VideoTrackProps, VideoTr
   }
 
   onKeyDown = (key: string) => {
+    if (key == "Shift") {
+      this.setState({shift_held: true});
+    }
+    key_dispatch(this.props.settings!, this.key_bindings, key);
+  }
+
+  onKeyUp = (key: string) => {
+    if (key == "Shift") {
+      this.setState({shift_held: false});
+    }
     key_dispatch(this.props.settings!, this.key_bindings, key);
   }
 
@@ -86,7 +100,7 @@ export default class VideoTrack extends React.Component<VideoTrackProps, VideoTr
   onMouseDown = (x: number, y: number) => {
     if(this.props.thumb) {
       this.props.onExpand();
-    } else {
+    } else if (!this.state.shift_held) {
       this.play_video();
     }
   }
