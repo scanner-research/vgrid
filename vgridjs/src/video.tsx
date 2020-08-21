@@ -82,7 +82,18 @@ export class Video extends React.Component<VideoProps, {loaded: boolean}> {
     if (this.video.current) {
       // Seek video to current time if it's different than video time
       let target_time = this.props.time_state.time;
-      if (target_time != this.video.current.currentTime) {
+
+      // HACK (will 8-20-20): in safari, the Video component is being
+      // rerendered twice regularly: once when
+      // time_state.time == video.current.currentTime and once when
+      // they are slightly different. Not sure why the latter update is
+      // happening, but we can hack around it to stop video from stuttering.
+      let is_safari = navigator.userAgent.toLowerCase().indexOf('safari') != -1;
+      if (
+        target_time != this.video.current.currentTime &&
+          (!is_safari ||
+            Math.abs(this.video.current.currentTime - target_time) > 0.5)
+      ) {
         this.video.current.currentTime = target_time;
       }
 
