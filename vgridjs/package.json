@@ -1,6 +1,6 @@
 {
   "name": "@wcrichto/vgrid",
-  "version": "0.1.18",
+  "version": "0.1.19",
   "description": "",
   "main": "dist/bundle.js",
   "types": "dist/vgrid.d.ts",
